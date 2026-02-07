@@ -1,0 +1,28 @@
+name: User Story
+description: Create a user story with acceptance criteria
+title: "US: "
+labels: ["user-story"]
+body:
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: Describe the user story in the standard format
+      placeholder: |
+        As a <type of user>,
+        I want <some goal>,
+        so that <some benefit>.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define when this story is considered complete
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+    validations:
+      required: true
