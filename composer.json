@@ -1,0 +1,11 @@
+{
+    "require-dev": {
+        "symfony/symfony": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/Framework/",
+            "App\\": "src/App/"
+        }
+    }
+}
