@@ -7,8 +7,5 @@
             "Framework\\": "src/Framework/",
             "App\\": "src/App/"
         }
-    },
-    "require": {
-      "ext-uri": "*"
     }
 }
