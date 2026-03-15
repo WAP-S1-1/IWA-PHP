@@ -8,7 +8,12 @@ class RoleMiddleware
     {
         $user = $request->user();
 
-        if (!$user || !in_array($user->role, $roles)) {
+        if (!$user) {
+            abort(401, 'Niet ingelogd.');
+        }
+
+        // Use the new hasRole method from User model
+        if (!$user->hasRole(...$roles)) {
             abort(403, 'Geen toegang.');
         }
 

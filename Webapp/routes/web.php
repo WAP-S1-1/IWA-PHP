@@ -11,6 +11,11 @@ use App\Http\Controllers\ComparingDataController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ApiManagementController;
 
+Route::get('/welcome', function () {
+    return view('landing.index');
+    })->name('landing');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -49,3 +54,5 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/monitoring', [MonitoringController::class, 'index'])
     ->name('monitoring.index');
+
+
