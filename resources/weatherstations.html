@@ -13,76 +13,70 @@
             margin: 1rem;
             border-radius: 0.5rem;
         }
+        #stations-scroll {
+            max-height: 100%;
+            overflow-y: auto;
+        }
         h2{text-align:center; color:#294B71;padding-top: 21px}
         h1{text-align:center; color:white;padding-top: 21px}
+        p{font-weight: bold; color:#294B71 }
     </style>
-</head> <!--move this to layout.index -->
+</head>
 <body>
-<divdark class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:1600px;height:100px;background-color:#262626;">
+<div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:1600px;height:100px;background-color:#262626;">
     <h1>All weatherstations</h1>
-</divdark>
-<div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4" style="width:1600px;height:700px; background-color:rgba(255,255,255,0.5)">
-    <div class="row p-4 g-4">
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p> <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude <span class="data">6.5665</span></p>
-            <p>Latitude <span class="data">53.2194</span></p>
-            <p>Elevation <span class="data">7</span></p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude <span class="data">6.8937</span></p>
-            <p>Latitude <span class="data">52.2215</span></p>
-            <p>Elevation <span class="data">42</span></p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-            </div>
-        </div>
-    <div class="row">
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div class="card stations-card" style="width:18rem;">
-            <h2 class="name">Station name</h2><hr>
-            <p><img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">Country, City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
+</div>
+<div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4"
+     style="width:1600px;height:700px; background-color:rgba(255,255,255,0.5)">
+    <div class="w-100" id="stations-scroll">
+        <div class="row p-4 g-4 justify-content-center" id="stations-container">
         </div>
     </div>
 </div>
+
+<script>
+    fetch("stations.json")
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("stations-container");
+            if (!container) {
+                console.error("No element with id 'stations-container' found");
+                return;
+            }
+
+            if (!data.stations || !Array.isArray(data.stations)) {
+                console.error("Expected data.stations to be an array", data);
+                return;
+            }
+
+            data.stations.forEach(station => {
+                const col = document.createElement("div");
+                col.classList.add("col-auto");
+                const card = document.createElement("div");
+                card.classList.add("card", "stations-card");
+
+                card.innerHTML = `
+        <div class="card-body p-3">
+            <h2 class="name">Station ${station.name}</h2>
+            <hr>
+            <p>
+                <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">
+                ${station.country ?? 'Country'}, ${station.city ?? 'City'}
+            </p>
+            <p>Longitude ${station.longitude ?? ''}</p>
+            <p>Latitude ${station.latitude ?? ''}</p>
+            <p>Elevation ${station.elevation ?? ''} m</p>
+        </div>
+    `;
+
+                col.appendChild(card);
+                container.appendChild(col);
+            });
+
+        })
+        .catch(error => {
+            console.error("Error loading stations.json:", error);
+        });
+</script>
 </body>
 </html>
