@@ -12,10 +12,20 @@
             width: 18rem;
             margin: 1rem;
             border-radius: 0.5rem;
+            min-height: 260px;
+            max-height: 300px;
+            overflow: hidden;
         }
         #stations-scroll {
             max-height: 100%;
             overflow-y: auto;
+        }
+        .location-text {
+            display: inline-block;
+            max-width: 10rem;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow: hidden;
         }
         h2{text-align:center; color:#294B71;padding-top: 21px}
         h1{text-align:center; color:white;padding-top: 21px}
@@ -33,7 +43,6 @@
         </div>
     </div>
 </div>
-
 <script>
     fetch("stations.json")
         .then(response => response.json())
@@ -43,13 +52,22 @@
                 console.error("No element with id 'stations-container' found");
                 return;
             }
-
             if (!data.stations || !Array.isArray(data.stations)) {
                 console.error("Expected data.stations to be an array", data);
                 return;
             }
 
             data.stations.forEach(station => {
+                const firstGeo = station.geolocations && station.geolocations[0]
+                    ? station.geolocations[0]
+                    : null;
+                const country = firstGeo && firstGeo.country
+                    ? firstGeo.country
+                    : 'Country';
+                const city = firstGeo && firstGeo.city
+                    ? firstGeo.city
+                    : 'City';
+
                 const col = document.createElement("div");
                 col.classList.add("col-auto");
                 const card = document.createElement("div");
@@ -61,22 +79,22 @@
             <hr>
             <p>
                 <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">
-                ${station.country ?? 'Country'}, ${station.city ?? 'City'}
+                <span class="location-text">${country}, ${city}</span>
             </p>
             <p>Longitude ${station.longitude ?? ''}</p>
             <p>Latitude ${station.latitude ?? ''}</p>
             <p>Elevation ${station.elevation ?? ''} m</p>
         </div>
     `;
-
                 col.appendChild(card);
                 container.appendChild(col);
             });
-
         })
         .catch(error => {
             console.error("Error loading stations.json:", error);
         });
 </script>
+
+
 </body>
 </html>
