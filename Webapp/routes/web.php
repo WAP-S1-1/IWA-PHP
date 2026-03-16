@@ -10,6 +10,14 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ComparingDataController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ApiManagementController;
+use App\Http\Controllers\WeatherStationController;
+use App\Http\Controllers\Api\StationController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::prefix('api')->get('/stations', [StationController::class, 'index']);
 
 Route::get('/welcome', function () {
     return view('landing.index');
@@ -54,5 +62,4 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/monitoring', [MonitoringController::class, 'index'])
     ->name('monitoring.index');
-
 
