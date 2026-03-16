@@ -22,7 +22,6 @@
         color: darkred;
     }
 
-
 </style>
 <body>
 <nav class="d-flex align-items-center justify-content-between border-bottom border-3" style=background-color:#F5F5F5>
@@ -49,7 +48,6 @@
     </ul>
 </nav>
 <main>
-    <div class="card shadow-lg">
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <h1>@yield('header')</h1>

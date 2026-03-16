@@ -1,138 +1,96 @@
 @extends('layouts.app')
 
 @section('title', 'Monitoring weerstations')
-@section('header', 'All weatherstations')
-
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        main {
-            background-image: linear-gradient(to bottom, midnightblue, darkblue) !important;
-            padding: 0 !important;
+        body {
+            background-image: url('background-sky.jpg');
         }
-
-        .card {
-            background-color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
+        .stations-card{
+            width: 18rem;
+            margin: 1rem;
+            border-radius: 0.5rem;
+            min-height: 260px;
+            max-height: 300px;
+            overflow: hidden;
         }
-
-        .header {
-            height: fit-content;
-            background-color: cornflowerblue;
-            margin-left: 5%;
-            margin-right: 5%;
-            border: solid white 5px;
-            border-bottom: 0px;
-            margin-bottom: 0;
+        #stations-scroll {
+            max-height: 100%;
+            overflow-y: auto;
         }
-
-        .header h1 {
-            text-align: center;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            color: white;
-            margin-block-end: 0px;
-            margin-block-start: 0px;
+        .location-text {
+            display: inline-block;
+            max-width: 10rem;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow: hidden;
         }
-
-        .content {
-            display: grid;
-            grid-template-columns: auto auto auto auto;
-            column-gap: 5px;
-            row-gap: 5px;
-            background-color: white;
-            margin-left: 5%;
-            margin-right: 5%;
-            margin-bottom: 5%;
-            padding: 5px;
-            height: fit-content;
-        }
-
-        .content div {
-            height: auto;
-            width: auto;
-            min-width: 200px;
-            background-color: aliceblue;
-            border: solid black 3px;
-            padding: 5px;
-            border-radius: 10px;
-            transition: 500ms;
-        }
-
-        .content div:hover {
-            box-shadow: 0px 0px 5px 3px cornflowerblue;
-            border: solid cornflowerblue 3px;
-        }
-
-        .name {
-            margin-block-end: 0px;
-            margin-block-start: 0px;
-            padding: 10px;
-            font-weight: bold;
-            font-size: 20px;
-            text-align: center;
-            text-decoration-line: underline;
-            width: auto;
-        }
-
-        .content p {
-            margin-block-end: 0px;
-            margin-block-start: 0px;
-            width: auto;
-            padding: 5px;
-            border: solid black 1px;
-            margin-top: 5px;
-            border-radius: 5px;
-        }
-
-        .data {
-            float: right;
-        }
+        h2{text-align:center; color:#294B71;padding-top: 21px}
+        h1{text-align:center; color:white;padding-top: 21px}
+        p{font-weight: bold; color:#294B71 }
     </style>
+</head>
+<body>
+<div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:1600px;height:100px;background-color:#262626;">
+    <h1>All weatherstations</h1>
+</div>
+<div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4"
+     style="width:1600px;height:700px; background-color:rgba(255,255,255,0.5)">
+    <div class="w-100" id="stations-scroll">
+        <div class="row p-4 g-4 justify-content-center" id="stations-container">
+        </div>
+    </div>
+</div>
+<script>
+    fetch("stations.json")
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("stations-container");
+            if (!container) {
+                console.error("No element with id 'stations-container' found");
+                return;
+            }
+            if (!data.stations || !Array.isArray(data.stations)) {
+                console.error("Expected data.stations to be an array", data);
+                return;
+            }
 
-    <div class="header">
-        <h1>All weatherstations</h1>
-    </div>
-    <div class="content">
-        <div>
-            <h2 class="name">Station name</h2>
-            <p>Country <span class="data">Nederland</span></p>
-            <p>City <span class="data">Groningen</span></p>
-            <p>Longitude <span class="data">6.5665</span></p>
-            <p>Latitude <span class="data">53.2194</span></p>
-            <p>Elevation <span class="data">7</span></p>
+            data.stations.forEach(station => {
+                const firstGeo = station.geolocations && station.geolocations[0]
+                    ? station.geolocations[0]
+                    : null;
+                const country = firstGeo && firstGeo.country
+                    ? firstGeo.country
+                    : 'Country';
+                const city = firstGeo && firstGeo.city
+                    ? firstGeo.city
+                    : 'City';
+
+                const col = document.createElement("div");
+                col.classList.add("col-auto");
+                const card = document.createElement("div");
+                card.classList.add("card", "stations-card");
+
+                card.innerHTML = `
+        <div class="card-body p-3">
+            <h2 class="name">Station ${station.name}</h2>
+            <hr>
+            <p>
+                <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">
+                <span class="location-text">${country}, ${city}</span>
+            </p>
+            <p>Longitude ${station.longitude ?? ''}</p>
+            <p>Latitude ${station.latitude ?? ''}</p>
+            <p>Elevation ${station.elevation ?? ''} m</p>
         </div>
-        <div>
-            <h2 class="name">Station name</h2>
-            <p>Country <span class="data">Nederland</span></p>
-            <p>City <span class="data">Enschede</span></p>
-            <p>Longitude <span class="data">6.8937</span></p>
-            <p>Latitude <span class="data">52.2215</span></p>
-            <p>Elevation <span class="data">42</span></p>
-        </div>
-        <div>
-            <h2 class="name">Station name</h2>
-            <p>Country</p>
-            <p>City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div>
-            <h2 class="name">Station name</h2>
-            <p>Country</p>
-            <p>City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-        <div>
-            <h2 class="name">Station name</h2>
-            <p>Country</p>
-            <p>City</p>
-            <p>Longitude</p>
-            <p>Latitude</p>
-            <p>Elevation</p>
-        </div>
-    </div>
+    `;
+                col.appendChild(card);
+                container.appendChild(col);
+            });
+        })
+        .catch(error => {
+            console.error("Error loading stations.json:", error);
+        });
+</script>
 @endsection
