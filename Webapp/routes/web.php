@@ -23,13 +23,12 @@ Route::get('/welcome', function () {
     return view('landing.index');
     })->name('landing');
 
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('/login', function () {
-        return "Login page";
-    })->name('login');
 
     Route::get('/gebruikers', [UserManagementController::class, 'index'])
         ->middleware('role:administratief')
@@ -38,10 +37,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/abonnementen', [SubscriptionController::class, 'index'])
         ->middleware('role:commercieel')
         ->name('subscription.index');
-
-    #Route::get('/monitoring', [MonitoringController::class, 'index'])
-        #->middleware('role:technisch_medewerker,technisch_onderzoeker')
-        #->name('monitoring.index');
 
     Route::get('/contracten', [ContractController::class, 'index'])
         ->middleware('role:commercieel')
