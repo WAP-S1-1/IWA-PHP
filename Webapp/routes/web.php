@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/stations', function () {
+    return view('weatherstations');
+});
+
 Route::prefix('api')->get('/stations', [StationController::class, 'index']);
 
 Route::get('/welcome', function () {

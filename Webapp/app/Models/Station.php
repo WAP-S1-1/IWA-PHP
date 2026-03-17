@@ -25,5 +25,11 @@ class Station extends Model
     {
         return $this->hasMany(Measurement::class, 'station', 'name');
     }
+
+    // TODO: I'm not sure if there's only one station per geolocation.
+    public function geolocations()
+    {
+        return $this->hasMany(Geolocation::class, 'station_name', 'name');
+    }
 }
 

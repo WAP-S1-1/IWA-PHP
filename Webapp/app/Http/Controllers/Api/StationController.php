@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Geolocation;
 use Illuminate\Http\Request;
 use App\Models\Station;
 
@@ -13,7 +14,11 @@ class StationController extends Controller
         // TODO: validate JWT token here
 
         // Fetch all weather stations
-        $stations = Station::all();
+        $stations = Station::with(['geolocations' => function ($query) {
+            $query->select('station_name', 'country', 'city'); // always include foreign key
+        }])
+            ->select('name', 'longitude', 'latitude', 'elevation')
+            ->get();
 
         // Return JSON
         return response()->json([
