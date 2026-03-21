@@ -49,17 +49,18 @@
 </nav>
 <main>
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                <h1>@yield('header')</h1>
-                @yield('content') </div>
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Home Content</div>
             <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">Admin Content</div>
             <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">Subscriptions Content</div>
             <div class="tab-pane fade" id="contracts" role="tabpanel" aria-labelledby="contracts-tab">Contracts Content</div>
-            <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">Monitoring Content</div>
+            <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
+                <h1>@yield('header')</h1>
+                @yield('content') </div>
             <div class="tab-pane fade" id="API" role="tabpanel" aria-labelledby="API-tab">API Content</div>
         </div>
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@stack('scripts')
 </body>
 </html>
