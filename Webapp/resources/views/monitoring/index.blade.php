@@ -1,12 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Monitoring weerstations')
-@section('content')
+@section('monitorContent')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-image: url('background-sky.jpg');
-        }
         .stations-card{
             width: 18rem;
             margin: 1rem;
