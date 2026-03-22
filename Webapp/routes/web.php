@@ -41,6 +41,8 @@ Route::prefix('api')->get('/subscriptions', function () {
     return response()->json($subscriptions);
 });
 
+Route::prefix('api')->get('/bedrijven', [BedrijvenController::class, 'index']);
+
 Route::get('/welcome', function () {
     return view('landing.index');
     })->name('landing');
