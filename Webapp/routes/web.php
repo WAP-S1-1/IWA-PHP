@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubscriptionController;
 
 use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\ComparingDataController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ApiManagementController;
+use App\Http\Controllers\WeatherStationController;
 use App\Http\Controllers\Api\StationController;
 
 Route::get('/', function () {
