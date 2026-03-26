@@ -13,6 +13,8 @@ use App\Http\Controllers\ApiManagementController;
 use App\Http\Controllers\WeatherStationController;
 use App\Http\Controllers\Api\StationController;
 
+Route::get('/register', [\App\Http\Controllers\RegisterUser::class, 'index']);
+
 Route::get('/', function () {
     return view('welcome');
 });
