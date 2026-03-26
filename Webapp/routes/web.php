@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\WeatherDataController;
 use App\Models\Station;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SubscriptionController;
@@ -17,6 +18,27 @@ Route::get('/stations', function () {
 });
 
 Route::prefix('api')->get('/stations', [StationController::class, 'index']);
+
+Route::prefix('api')->get('/subscriptions', function () {
+    $subscriptions = DB::table('subscriptions as s')
+        ->leftJoin('companies as c', 'c.id', '=', 's.company')
+        ->leftJoin('subscription_types as st', 'st.id', '=', 's.type')
+        ->select([
+            's.id',
+            'c.name as company_name',
+            'st.name as type_name',
+            's.start_date',
+            's.end_date',
+            's.price',
+            'st.description',
+            'st.price_per_station',
+            's.notes',
+        ])
+        ->orderBy('s.id')
+        ->get();
+
+    return response()->json($subscriptions);
+});
 
 Route::get('/welcome', function () {
     return view('landing.index');
