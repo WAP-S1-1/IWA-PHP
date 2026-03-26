@@ -9,7 +9,7 @@ class CompaniesSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('companies')->insert([
+        DB::table('companies')->upsert([
             [
                 'id' => 10,
                 'name' => 'Schiphol Airport',
@@ -54,6 +54,61 @@ class CompaniesSeeder extends Seeder
                 'country' => 'DE',
                 'email' => 'wetter@hsb.bremen.de',
             ],
-        ]);
+            [
+                'id' => 14,
+                'name' => 'Hanze',
+                'city' => 'Groningen',
+                'street' => 'Zernikepark',
+                'number' => 7,
+                'number_additional' => null,
+                'zip_code' => '9747AK',
+                'country' => 'NL',
+                'email' => 'info@hanze.nl',
+            ],
+            [
+                'id' => 15,
+                'name' => 'Rijksuniversiteit Groningen',
+                'city' => 'Groningen',
+                'street' => 'Broerstraat',
+                'number' => 5,
+                'number_additional' => null,
+                'zip_code' => '9712CP',
+                'country' => 'NL',
+                'email' => 'rectormag@rug.nl',
+            ],
+            [
+                'id' => 16,
+                'name' => 'SHELL Campus Den Haag',
+                'city' => 'Den Haag',
+                'street' => 'Carel van Bylantlaan',
+                'number' => 16,
+                'number_additional' => null,
+                'zip_code' => '2596HR',
+                'country' => 'NL',
+                'email' => 'weerdienst@shell.nl',
+            ],
+            [
+                'id' => 17,
+                'name' => 'Oxford University',
+                'city' => 'Oxford',
+                'street' => 'Wellington Square',
+                'number' => 1,
+                'number_additional' => null,
+                'zip_code' => 'OX1 2JD',
+                'country' => 'GB',
+                'email' => 'weather@oxforduni.co.uk',
+            ],
+            [
+                'id' => 18,
+                'name' => 'Hapag-LLoyd',
+                'city' => 'Parijs',
+                'street' => 'QUAI DU DOCTEUR DERVAUX',
+                'number' => 99,
+                'number_additional' => null,
+                'zip_code' => '92600',
+                'country' => 'FR',
+                'email' => 'transport@hplloyd.fr',
+            ],
+        ], ['id']); // prevents duplicate key errors
     }
 }

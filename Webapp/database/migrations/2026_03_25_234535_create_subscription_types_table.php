@@ -9,8 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscription_types', function (Blueprint $table) {
-            $table->increments('id');
-
+            $table->id();
             $table->string('name', 45);
             $table->string('description', 256)->nullable();
             $table->integer('nr_stations')->nullable();

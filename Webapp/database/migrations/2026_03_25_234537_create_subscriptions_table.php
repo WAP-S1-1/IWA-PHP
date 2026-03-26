@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('company')->nullable();
-            $table->unsignedInteger('type')->nullable();
+            $table->id();
+            $table->unsignedBigInteger('company')->nullable();
+            $table->unsignedBigInteger('type')->nullable();
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->float('price');
@@ -35,6 +35,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table->dropForeign('subscription_company');
+            $table->dropForeign('subscription_type');
+        });
+
         Schema::dropIfExists('subscriptions');
     }
 };

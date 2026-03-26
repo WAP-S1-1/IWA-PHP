@@ -9,8 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->increments('id');
-
+            $table->id();
             $table->string('name', 100);
             $table->string('city', 100)->nullable();
             $table->string('street', 100)->nullable();
@@ -30,6 +29,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropForeign('company_country');
+        });
+
         Schema::dropIfExists('companies');
     }
 };

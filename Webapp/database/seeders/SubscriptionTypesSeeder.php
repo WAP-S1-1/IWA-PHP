@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +9,7 @@ class SubscriptionTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        $rows = [
+        DB::table('subscription_types')->upsert([
             [
                 'id' => 11,
                 'name' => 'SIMPLE',
@@ -84,25 +83,10 @@ class SubscriptionTypesSeeder extends Seeder
                 'nr_stations' => null,
                 'frequency_in_hours' => 1,
                 'frequency_in_days' => null,
-                'continuous' => 0,
+                'continuous' => null,
                 'price_per_station' => 47.65,
                 'valid_through' => null,
             ],
-        ];
-
-        DB::table('subscription_types')->upsert(
-            $rows,
-            ['id'],
-            [
-                'name',
-                'description',
-                'nr_stations',
-                'frequency_in_hours',
-                'frequency_in_days',
-                'continuous',
-                'price_per_station',
-                'valid_through',
-            ]
-        );
+        ], ['id']); // prevents duplicate key errors
     }
 }

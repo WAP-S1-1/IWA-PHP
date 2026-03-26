@@ -5,7 +5,8 @@ use App\Models\Station;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Api\SubscriptionController;
+
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Api\StationController;
 
