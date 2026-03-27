@@ -52,7 +52,10 @@
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <h1>@yield('header')</h1>
                 @yield('content') </div>
-            <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">Admin Content</div>
+            <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+                <h1>@yield('registerHeader')</h1>
+                @yield('registerContent') </div>
+            </div>
             <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">Subscriptions Content</div>
             <div class="tab-pane fade" id="contracts" role="tabpanel" aria-labelledby="contracts-tab">Contracts Content</div>
             <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">Monitoring Content</div>

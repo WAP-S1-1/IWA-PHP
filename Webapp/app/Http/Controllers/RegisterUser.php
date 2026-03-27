@@ -8,6 +8,6 @@ use Illuminate\View\View;
 class RegisterUser extends Controller
 {
     public function index(): View{
-        return view('register');
+        return view('register.index');
     }
 }
