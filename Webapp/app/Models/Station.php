@@ -13,6 +13,7 @@ class Station extends Model
     protected $primaryKey = 'name';
     public $incrementing = false; // primary key is string
     public $timestamps = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'name',
@@ -30,6 +31,18 @@ class Station extends Model
     public function geolocations()
     {
         return $this->hasMany(Geolocation::class, 'station_name', 'name');
+    }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany(
+            Subscription::class,
+            'subscription_station',
+            'station',
+            'subscription',
+            'name',
+            'id'
+        );
     }
 }
 
