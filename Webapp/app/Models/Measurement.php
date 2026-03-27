@@ -92,6 +92,7 @@ class Measurement extends Model
             );
         }
 
+
         // Return de measurement data array
         return $finalData['Measurement'] ?? [];
     }
