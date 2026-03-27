@@ -22,7 +22,7 @@
         </div>
         <hr style="width:80%; margin-right:auto; margin-left: auto">
         <div class="d-flex align-items-start  align-middle">
-            <img class="align-self-start m-3" style="height:50px" src="{{asset('subscription.svg')}}" alt="companies">
+            <img class="align-self-start m-3" style="height:50px" src="{{asset('company.svg')}}" alt="companies">
             <div class="media-body d-flex flex-column">
                 <a href="{{asset('companies')}}" class="mt-3 sidebar-link" style="font-size: larger;font-weight:bold"> Bedrijven </a>
             </div>
