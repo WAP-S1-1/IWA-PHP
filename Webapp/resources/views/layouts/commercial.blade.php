@@ -12,7 +12,7 @@
         .sidebar-link:hover{color:#B20A0E}
     </style>
     <div class="card shadow-lg m-2 rounded-5"
-         style="width:15%;height:76vh; background-color:rgba(255,255,255,0.7)">
+         style="width:30vh;height:80vh; background-color:rgba(255,255,255,0.7)">
         <div class="d-flex align-items-start">
             <img class="align-self-start my-3" style="height:75px" src="{{asset('placeholderprofile')}}" alt="profile">
             <div class="media-body">

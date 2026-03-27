@@ -5,73 +5,79 @@
 
 @section('content')
     @parent
-
     <style>
         #subscriptions > .card {
             display: inline-block;
             vertical-align: top;
         }
-        .subscription-row {
+        .subscription-box {
             background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;   /* 1px looked harsh */
+            border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,.06);
         }
-
     </style>
 
     <div class="card shadow-lg m-2 rounded-5"
-         style="width:82%;height:700px; background-color:rgba(255,255,255,0.7)">
-        <div class="row p-3">
-            <div class="col-sm-2 m-5 d-flex flex-wrap gap-3">
-                <p class="mb-0">ID</p>
-                <p class="mb-0">Bedrijf</p>
-                <hr class="w-100 my-0">
+         style="width:168vh;height:80vh; background-color:rgba(255,255,255,0.7)">
+        <div class="container-fluid px-4 py-3">
+            <div class="row justify-content-start">
+                <div class="col-md-2">
+                    <div class="row justify-content-start">
+                        <div class="col-md-auto" style="font-weight:bold">ID</div>
+                        <div class="col-md-auto" style="font-weight:bold">Bedrijf</div>
+                        <hr class="w-100 mx-auto my-2">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="row justify-content-evenly">
+                        <div class="col-md-4" style="font-weight:bold">Startdatum</div>
+                        <div class="col-md-4" style="font-weight:bold"> Einddatum</div>
+                        <hr class="w-75 mx-auto my-2">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row justify-content-evenly text-nowrap">
+                        <div class="col-2" style="font-weight:bold">Abonnement</div>
+                        <div class="col-6" style="font-weight:bold">Omschrijving</div>
+                        <div class="col-1" style="font-weight:bold">Prijs</div>
+                        <div class="col-2" style="font-weight:bold">Notities</div>
+                        <hr class="w-80 mx-auto my-2">
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-2 m-5 d-flex flex-wrap gap-3">
-                <p class="mb-0">Startdatum</p>
-                <p class="mb-0">Einddatum</p>
-                <hr class="w-100 my-0">
-            </div>
-            <div class="col-sm-5 m-5 d-flex flex-wrap gap-1" >
-                <p class="mb-0">Abonnement</p>
-                <p class="mb-0">Omschrijving </p>
-                <p class="mb-0">Prijs</p>
-                <p class="mb-0">Notities</p>
-                <hr class="w-100 my-0">
-            </div>
-        </div>
-        <div class="w-100">
-            <div id="subscriptions-container" class="row g-2">
-
-                    @forelse($subscriptions as $sub)
-                    <div class="col-12">
-                        <div class="row subscription-row p-2 mx-0">
-
-                            <div class="col-sm-2 d-flex flex-wrap gap-1">
-                                <p class="mb-1">{{ $sub->id }}</p>
-                                <p class="mb-1">{{ $sub->company_name ?? '' }}</p>
-                            </div>
-
-                            <div class="col-sm-2 d-flex flex-wrap gap-1">
-                                <p class="mb-0">{{ $sub->start_date }}</p>
-                                <p class="mb-0">{{ $sub->end_date ?? '-' }}</p>
-                            </div>
-
-                            <div class="col-sm-8  d-flex flex-wrap gap-2">
-                                <p class="mb-0">{{ $sub->type_name ?? '' }}</p>
-                                <p class="mb-0">{{ $sub->description ?? '' }}</p>
-                                <p class="mb-0">€{{ $sub->price }}</p>
-                                <p class="mb-0">{{ $sub->notes ?? '-' }}</p>
+                @forelse($subscriptions as $sub)
+                <div class="row g-3 mb-2">
+                    <div class="col-md-2">
+                        <div class="subscription-box">
+                            <div class="row justify-content-evenly text-nowrap">
+                                    <div class="col-1">{{ $sub->id }}</div>
+                                    <div class="col-10 ">{{ $sub->company_name ?? '' }}</div>
                             </div>
                         </div>
                     </div>
-                    @empty
-                        <p class="text-muted">Geen abonnementen gevonden.</p>
-                    @endforelse
-                </div>
-            </div>
-        </div>
+                    <div class="col-md-3">
+                        <div class="subscription-box">
+                            <div class="row justify-content-evenly">
+                                    <div class="col-4"> {{ $sub->start_date }}</div>
+                                    <div class="col-4"> {{ $sub->end_date ?? 'nvt' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="subscription-box">
+                            <div class="row justify-content-evenly text-nowrap" >
+                                    <div class="col-2">{{ $sub->type_name ?? '' }}</div>
+                                    <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
+                                    <div class="col-1">€{{ $sub->price}}</div>
+                                    <div class="col-2 text-truncate">{{ $sub->notes ?? '-' }}</div>
+                            </div>
+                        </div>
+                    </div>
 
+                    </div>
+                @empty
+                    <p class="text-muted">Geen abonnementen gevonden.</p>
+                @endforelse
 
 @endsection
 
