@@ -24,22 +24,22 @@
         <div class="d-flex align-items-start  align-middle">
             <img class="align-self-start m-3" style="height:50px" src="{{asset('subscription.svg')}}" alt="companies">
             <div class="media-body d-flex flex-column">
-                <a href="/" class="mt-3 sidebar-link" style="font-size: larger;font-weight:bold"> Bedrijven </a>
+                <a href="{{asset('companies')}}" class="mt-3 sidebar-link" style="font-size: larger;font-weight:bold"> Bedrijven </a>
             </div>
         </div>
         <div class="ms-4 d-flex flex-column">
-            <a class="mb-1 sidebar-link">Overzicht</a>
+            <a href="{{asset('companies')}}" class="mb-1 sidebar-link">Overzicht</a>
             <a class="mb-1 sidebar-link">Bijwerken</a>
             <a class="mb-1 sidebar-link">Toevoegen</a>
         </div>
         <div class="d-flex align-items-start align-middle">
             <img class="align-self-start m-3" style="height:50px" src="{{asset('subscription.svg')}}" alt="companies">
             <div class="media-body d-flex flex-column">
-                <a href="/" class="mt-3 sidebar-link" style="font-size: larger; font-weight:bold"> Abonnementen </a>
+                <a href="{{asset('subscription')}}" class="mt-3 sidebar-link" style="font-size: larger; font-weight:bold"> Abonnementen </a>
             </div>
         </div>
         <div class="ms-4 d-flex flex-column">
-            <a href="/" class="mb-1 sidebar-link">Overzicht</a>
+            <a href="{{asset('subscription')}}" class="mb-1 sidebar-link">Overzicht</a>
             <a href="/" class="mb-1 sidebar-link">Bijwerken</a>
             <a href="/" class="mb-1 sidebar-link">Toevoegen</a>
         </div>

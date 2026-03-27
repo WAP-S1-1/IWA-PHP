@@ -32,6 +32,9 @@
             <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" id="users-tab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Gebruikers</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" id="subscriptions-tab" data-bs-toggle="tab" href="#subscriptions" role="tab" aria-controls="subscriptions" aria-selected="false">Abonnementen</a>
         </li>
         <li class="nav-item">
@@ -48,17 +51,25 @@
 <main>
 
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">Home Content</div>
-            <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">Admin Content</div>
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+            </div>
+            <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+
+            </div>
             <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
                 @yield('content')
                 <h1>@yield('subscriptionHeader')</h1>
                 @yield('subscriptionContent') </div>
-            <div class="tab-pane fade" id="contracts" role="tabpanel" aria-labelledby="contracts-tab">Contracts Content</div>
+            <div class="tab-pane fade" id="contracts" role="tabpanel" aria-labelledby="contracts-tab">
+
+            </div>
             <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
                 <h1>@yield('monitorHeader')</h1>
                 @yield('monitorContent') </div>
-            <div class="tab-pane fade" id="API" role="tabpanel" aria-labelledby="API-tab">API Content</div>
+            <div class="tab-pane fade" id="API" role="tabpanel" aria-labelledby="API-tab">
+
+            </div>
         </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
