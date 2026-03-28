@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Tests\Integration\Http\Fixtures\Subscription;
 
 class Company extends Model
 {
     protected $table = 'companies';
-
+    protected $primaryKey = 'id';
     public $timestamps = false;
-
     protected $fillable = [
         'name',
         'city',
@@ -27,13 +27,12 @@ class Company extends Model
         'number' => 'integer',
     ];
 
-    public function countryRelation(): BelongsTo
-    {
+    public function country() {
         return $this->belongsTo(Country::class, 'country', 'country_code');
     }
 
     public function subscriptions(): HasMany
     {
-        return $this->hasMany(Subscription::class, 'company');
+        return $this->hasMany(\App\Models\Subscription::class, 'company');
     }
 }
