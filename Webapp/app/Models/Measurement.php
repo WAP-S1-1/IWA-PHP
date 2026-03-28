@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class Measurement extends Model
 {
@@ -75,7 +77,7 @@ class Measurement extends Model
             );
         }
 
-        $FinalData = json_decode($data, true);
+        $finalData = json_decode($data, true);
 
         // Controleer of de JSON geldig is
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -92,17 +94,16 @@ class Measurement extends Model
             );
         }
 
-
         // Return de measurement data array
-        return $finalData['Measurement'] ?? [];
+        return $finalData['WEATHERDATA'] ?? [];
     }
 
     public static function LastThirtyWeatherData($stationId, $currentDateTime)
     {
-        return self::where('STN', $stationId)
-            ->whereRaw("CONCAT(DATE, ' ', TIME) < ?", [$currentDateTime])
-            ->orderBy('DATE', 'DESC')
-            ->orderBy('TIME', 'DESC')
+        return self::where('station', $stationId)
+            ->whereRaw("CONCAT(date, ' ', time) < ?", [$currentDateTime])
+            ->orderBy('date', 'DESC')
+            ->orderBy('time', 'DESC')
             ->limit(30)
             ->get();
     }
