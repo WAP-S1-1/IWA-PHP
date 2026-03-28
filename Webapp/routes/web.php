@@ -17,18 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/register', [\App\Http\Controllers\RegisterUser::class, 'index']);
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
-
-Route::get('/stations', function () {
-    return view('weatherstations');
-});
-
-Route::prefix('api')->get('/stations', [StationController::class, 'index']);
-
-Route::get('/welcome', function () {
-    return view('landing.index');
-    })->name('landing');
 
 Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', function () {
     return view('login');
