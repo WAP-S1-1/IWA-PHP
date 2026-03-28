@@ -13,13 +13,15 @@ class JwtCookieAuth
         $token = $request->cookie('jwt-token');
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return redirect("/login");
+            //return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         try {
             JWTAuth::setToken($token)->authenticate();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return redirect("/login");
+            //return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $next($request);

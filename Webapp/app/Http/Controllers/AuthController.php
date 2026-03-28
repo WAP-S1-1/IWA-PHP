@@ -31,7 +31,8 @@ class AuthController extends Controller
         $credentials = $request->only('employee_code', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            redirect("/login");
+            //return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithCookie($token);
@@ -45,9 +46,7 @@ class AuthController extends Controller
         // Create HttpOnly cookie, 1 day expiration
         $cookie = cookie('jwt-token', $token, 60*24, null, null, false, true);
 
-        return response()->json([
-            'message' => 'Login successful'
-        ])->cookie($cookie);
+        return redirect("/")->cookie($cookie);
     }
 
     /**
@@ -112,7 +111,7 @@ class AuthController extends Controller
         // Remove cookie
         $cookie = cookie('jwt-token', '', -1);
 
-        return response()->json(['message' => 'Logged out'])->cookie($cookie);
+        return redirect("/")->cookie($cookie);
     }
 
 }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect('/monitoring');
 });
 
 Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', function () {
