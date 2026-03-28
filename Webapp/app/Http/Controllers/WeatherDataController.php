@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
+use App\Http\Controllers\Api\Controller;
 use App\Models\WeatherData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
