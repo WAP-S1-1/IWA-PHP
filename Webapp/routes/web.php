@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\WeatherDataController;
 use App\Models\Station;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,24 @@ Route::get('/stations', function () {
 
 Route::prefix('api')->get('/stations', [StationController::class, 'index']);
 
+Route::prefix('api')->get('/companies', function () {
+    $companies = DB::table('companies as c')
+        ->select([
+            'c.id',
+            'c.name',
+            'c.city',
+            'c.street',
+            'c.number',
+            'c.number_additional',
+            'c.zip_code',
+            'c.country',
+            'c.email',
+        ])
+        ->get();
+
+    return response()->json($companies);
+});
+
 Route::prefix('api')->get('/subscriptions', function () {
     $subscriptions = DB::table('subscriptions as s')
         ->leftJoin('companies as c', 'c.id', '=', 's.company')
@@ -40,13 +59,10 @@ Route::prefix('api')->get('/subscriptions', function () {
             'st.price_per_station',
             's.notes',
         ])
-        ->orderBy('s.id')
         ->get();
 
     return response()->json($subscriptions);
 });
-
-Route::prefix('api')->get('/bedrijven', [BedrijvenController::class, 'index']);
 
 Route::get('/welcome', function () {
     return view('landing.index');
@@ -55,6 +71,9 @@ Route::get('/welcome', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
+Route::get('/companies', [CompanyController::class, 'index'])
+    ->name('companies.index');
 
 Route::get('/subscription', [SubscriptionController::class, 'index'])
     ->name('subscription.index');

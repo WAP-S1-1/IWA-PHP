@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             StationSeeder::class,
             GeolocationSeeder::class,
-            CompaniesSeeder::class,
+            CompanySeeder::class,
             SubscriptionTypesSeeder::class,
             SubscriptionsSeeder::class,
             SubscriptionStationSeeder::class,

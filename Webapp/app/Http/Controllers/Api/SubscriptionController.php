@@ -19,6 +19,7 @@ class SubscriptionController extends Controller{
                 'subscription_types.name as type_name',
                 'subscription_types.description'
             )
+            ->orderBy('subscriptions.id')
             ->get();
 
         return view('subscription.index', compact('subscriptions'));
