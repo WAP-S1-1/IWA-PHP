@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('stations', function (Blueprint $table) {
+        Schema::table('station', function (Blueprint $table) {
             $table->string('status')->default('green')->after('elevation');
             $table->timestamp('status_updated_at')->nullable()->after('status');
             $table->text('status_message')->nullable()->after('status_updated_at');
