@@ -1,17 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MonitoringController;
+use App\Http\Middleware\JwtCookieAuth;
+use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserManagementController;
-use App\Http\Controllers\SubscriptionController;
-use App\Http\Controllers\MonitoringController;
-use App\Http\Controllers\DownloadController;
-use App\Http\Controllers\ComparingDataController;
-use App\Http\Controllers\ContractController;
-use App\Http\Controllers\ApiManagementController;
-use App\Http\Controllers\WeatherStationController;
-use App\Http\Controllers\Api\StationController;
 
 Route::get('/', function () {
     return redirect('/login');
