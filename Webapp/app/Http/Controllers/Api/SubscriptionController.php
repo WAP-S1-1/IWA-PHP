@@ -23,4 +23,27 @@ class SubscriptionController extends Controller{
             ->get();
 
         return view('subscription.index', compact('subscriptions'));
-    }}
+    }
+
+    public function create()
+    {
+        return view('subscription/create');
+    }
+
+    public function store(Request $request)
+    {
+        Subscription::create($request->all());
+        return redirect()->back()->with('success', 'Subscription created successfully');
+    }
+
+    public function edit(Subscription $subscription)
+    {
+        return view('subscription/edit', compact('subscription'));
+    }
+
+    public function update(Request $request, Subscription $subscription)
+    {
+        $subscription->update($request->only(['']));
+        return redirect()->back()->with('success', 'Subscription updated successfully');
+    }
+}

@@ -64,6 +64,18 @@ Route::prefix('api')->get('/subscriptions', function () {
     return response()->json($subscriptions);
 });
 
+Route::get('/subscription/create', [SubscriptionController::class, 'create'])
+    ->name('subscription.create');
+
+Route::post('/subscription', [SubscriptionController::class, 'store'])
+    ->name('subscription.store');
+
+Route::get('/subscription/{id}', [SubscriptionController::class, 'edit'])
+    ->name('subscription.edit');
+
+Route::put('/subscription/{id}', [SubscriptionController::class, 'update'])
+    ->name('subscription.update');
+
 Route::get('/welcome', function () {
     return view('landing.index');
     })->name('landing');
