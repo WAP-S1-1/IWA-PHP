@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Monitoring weerstations')
-@section('monitorContent')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('content')
     <style>
         .stations-card{
             width: 18rem;
@@ -21,7 +20,7 @@
         h1{text-align:center; color:white;padding-top: 21px}
         p{font-weight: bold; color:#294B71 }
     </style>
-<div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:86%;height:6.25%;background-color:#262626;">
+<div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:86%;height:10vh;background-color:#262626;">
     <h1>All weatherstations</h1>
 </div>
     <div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4"
