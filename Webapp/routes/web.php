@@ -8,6 +8,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Middleware\JwtCookieAuth;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegisterUser;
 
 
 Route::get('/', function () {
@@ -36,12 +37,13 @@ Route::middleware([JwtCookieAuth::class])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');
 
-    Route::post('/register', [AuthController::class, 'store']);
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/monitoring', [MonitoringController::class, 'index'])
         ->name('monitoring.index');
 
 });
 
+Route::post('/register', [AuthController::class, 'store']);
 
-
+Route::get('/register', [RegisterUser::class, 'index']);

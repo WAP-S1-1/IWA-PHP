@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Register New User')
-@section('registerContent')
+@section('content')
 <body>
 <div class="container mt-5">
     <h2 class=" align-items-center">Nieuwe gebruiker registreren</h2>
     <div class="card shadow-lg p-4 mx-auto mt-5 align-items-center rounded-5" style="width:80vh;height:100vh; background-color:rgba(255,255,255,0.5)">
-    <form action="/api/register" method="POST">
+    <form method="POST">
         <!-- CSRF token for Laravel -->
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <div class="col">
