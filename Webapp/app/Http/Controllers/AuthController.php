@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(JwtCookieAuth::class, ['except' => ['login']]);
+        //$this->middleware(JwtCookieAuth::class, ['except' => ['login']]);
     }
 
     /**
