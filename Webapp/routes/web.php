@@ -81,6 +81,9 @@ Route::get('/subscription', [SubscriptionController::class, 'index'])
 Route::get('/monitoring', [MonitoringController::class, 'index'])
     ->name('monitoring.index');
 
+// route voor de gefilterde satations
+Route::get('/stations/filtered', [\App\Http\Controllers\Api\StationController::class, 'getFilteredStations']);
+
 Route::get('/assets/weatherstations.js', function () {
     $path = resource_path('js/weatherstations.js');
     abort_unless(file_exists($path), 404);
