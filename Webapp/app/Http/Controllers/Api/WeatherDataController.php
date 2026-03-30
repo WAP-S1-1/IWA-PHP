@@ -155,7 +155,49 @@ class WeatherDataController extends Controller
         ];
 
         // loop door de records
-        foreach ($recordsFromWeather as $record) {
+        foreach ($recordsFromWeather as $raw_record) {
+            // Map raw keys to fillable names
+            $mapping = [
+                'STN' => 'station',
+                'DATE' => 'date',
+                'TIME' => 'time',
+                'TEMP' => 'temperature',
+                'DEWP' => 'dewpoint_temperature',
+                'STP' => 'air_pressure_station',
+                'SLP' => 'air_pressure_sea_level',
+                'VISIB' => 'visibility',
+                'WDSP' => 'wind_speed',
+                'PRCP' => 'percipation',
+                'SNDP' => 'snow_depth',
+                'FRSHTT' => 'conditions',
+                'CLDC' => 'cloud_cover',
+                'WNDDIR' => 'wind_direction'
+            ];
+
+            // Transform array
+            $record = [];
+            foreach ($mapping as $rawKey => $field) {
+                $value = $raw_record[$rawKey] ?? null;
+
+                // Cast to the correct type
+                switch ($field) {
+                    case 'station':
+                    case 'time':
+                    case 'conditions':
+                        $value = is_null($value) ? null : (string) $value;
+                        break;
+                    case 'date':
+                        $value = is_null($value) ? null : date('Y-m-d', strtotime($value));
+                        break;
+                    case 'wind_direction':
+                        $value = is_null($value) ? null : (int) $value;
+                        break;
+                    default: // numeric fields
+                        $value = is_null($value) ? null : (float) $value;
+                }
+
+                $record[$field] = $value;
+            }
 
             // BEWAAR ORIGINELE DATA VOOR OriginalMeasurement
             $originalData = $record;
@@ -178,7 +220,6 @@ class WeatherDataController extends Controller
                 'cloud_cover' => 'nullable|numeric',
                 'wind_direction' => 'nullable|integer',
             ]);
-
             // Alleen verplichte velden controleren op errors en afwijzen
             if ($validator->fails()) {
                 $requiredFields = ['station', 'date', 'time'];
@@ -233,8 +274,20 @@ class WeatherDataController extends Controller
 
             // Anomalie detectie
             if (!empty($last30Records) && isset($record['temperature']) && is_numeric($record['temperature'])) {
-                $avgTemp = $last30Records->avg('temperature');
-                $stdDevTemp = $last30Records->stdDev('temperature');
+                $values = $last30Records->pluck('temperature');
+
+                if ($values->isNotEmpty()) {
+                    $avgTemp = $values->avg();
+
+                    $variance = $values->reduce(function ($carry, $item) use ($avgTemp) {
+                            return $carry + ($item - $avgTemp) ** 2;
+                        }, 0) / $values->count();
+
+                    $stdDevTemp = sqrt($variance);
+                } else {
+                    $avgTemp = null;
+                    $stdDevTemp = null;
+                }
 
                 if ($avgTemp && $stdDevTemp) {
                     $zScore = abs($record['temperature'] - $avgTemp) / $stdDevTemp;
