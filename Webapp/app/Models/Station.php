@@ -71,6 +71,7 @@ class Station extends Model
 
         if ($last30Measurements->isEmpty()) {
             $this->setStatus(self::STATUS_RED, "geen metingen");
+            return; // prevent overwrite to green
         }
 
         $errorCount = 0;
@@ -84,26 +85,27 @@ class Station extends Model
             }
         }
 
-        // status bepalen op foutmeldingen gebaseerd
-        if ($errorCount > 3 || $warningCount > 10) {
+// status bepalen op foutmeldingen gebaseerd
+        if ($errorCount >= 3 || $warningCount >= 10) {
             $this->setStatus(self::STATUS_RED, "te veel foutmeldingen");
-        } elseif ($errorCount > 1 && $errorCount < 3 || $warningCount > 3) {
+        } elseif ($errorCount >= 1 || $warningCount >= 5) {
             $this->setStatus(self::STATUS_ORANGE, "Veel foutmeldingen en waarschuwingen ontvangen");
         } else {
             $this->setStatus(self::STATUS_GREEN, "Alle metingen zijn correct");
         }
 
+
     }
 
     public function hasError($measurement){
 
-        // Ontbrekende verplichte velden
-        if (is_null($measurement->time) && is_null($measurement->station) && is_null($measurement->date)) {
+        // Ontbrekende verplichte velden (any missing = error)
+        if (is_null($measurement->time) || is_null($measurement->station) || is_null($measurement->date)){
             return true;
         }
 
-        // Ontbrekende kritieke meetwaarden
-        if (is_null($measurement->temperature) && is_null($measurement->air_pressure_station)) {
+        // Ontbrekende kritieke meetwaarden (any missing = error)
+        if (is_null($measurement->temperature) || is_null($measurement->air_pressure_station)) {
             return true;
         }
 
@@ -133,26 +135,18 @@ class Station extends Model
 
     public function hasWarning($measurement){
 
-        // Ontbrekende optionele maar belangrijke velden
-        if (is_null($measurement->wind_speed)) {
-            return true;
-        }
-
-        if (is_null($measurement->visibility)) {
-            return true;
-        }
-
-        if (is_null($measurement->air_pressure_sea_level)) {
-            return true;
-        }
-
         // Gecorrigeerde meting (waarschuwing dat data aangepast is)
         if ($measurement->is_corrected == 1) {
             return true;
         }
 
-        return false;
+        // Count missing optional fields; warn if 2 or more are missing
+        $missingCount = 0;
+        if (is_null($measurement->wind_speed)) $missingCount++;
+        if (is_null($measurement->visibility)) $missingCount++;
+        if (is_null($measurement->air_pressure_sea_level)) $missingCount++;
 
+        return $missingCount >= 2;
     }
 
     public function setStatus($status, $message = null){

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Measurement;
@@ -353,6 +353,12 @@ class WeatherDataController extends Controller
             }
 
             $recordsSaved[] = $measurement;
+        }
+
+        // Update station status based on the new measurements
+        $station = Station::find($station_id);
+        if ($station) {
+            $station->updateStatus();
         }
 
         // Return response

@@ -25,6 +25,25 @@
 </div>
     <div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4"
          style="width:86%; background-color:rgba(255,255,255,0.5)">
+        <div class="d-flex justify-content-center gap-2 mb-3">
+            <a href="{{ route('monitoring.index', ['status' => 'all']) }}"
+               class="btn btn-sm {{ ($filter ?? 'all') === 'all' ? 'btn-dark' : 'btn-outline-dark' }}">
+                All
+            </a>
+            <a href="{{ route('monitoring.index', ['status' => 'red']) }}"
+               class="btn btn-sm {{ ($filter ?? 'all') === 'red' ? 'btn-danger' : 'btn-outline-danger' }}">
+                Red
+            </a>
+            <a href="{{ route('monitoring.index', ['status' => 'orange']) }}"
+               class="btn btn-sm {{ ($filter ?? 'all') === 'orange' ? 'btn-warning' : 'btn-outline-warning' }}">
+                Orange
+            </a>
+            <a href="{{ route('monitoring.index', ['status' => 'green']) }}"
+               class="btn btn-sm {{ ($filter ?? 'all') === 'green' ? 'btn-success' : 'btn-outline-success' }}">
+                Green
+            </a>
+        </div>
+
         <div id="stations-scroll" class="w-100" style="height:65vh; overflow:hidden; overflow-y:auto;">
             <div id="stations-container" class="row p-4 g-4 justify-content-center">
                 @foreach($stations as $station)
@@ -37,15 +56,15 @@
                     <div class="col-auto">
                         <div class="card stations-card">
                             <div class="card-body p-3">
-                                <h2 class="name">Station {{ $station->name }}</h2>
-                                <svg height="100" width="100" xmlns="http://www.w3.org/2000/svg">
-                                    @if(getStatusClassAttribute())
+                                <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                                    <h2 class="name mb-0 pt-0">Station {{ $station->name }}</h2>
 
-                                    @else
-
-                                    @endif
-                                    <circle r="45" cx="50" cy="50" fill="red" />
-                                </svg>
+                                    <svg class="{{ $station->status ===
+'orange' ? 'text-warning' : ($station->status === 'red' ? 'text-danger' : 'text-success') }}"
+                                         width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <circle cx="10" cy="10" r="8" fill="currentColor" />
+                                    </svg>
+                                </div>
                                 <hr>
                                 <p>
                                     <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">
@@ -62,7 +81,8 @@
 
             {{-- Optional pagination --}}
             <div class="mt-3 d-flex justify-content-center">
-                {{ $stations->links('pagination::bootstrap-5') }}
+                {{ $stations->appends(request()->query())->links('pagination::bootstrap-5') }}
+
             </div>
         </div>
     </div>
