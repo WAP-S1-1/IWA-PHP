@@ -21,8 +21,8 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Register API routes
-        Route::/*prefix('api')
-            ->*/middleware('api')
+        Route::prefix('api')
+            ->middleware('api')
             ->group(base_path('routes/api.php'));
 
         // Register web routes
