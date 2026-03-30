@@ -111,7 +111,7 @@ class AuthController extends Controller
         // Remove cookie
         $cookie = cookie('jwt-token', '', -1);
 
-        return redirect("/")->cookie($cookie);
+        return redirect("/login")->cookie($cookie);
     }
 
 }

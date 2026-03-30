@@ -7,7 +7,7 @@
 </head>
 <style>
     body {
-        background-image: url('background-sky.jpg');
+        background-image: url('background-sky.webp');
     }
 </style>
 <body class="d-flex justify-content-center align-items-center vh-100">

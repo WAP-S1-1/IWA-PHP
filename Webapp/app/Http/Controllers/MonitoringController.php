@@ -3,15 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Station;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MonitoringController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        // Paginate, e.g., 12 stations per page
-        $stations = Station::with('geolocations')->paginate(12);
+        $filter = $request->query('status', 'all');
 
-        return view('monitoring.index', compact('stations'));
+        $query = Station::with('geolocations');
+
+        if ($filter !== 'all') {
+            $query->where('status', $filter);
+        }
+
+        $stations = $query
+            ->orderByRaw("
+                CASE status
+                    WHEN 'red' THEN 1
+                    WHEN 'orange' THEN 2
+                    WHEN 'green' THEN 3
+                    ELSE 4
+                END
+            ")
+            ->paginate(12);
+
+        return view('monitoring.index', compact('stations', 'filter'));
     }
 }
