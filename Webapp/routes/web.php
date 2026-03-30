@@ -25,8 +25,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware([JwtCookieAuth::class])->group(function () {
 
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');;
 
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');

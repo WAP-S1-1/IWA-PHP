@@ -8,7 +8,7 @@
 </head>
 <style>
     main {
-        background-image: url("{{ asset('background-sky.jpg') }}");
+        background-image: url("{{ asset('background-sky.webp') }}");
         background-size: cover;
         min-height: 100vh;
         padding: 20px;
@@ -28,27 +28,33 @@
 <nav class="d-flex align-items-center justify-content-between border-bottom border-3" style=background-color:#F5F5F5>
     <img src="{{ asset('LogoIWA-text.png') }}" alt="Logo IWA" class="ms-3" style="height: 65px;">
     <ul class="nav nav-tabs justify-content-end" >
-        <li class="nav-item">
-            <a class="nav-link " id="home-tab" href="#home" role="tab">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>
-        </li>
+{{--        <li class="nav-item">--}}
+{{--            <a class="nav-link " id="home-tab" href="#home" role="tab">Home</a>--}}
+{{--        </li>--}}
+{{--        <li class="nav-item">--}}
+{{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
+{{--        </li>--}}
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }}
             " id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"
-               id="contracts-tab" href="#contracts" role="tab">Contracten</a>
-        </li>
+{{--        <li class="nav-item">--}}
+{{--            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"--}}
+{{--               id="contracts-tab" href="#contracts" role="tab">Contracten</a>--}}
+{{--        </li>--}}
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
                id="monitor-tab" href="{{ route('monitoring.index') }}" role="tab">Monitoring</a>
         </li>
+{{--        <li class="nav-item">--}}
+{{--            <a class="nav-link {{ request()->routeIs('api.index') ? 'active' : '' }}"--}}
+{{--               id="API-tab" href="#API" role="tab" >API beheer</a>--}}
+{{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('api.index') ? 'active' : '' }}"
-               id="API-tab" href="#API" role="tab" >API beheer</a>
+            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                @csrf
+                <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">Logout</button>
+            </form>
         </li>
     </ul>
 </nav>

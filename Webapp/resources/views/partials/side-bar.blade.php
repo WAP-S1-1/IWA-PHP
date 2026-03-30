@@ -11,8 +11,8 @@
     <div class="d-flex align-items-start">
         <img class="align-self-start my-3" style="height:75px" src="{{asset('placeholderprofile')}}" alt="profile">
         <div class="media-body">
-            <p class="my-3 e-4 align-self-baseline">#123435</p>
-            <b class="y-3 align-self-baseline" style="font-size: larger"> User Name </b>
+            <p class="my-3 e-4 align-self-baseline">#{{ auth()->user()->employee_code }}</p>
+            <b class="y-3 align-self-baseline" style="font-size: larger">{{ auth()->user()->first_name }} {{ auth()->user()->name }}</b>
         </div>
     </div>
     <hr style="width:80%; margin-right:auto; margin-left: auto">

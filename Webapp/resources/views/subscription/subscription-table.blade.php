@@ -42,7 +42,7 @@
                 <div class="row g-3 mb-2">
                     <div class="col-md-2">
                         <div class="subscription-box">
-                            <div class="row justify-content-evenly">
+                            <div class="row justify-content-evenly text-nowrap">
                                 <div class="col-1">{{ $sub->id ?? ''}}</div>
                                 <div class="col-10 text-truncate">{{ $sub->company_name ?? '' }}</div>
                             </div>
