@@ -29,6 +29,12 @@ Route::middleware([JwtCookieAuth::class])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');
 
+    Route::get('/companies', [CompanyController::class, 'index'])
+    ->name('companies.index');
+
+Route::get('/subscription', [SubscriptionController::class, 'index'])
+    ->name('subscription.index');
+
     Route::post('/register', [AuthController::class, 'store']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/monitoring', [MonitoringController::class, 'index'])
