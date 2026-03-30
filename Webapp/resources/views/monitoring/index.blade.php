@@ -38,6 +38,14 @@
                         <div class="card stations-card">
                             <div class="card-body p-3">
                                 <h2 class="name">Station {{ $station->name }}</h2>
+                                <svg height="100" width="100" xmlns="http://www.w3.org/2000/svg">
+                                    @if(getStatusClassAttribute())
+
+                                    @else
+
+                                    @endif
+                                    <circle r="45" cx="50" cy="50" fill="red" />
+                                </svg>
                                 <hr>
                                 <p>
                                     <img src="location.svg" class="me-2" style="width:40px; vertical-align:middle;">
@@ -58,7 +66,4 @@
             </div>
         </div>
     </div>
-@push('scripts')
-    <script src="{{ route('assets.weatherstations.js') }}"></script>
-    @endpush
 @endsection
