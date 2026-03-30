@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Geolocation;
-use Illuminate\Http\Request;
 use App\Models\Station;
+use Illuminate\Http\Request;
 
 class StationController extends Controller
 {
