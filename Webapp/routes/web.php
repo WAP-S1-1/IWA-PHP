@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\SubscriptionController;
@@ -30,10 +31,10 @@ Route::middleware([JwtCookieAuth::class])->group(function () {
         ->name('subscription.index');
 
     Route::get('/companies', [CompanyController::class, 'index'])
-    ->name('companies.index');
+        ->name('companies.index');
 
-Route::get('/subscription', [SubscriptionController::class, 'index'])
-    ->name('subscription.index');
+    Route::get('/subscription', [SubscriptionController::class, 'index'])
+        ->name('subscription.index');
 
     Route::post('/register', [AuthController::class, 'store']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
