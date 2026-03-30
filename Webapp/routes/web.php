@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Middleware\JwtCookieAuth;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
