@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Company;
+use App\Models\SubscriptionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -27,13 +29,28 @@ class SubscriptionController extends Controller{
 
     public function create()
     {
-        return view('subscription/create');
+        $companies = Company::all();
+        $subscription_types = SubscriptionType::all();
+
+        return view('subscription/create', compact('companies', 'subscription_types'));
     }
 
     public function store(Request $request)
     {
+        $request->validate([
+            'company' => 'nullable|exists:companies,id',
+            'type' => 'nullable|exists:subscription_types,id',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'price' => 'required|numeric',
+            'notes' => 'nullable|max:256',
+            'identifier' => 'required|max:45',
+            'token' => 'required|max:100',
+        ]);
+
         Subscription::create($request->all());
-        return redirect()->back()->with('success', 'Subscription created successfully');
+        return redirect()->route('subscription.create')
+            ->with('success', 'Subscription created successfully');
     }
 
     public function edit(Subscription $subscription)
