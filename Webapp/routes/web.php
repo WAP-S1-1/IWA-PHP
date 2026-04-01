@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Middleware\JwtCookieAuth;
+use App\Http\Middleware\NoCache;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterUser;
@@ -23,7 +24,7 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
 Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::middleware([JwtCookieAuth::class])->group(function () {
+Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');;
