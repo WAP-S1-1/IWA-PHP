@@ -11,8 +11,21 @@
     </style>
 
     <div class="card shadow-lg m-2 rounded-5"
-         style="width:168vw;height:80vh; background-color:rgba(255,255,255,0.7)">
+         style="width:168vw;height:fit-content;min-height:80vh; background-color:rgba(255,255,255,0.7)">
         <div class="container-fluid px-4 py-3">
+            <div class="row">
+                <div class="col">
+                    <h1>Overzicht Abonnementen</h1>
+                </div>
+                <div class="col-md-3">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible" style="width: 300px; align-self: end">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                </div>
+            </div>
             <div class="row justify-content-start">
                 <div class="col-md-2">
                     <div class="row justify-content-start">

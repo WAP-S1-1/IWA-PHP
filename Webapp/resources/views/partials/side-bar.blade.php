@@ -35,8 +35,8 @@
     </div>
     <div class="ms-4 d-flex flex-column">
         <a href="{{asset('subscription')}}" class="mb-1 sidebar-link">Overzicht</a>
-        <a class="mb-1 sidebar-link">Bijwerken</a>
-        <a class="mb-1 sidebar-link">Toevoegen</a>
+        <a href="{{asset('subscription/edit') }}" class="mb-1 sidebar-link">Bijwerken</a>
+        <a href="{{asset('subscription/create') }}" class="mb-1 sidebar-link">Toevoegen</a>
     </div>
 </div>
 </html>

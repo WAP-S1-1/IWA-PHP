@@ -13,6 +13,7 @@
 <div class="card shadow-lg m-2 rounded-5"
      style="width:168vw;height:80vh; background-color:rgba(255,255,255,0.7)">
     <div class="container-fluid px-4 py-3">
+        <h1>Overzicht Bedrijven</h1>
         <div class="row justify-content-start">
             <div class="col-md-2">
                 <div class="row justify-content-start">

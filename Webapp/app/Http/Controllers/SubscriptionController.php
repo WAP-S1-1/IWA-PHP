@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Subscription;
 use App\Models\SubscriptionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller{
     public function index(Request $request)
@@ -35,7 +37,7 @@ class SubscriptionController extends Controller{
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'company' => 'nullable|exists:companies,id',
             'type' => 'nullable|exists:subscription_types,id',
             'start_date' => 'required|date',
@@ -46,8 +48,18 @@ class SubscriptionController extends Controller{
             'token' => 'required|max:100',
         ]);
 
-        Subscription::create($request->all());
-        return redirect()->route('subscription.create')
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->all();
+        $data['start_date'] = $data['start_date'] ?? now();
+        $data['price'] = $data['price'] ?? 0;
+        $data['token'] = $data['token'] ?? '';
+        $data['identifier'] = $data['identifier'] ?? '';
+
+        Subscription::create($data);
+        return redirect()->route('subscription.index')
             ->with('success', 'Subscription created successfully');
     }
 

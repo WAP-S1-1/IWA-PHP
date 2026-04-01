@@ -4,40 +4,42 @@
 @section('content')
 <body>
 <div class="container mt-5">
+    <div class="card shadow-lg p-4 mx-auto mt-5 align-items-center rounded-5" style="width:fit-content;min-width:550px;height:fit-content; background-color:rgba(255,255,255,0.5)">
     <h2 class=" align-items-center">Nieuwe gebruiker registreren</h2>
-    <div class="card shadow-lg p-4 mx-auto mt-5 align-items-center rounded-5" style="width:80vh;height:100vh; background-color:rgba(255,255,255,0.5)">
-    <form method="POST">
+    <form method="POST" style="width: 300px">
         <!-- CSRF token for Laravel -->
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-        <div class="col">
+        <div class="mb-3" style="font-weight:500">
             <label for="name" class="form-label">Achternaam *</label>
             <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+
+        <div class="mb-3" style="font-weight:500">
             <label for="first_name" class="form-label">Voornaam</label>
             <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Voornaam">
         </div>
 
-
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="initials" class="form-label">Afkortingen</label>
             <input type="text" class="form-control" id="initials" name="initials" placeholder="Afkortingen">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="prefix" class="form-label">Tussenvoegsel</label>
             <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Tussenvoegsel">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="email" class="form-label">E-mail *</label>
             <input type="email" class="form-control" id="email" name="email" required>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="employee_code" class="form-label">Personeelsnummer *</label>
             <input type="text" class="form-control" id="employee_code" name="employee_code">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="user_role" class="form-label">Rol</label>
             <select class="form-select" id="user_role" name="user_role" required>
                 <option value="">Selecteer een rol</option>
@@ -50,17 +52,17 @@
             </select>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="password" class="form-label">Wachtwoord *</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" style="font-weight:500">
             <label for="password_confirmation" class="form-label">Herhaal wachtwoord *</label>
             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="background-color: #B20A0E;">Toevoegen</button>
+        <button type="submit" class="btn btn-dark w-100 p-1">Toevoegen</button>
     </form>
 </div>
 </div>

@@ -13,7 +13,7 @@
 <body class="d-flex justify-content-center align-items-center vh-100">
 <div class="card shadow-lg p-4 mx-auto mt-5 align-items-center rounded-5" style="width:550px;height:440px; background-color:rgba(255,255,255,0.5)">
     <img src="LogoIWA.png" alt="Logo">
-    <form method="POST" style="width:280px">
+    <form method="POST" style="width:300px">
         <!-- CSRF token for Laravel -->
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
