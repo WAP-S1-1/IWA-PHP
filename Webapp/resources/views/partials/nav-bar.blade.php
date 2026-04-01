@@ -35,7 +35,7 @@
 {{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
 {{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }}
+            <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}
             " id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
 {{--        <li class="nav-item">--}}
