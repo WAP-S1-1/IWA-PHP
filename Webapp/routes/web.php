@@ -29,9 +29,6 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');;
 
-    Route::get('/subscription', [SubscriptionController::class, 'index'])
-        ->name('subscription.index');
-
     Route::get('/companies', [CompanyController::class, 'index'])
         ->name('companies.index');
 
@@ -44,11 +41,14 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::post('/subscription', [SubscriptionController::class, 'store'])
         ->name('subscription.store');
 
-    Route::get('/subscription/{id}', [SubscriptionController::class, 'edit'])
+    Route::get('/subscription/edit/{subscription}', [SubscriptionController::class, 'edit'])
         ->name('subscription.edit');
 
-    Route::put('/subscription/{id}', [SubscriptionController::class, 'update'])
+    Route::put('/subscription/{subscription}', [SubscriptionController::class, 'update'])
         ->name('subscription.update');
+
+    Route::delete('/subscription/{subscription}', [SubscriptionController::class, 'destroy'])
+        ->name('subscription.destroy');
 
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

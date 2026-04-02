@@ -24,7 +24,9 @@ class SubscriptionController extends Controller{
             ->orderBy('subscriptions.id')
             ->get();
 
-        return view('subscription.index', compact('subscriptions'));
+        $mode = $request->query('mode');
+
+        return view('subscription.index', compact('subscriptions', 'mode'));
     }
 
     public function create()
@@ -65,12 +67,43 @@ class SubscriptionController extends Controller{
 
     public function edit(Subscription $subscription)
     {
-        return view('subscription/edit', compact('subscription'));
+        $companies = Company::all();
+        $subscription_types = SubscriptionType::all();
+
+        return view('subscription/edit', compact('subscription', 'companies', 'subscription_types'));
     }
 
     public function update(Request $request, Subscription $subscription)
     {
-        $subscription->update($request->only(['']));
-        return redirect()->back()->with('success', 'Subscription updated successfully');
+        $request->validate([
+            'company' => 'nullable|exists:companies,id',
+            'type' => 'nullable|exists:subscription_types,id',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'price' => 'required|numeric',
+            'notes' => 'nullable|max:256',
+            'identifier' => 'required|max:45',
+            'token' => 'required|max:100',
+        ]);
+
+        $subscription->update($request->only([
+            'company',
+            'type',
+            'start_date',
+            'end_date',
+            'price',
+            'notes',
+            'identifier',
+            'token',
+        ]));
+
+        return redirect()->route('subscription.index')
+            ->with('success', 'Subscription updated successfully');
+    }
+
+    public function destroy(Subscription $subscription){
+        $subscription->delete();
+        return redirect()->route('subscription.index')
+            ->with('success', 'Subscription deleted successfully');
     }
 }
