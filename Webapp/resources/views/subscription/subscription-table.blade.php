@@ -11,8 +11,25 @@
     </style>
 
     <div class="card shadow-lg m-2 rounded-5"
-         style="width:168vw;height:80vh; background-color:rgba(255,255,255,0.7)">
+         style="width:168vw;height:fit-content;min-height:80vh; background-color:rgba(255,255,255,0.7)">
         <div class="container-fluid px-4 py-3">
+            <div class="row">
+                <div class="col">
+                    @if($mode === 'edit')
+                        <h1>Abonnementen wijzigen</h1>
+                    @else
+                        <h1>Overzicht Abonnementen</h1>
+                    @endif
+                </div>
+                <div class="col-md-3">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible" style="width: fit-content; align-self: end">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                </div>
+            </div>
             <div class="row justify-content-start">
                 <div class="col-md-2">
                     <div class="row justify-content-start">
@@ -30,11 +47,20 @@
                 </div>
                 <div class="col">
                     <div class="row justify-content-evenly text-nowrap">
-                        <div class="col-2" style="font-weight:bold">Abonnement</div>
-                        <div class="col-6" style="font-weight:bold">Omschrijving</div>
-                        <div class="col-1" style="font-weight:bold">Prijs</div>
-                        <div class="col-2" style="font-weight:bold">Notities</div>
-                        <hr class="w-80 mx-auto my-2">
+                        @if($mode === 'edit')
+                            <div class="col-2" style="font-weight:bold">Abonnement</div>
+                            <div class="col-5" style="font-weight:bold">Omschrijving</div>
+                            <div class="col-1" style="font-weight:bold">Prijs</div>
+                            <div class="col" style="font-weight:bold">Notities</div>
+                            <div class="col-2" style="font-weight: bold">Wijzigen</div>
+                            <hr class="w-80 mx-auto my-2">
+                        @else
+                            <div class="col-2" style="font-weight:bold">Abonnement</div>
+                            <div class="col-6" style="font-weight:bold">Omschrijving</div>
+                            <div class="col-1" style="font-weight:bold">Prijs</div>
+                            <div class="col-2" style="font-weight:bold">Notities</div>
+                            <hr class="w-80 mx-auto my-2">
+                        @endif
                     </div>
                 </div>
             </div>
@@ -59,13 +85,28 @@
                     <div class="col">
                         <div class="subscription-box">
                             <div class="row justify-content-evenly text-nowrap">
-                                <div class="col-2">{{ $sub->type_name ?? '' }}</div>
-                                <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
-                                <div class="col-1">€{{ $sub->price}}</div>
-                                <div class="col-2 text-truncate">{{ $sub->notes ?? '-' }}</div>
+                                @if($mode === 'edit')
+                                    <div class="col-2">{{ $sub->type_name ?? '' }}</div>
+                                    <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
+                                    <div class="col-1">€{{ $sub->price}}</div>
+                                    <div class="col text-truncate">{{ $sub->notes ?? '-' }}</div>
+                                @else
+                                    <div class="col-2">{{ $sub->type_name ?? '' }}</div>
+                                    <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
+                                    <div class="col-1">€{{ $sub->price}}</div>
+                                    <div class="col-2 text-truncate">{{ $sub->notes ?? '-' }}</div>
+                                @endif
                             </div>
                         </div>
                     </div>
+                    @if($mode === 'edit')
+                        <div class="col-md-1">
+                            <a href="{{ route('subscription.edit', $sub->id) }}"
+                               class="btn btn-sm btn-danger">
+                                Wijzig
+                            </a>
+                        </div>
+                    @endif
 
                 </div>
             @empty
