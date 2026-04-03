@@ -4,7 +4,7 @@
 @section('header', 'Startpagina')
 
 @section('content')
-    <div class="card shadow-lg p-4 mx-auto mt-5 align-items-center rounded-5" style="width:fit-content;min-width:550px;height:fit-content; background-color:rgba(255,255,255,0.5)">
+    <div class="card shadow-lg p-4 mx-auto mt-4 align-items-center rounded-5" style="width:fit-content;min-width:550px;height:fit-content; background-color:rgba(255,255,255,0.5)">
         <h2>Abonnement wijzigen</h2>
         <form action="{{ route('subscription.update', $subscription->id) }}" method="POST" style="width: 300px">
             @csrf
@@ -31,17 +31,19 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mb-3" style="font-weight:500">
-                <label for="start_date" class="form-label">Start-datum *</label>
-                <input type="date" class="form-control"
-                       value="{{ old('start_date', \Carbon\Carbon::parse($subscription->start_date)->format('Y-m-d')) }}"
-                       style="background-color:rgba(255,255,255,0.4)" id="start_date" name="start_date" required>
-            </div>
-            <div class="mb-3" style="font-weight:500">
-                <label for="end_date" class="form-label">Eind-datum</label>
-                <input type="date" class="form-control"
-                       value="{{ old('end_date', $subscription->end_date ? \Carbon\Carbon::parse($subscription->end_date)->format('Y-m-d') : '')}}"
-                       style="background-color:rgba(255,255,255,0.4)" id="end_date" name="end_date">
+            <div class="row mb-3    ">
+                <div class="col-6" style="font-weight:500">
+                    <label for="start_date" class="form-label">Start-datum *</label>
+                    <input type="date" class="form-control"
+                           value="{{ old('start_date', \Carbon\Carbon::parse($subscription->start_date)->format('Y-m-d')) }}"
+                           style="background-color:rgba(255,255,255,0.4)" id="start_date" name="start_date" required>
+                </div>
+                <div class="col-6" style="font-weight:500">
+                    <label for="end_date" class="form-label">Eind-datum</label>
+                    <input type="date" class="form-control"
+                           value="{{ old('end_date', $subscription->end_date ? \Carbon\Carbon::parse($subscription->end_date)->format('Y-m-d') : '')}}"
+                           style="background-color:rgba(255,255,255,0.4)" id="end_date" name="end_date">
+                </div>
             </div>
             <div class="mb-3" style="font-weight:500">
                 <label for="price" class="form-label">Prijs *</label>
