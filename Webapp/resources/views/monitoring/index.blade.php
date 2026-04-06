@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('title', 'Monitoring weerstations')
 @section('monitorContent')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -32,5 +33,20 @@
     </div>
 @push('scripts')
     <script src="{{ route('assets.weatherstations.js') }}"></script>
+    @endpush
+@endsection
+
+@section('errorsContent')
+    <div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4" style="width:86%;height:6.25%;background-color:#262626;">
+        <h1>Active errors</h1>
+    </div>
+    <div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4"
+         style="width:86%; background-color:rgba(255,255,255,0.5)">
+        <div id="stations-scroll" class="w-100" style="height:65vh; overflow:hidden; overflow-y:auto;">
+            <div id="stations-container" class="row p-4 g-4 justify-content-center"></div>
+        </div>
+    </div>
+    @push('scripts')
+        <script src="{{ route('assets.weatherstations.js') }}"></script>
     @endpush
 @endsection
