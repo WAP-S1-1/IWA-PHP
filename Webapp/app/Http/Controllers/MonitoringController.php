@@ -2,76 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Measurement;
 use App\Models\Station;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class MonitoringController extends Controller
 {
     public function index(Request $request): View
     {
-//        $filter = $request->query('status', 'all');
-//
-//        $query = Station::with('geolocations');
-//
-//        if ($filter !== 'all') {
-//            $query->where('status', $filter);
-//        }
-//
-//        $stations = $query
-//            ->orderByRaw("
-//                CASE status
-//                    WHEN 'red' THEN 1
-//                    WHEN 'orange' THEN 2
-//                    WHEN 'green' THEN 3
-//                    ELSE 4
-//                END
-//            ")
-//            ->paginate(12);
-//
-//        return view('monitoring.index', compact('stations', 'filter'));
-
         $filter = $request->query('status');
 
-        // Fetch all weather stations
+        // Fetch all weather stations and data
         $query = Station::with(['latestMeasurement', 'geolocations']);
 
-        $stations = $query->get();
+        // Optional filtering
+        // TODO: This is terrible, we have to do this differently.
+        switch ($filter) {
+            case Station::STATUS_ONLINE:
+                $query = $query->whereHas('latestMeasurement', function ($q) {
+                    $q->where(function ($q2) {
+                        // Date and time limit, can use indexes
+                        $thresholdDate = now()->subSeconds(300)->toDateString();
+                        $thresholdTime = now()->subSeconds(300)->toTimeString();
 
-        // ChatGPT generated
-        // Get last measurement and check if it is online
+                        $q2->where('date', '>', $thresholdDate)
+                            ->orWhere(function ($q3) use ($thresholdDate, $thresholdTime) {
+                                $q3->where('date', $thresholdDate)
+                                    ->where('time', '>=', $thresholdTime);
+                            });
+                    });
+                });
+                break;
+                case Station::STATUS_OFFLINE:
+                $query = $query->where(function ($q) {
+                    $thresholdDate = now()->subSeconds(300)->toDateString();
+                    $thresholdTime = now()->subSeconds(300)->toTimeString();
+
+                    $q->whereDoesntHave('latestMeasurement')
+                        ->orWhereHas('latestMeasurement', function ($q2) use ($thresholdDate, $thresholdTime) {
+                            $q2->where(function ($q3) use ($thresholdDate, $thresholdTime) {
+                                $q3->where('date', '<', $thresholdDate)
+                                    ->orWhere(function ($q4) use ($thresholdDate, $thresholdTime) {
+                                        $q4->where('date', $thresholdDate)
+                                            ->where('time', '<', $thresholdTime);
+                                    });
+                            });
+                        });
+                });
+                break;
+                case Station::STATUS_ERROR:
+                    $query = $query->where('last_100_bad_count', '>=', 1);
+                break;
+
+                default:
+                break;
+        }
+
+        $stations = $query->paginate(12);
+
         foreach ($stations as $station) {
-            $last = $station->latestMeasurement;
+            if (is_null($filter)) {
 
-            $measurementTime = Carbon::createFromFormat(
-                'Y-m-d H:i:s',
-                $last->date->format('Y-m-d') . ' ' . $last->time->format('H:i:s')
-            );
+                $last = $station->latestMeasurement;
 
-            $station->status = (!$last || $measurementTime->diffInUTCSeconds(now()) > 300)
-                ? Station::STATUS_OFFLINE : Station::STATUS_ONLINE;
+                $measurementTime = Carbon::createFromFormat(
+                    'Y-m-d H:i:s',
+                    $last->date->format('Y-m-d') . ' ' . $last->time->format('H:i:s')
+                );
+
+                $station->status = (!$last || $measurementTime->diffInUTCSeconds(now()) > 300)
+                    ? Station::STATUS_OFFLINE : Station::STATUS_ONLINE;
+            }
+            else{
+                $station->status = (int)$filter;
+            }
         }
-
-        if (is_numeric($filter)) {
-            // filter Collection by status
-            $stations = $stations->filter(fn($station) => $station->status == (int)$filter);
-        }
-
-        // 4️⃣ Paginate manually
-        $page = request()->page ?? 1;
-        $perPage = 12;
-
-        // TODO: Remove this and add last known status to DB so
-        //      paginate() and a filter can be used.
-        $stations = new LengthAwarePaginator(
-            $stations->forPage($page, $perPage)->values(), // <- slice the filtered collection
-            $stations->count(), // total items **after filtering**
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()] // optional: preserve query params
-        );
 
         return view('monitoring.index', compact('stations', 'filter'));
     }

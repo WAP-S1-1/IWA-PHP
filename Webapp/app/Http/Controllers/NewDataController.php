@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\WeatherDataRequest;
 use App\Models\Measurement;
 use App\Models\OriginalMeasurement;
+use App\Models\Station;
 
 class NewDataController extends Controller
 {
@@ -80,6 +81,8 @@ class NewDataController extends Controller
                 'inavlid_temperature' => $tempCorrection
             ]);
         }
+
+        // TODO: Status is done through bad entries in last 100 packets. We need to take a better look at the status.
     }
 
 }
