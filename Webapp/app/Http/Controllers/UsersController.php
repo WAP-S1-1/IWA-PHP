@@ -50,17 +50,14 @@ class UsersController extends Controller {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        User::create([
-            'name' => $request->name,
-            'first_name' => $request->first_name,
-            'initials' => $request->initials,
-            'prefix' => $request->prefix,
-            'email' => $request->email,
-            'employee_code' => $request->employee_code,
-            'user_role' => $request->user_role,
-            'password' => Hash::make($request->password),
-        ]);
+        $data = $request->all();
+        $data['name'] = $data['name'] ?? '';
+        $data['email'] = $data['email'] ?? '';
+        $data['employee_code'] = $data['employee_code'] ?? '';
+        $data['user_role'] = $data['user_role'] ?? 0;
+        $data['password'] = Hash::make($data['password']);
 
+        User::create($data);
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
     }

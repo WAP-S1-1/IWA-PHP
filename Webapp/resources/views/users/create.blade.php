@@ -20,8 +20,8 @@
         </div>
 
         <div class="mb-3" style="font-weight:500">
-            <label for="initials" class="form-label">Afkortingen</label>
-            <input type="text" class="form-control" id="initials" name="initials" placeholder="Afkortingen">
+            <label for="initials" class="form-label">Voorletters</label>
+            <input type="text" class="form-control" id="initials" name="initials" placeholder="Voorletters">
         </div>
 
         <div class="mb-3" style="font-weight:500">
@@ -43,12 +43,11 @@
             <label for="user_role" class="form-label">Rol</label>
             <select class="form-select" id="user_role" name="user_role" required>
                 <option value="">Selecteer een rol</option>
-                <option value="1">Technisch medewerker - Medewerker van de afdeling monitoring en beheer</option>
-                <option value="2">Technisch onderzoeker - Medewerker van de afdeling analyse en datamining</option>
-                <option value="3">Commercieel medewerker - Medewerker van de afdeling marketing en klant beheer</option>
-                <option value="4">Administratief medewerker - Medewerker van de afdeling personeelszaken</option>
-                <option value="5">Technisch beheerder - Medewerker van de afdeling IT-support</option>
-                <option value="6">Administrator - Super user</option>
+                @foreach($userroles as $userrole)
+                    <option value="{{ $userrole->id }}">
+                        {{ $userrole->role }}
+                    </option>
+                @endforeach
             </select>
         </div>
 

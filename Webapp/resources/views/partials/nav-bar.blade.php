@@ -31,12 +31,13 @@
 {{--        <li class="nav-item">--}}
 {{--            <a class="nav-link " id="home-tab" href="#home" role="tab">Home</a>--}}
 {{--        </li>--}}
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
-{{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}
-            " id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
+            <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
+               id="users-tab" href="{{ route('users.index') }}" role="tab" >Gebruikers</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}"
+               id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
 {{--        <li class="nav-item">--}}
 {{--            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"--}}

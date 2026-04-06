@@ -19,7 +19,7 @@
                 <div class="row justify-content-start">
                     <div class="col-md-auto" style="font-weight:bold">ID
                     </div>
-                    <div class="col-md-auto" style="font-weight:bold">Naam</div>
+                    <div class="col-md-auto" style="font-weight:bold">Bedrijf</div>
                     <hr class="w-100 mx-auto my-2">
                 </div>
             </div>
