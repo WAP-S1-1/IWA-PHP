@@ -9,33 +9,42 @@ class StationController extends Controller
 {
     public function index(Request $request)
     {
-        // TODO: validate JWT token here
+//        // Update status voor alle stations op basis van laatste metingen
+//        $allStations = Station::all();
+//        foreach ($allStations as $station) {
+//            $station->updateStatusBasedOnMeasurements();
+//        }
 
-        // Update status voor alle stations op basis van laatste metingen
-        $allStations = Station::all();
-        foreach ($allStations as $station) {
-            $station->updateStatusBasedOnMeasurements();
-        }
-
-        // Fetch all weather stations with their status and geolocations
-        $stations = Station::with(['geolocations' => function ($query) {
-            $query->select('station_name', 'country', 'city'); // always include foreign key
-        }])
-            ->select('name', 'longitude', 'latitude', 'elevation', 'status', 'status_message', 'status_updated_at')
+        // Fetch all weather stations
+        $stations = Station::with(['latestMeasurement', 'geolocations'])
             ->get();
 
-        // Tel stations per status voor summary
-        $statusCounts = [
-            'green' => $stations->where('status', Station::STATUS_GREEN)->count(),
-            'orange' => $stations->where('status', Station::STATUS_ORANGE)->count(),
-            'red' => $stations->where('status', Station::STATUS_RED)->count()
-        ];
+        // ChatGPT generated
+        // Get last measurement and check if it is online
+        foreach ($stations as $station) {
+            $last = $station->latestMeasurement;
+
+            var_dump((!$last || now()->diffInSeconds(
+                    \Carbon\Carbon::parse($last->date . ' ' . $last->time)
+                )));
+
+            $station->status = (!$last || now()->diffInSeconds(
+                    \Carbon\Carbon::parse($last->date . ' ' . $last->time)
+                ) > 300) ? 3 : 0;
+        }
+
+//        // Tel stations per status voor summary
+//        $statusCounts = [
+//            'green' => $stations->where('status', Station::STATUS_GREEN)->count(),
+//            'orange' => $stations->where('status', Station::STATUS_ORANGE)->count(),
+//            'red' => $stations->where('status', Station::STATUS_RED)->count()
+//        ];
 
         // Return JSON
         return response()->json([
             'stations' => $stations,
             'total' => count($stations),
-            'summary' => $statusCounts
+            //'summary' => $statusCounts
         ], 200);
     }
 
