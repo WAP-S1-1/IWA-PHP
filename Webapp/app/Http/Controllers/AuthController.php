@@ -50,44 +50,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Store a newly created user
-     */
-    // TODO: Move to user controller
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'first_name' => 'nullable|string|max:45',
-            'initials' => 'nullable|string|max:12',
-            'prefix' => 'nullable|string|max:10',
-            'email' => 'required|string|email|max:100|unique:users',
-            'employee_code' => 'required|string|max:10',
-            'user_role' => 'required|integer|exists:userroles,id',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'first_name' => $request->first_name,
-            'initials' => $request->initials,
-            'prefix' => $request->prefix,
-            'email' => $request->email,
-            'employee_code' => $request->employee_code,
-            'user_role' => $request->user_role,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ], 201);
-    }
-
-    /**
      * Get the authenticated user's profile
      */
     public function profile(Request $request)
