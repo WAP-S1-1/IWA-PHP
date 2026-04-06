@@ -38,10 +38,10 @@
             <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}
             " id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"--}}
-{{--               id="contracts-tab" href="#contracts" role="tab">Contracten</a>--}}
-{{--        </li>--}}
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"
+               id="contracts-tab" href="{{ route('contracts.index') }}" role="tab">Contracten</a>
+        </li>
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
                id="monitor-tab" href="{{ route('monitoring.index') }}" role="tab">Monitoring</a>

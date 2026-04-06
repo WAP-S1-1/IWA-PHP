@@ -11,7 +11,23 @@ class ContractController extends Controller
     // READ - Get all contracts
     public function index()
     {
-        $contracts = Contract::with('company')->paginate(15);
+        // Fetch contracts with company relationship AND queries
+        $contracts = Contract::with('company', 'queries')->paginate(15);
+
+        // MAP the data to match what the view expects
+        $contracts = $contracts->map(function($contract) {
+            return (object) [
+                'id' => $contract->id,
+                'company_name' => $contract->company->name ?? 'N/A',
+                'start_date' => $contract->start_datum?->format('d-m-Y'),
+                'end_date' => $contract->eind_datum?->format('d-m-Y'),
+                'omschrijving' => $contract->omschrijving,
+                'url' => $contract->url,
+                'company_id' => $contract->company_id,
+                'queries_count' => $contract->queries->count(), // Add this
+               ];
+        });
+
         return view('contracts.index', compact('contracts'));
     }
 

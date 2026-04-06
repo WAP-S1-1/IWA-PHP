@@ -37,6 +37,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');
 
+
     Route::get('/subscription/create', [SubscriptionController::class, 'create'])
         ->name('subscription.create');
 
@@ -51,7 +52,6 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
     Route::delete('/subscription/{subscription}', [SubscriptionController::class, 'destroy'])
         ->name('subscription.destroy');
-
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/monitoring', [MonitoringController::class, 'index'])
