@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
-class MonitoringController extends Controller
+class DownloadController extends Controller
 {
     public function index(): View{
-        return view('monitoring.index');
+        return view('download.index');
     }
 }

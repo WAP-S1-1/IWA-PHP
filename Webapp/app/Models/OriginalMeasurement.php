@@ -17,12 +17,6 @@ class OriginalMeasurement extends Model
         'corrected_measurement',
         'missing_field',
         'inavlid_temperature',
-        'original_data',
-        'correction_reason'
-    ];
-
-    protected $casts = [
-        'original_data' => 'array',
     ];
 
     public function correctedMeasurement()
