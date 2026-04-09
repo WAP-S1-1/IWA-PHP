@@ -14,7 +14,7 @@
                 <select name="company" class="form-select" style="background-color:rgba(255,255,255,0.4)" required>
                     @foreach($companies as $company)
                         <option value="{{ $company->id }}"
-                            {{ $company->id == $company->name ? 'selected' : ''}}>
+                            {{ $company->id == $subscription->company ? 'selected' : ''}}>
                             {{ $company->name }}
                         </option>
                     @endforeach
