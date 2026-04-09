@@ -30,7 +30,7 @@ class UsersController extends Controller {
     {
         $userroles = Userrole::all();
 
-        return view('users.create', compact('userroles'));
+        return view('users/create', compact('userroles'));
     }
 
     public function store(Request $request)
