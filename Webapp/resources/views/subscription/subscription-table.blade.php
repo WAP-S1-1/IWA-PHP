@@ -65,7 +65,7 @@
                 </div>
             </div>
             @forelse($subscriptions as $sub)
-                <div class="row g-3 mb-2">
+                <div class="row mb-2">
                     <div class="col-md-2">
                         <div class="subscription-box">
                             <div class="row justify-content-evenly text-nowrap">
@@ -89,7 +89,7 @@
                                     <div class="col-2">{{ $sub->type_name ?? '' }}</div>
                                     <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
                                     <div class="col-1">€{{ $sub->price}}</div>
-                                    <div class="col text-truncate">{{ $sub->notes ?? '-' }}</div>
+                                    <div class="col-2 text-truncate">{{ $sub->notes ?? '-' }}</div>
                                 @else
                                     <div class="col-2">{{ $sub->type_name ?? '' }}</div>
                                     <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
@@ -102,7 +102,7 @@
                     @if($mode === 'edit')
                         <div class="col-md-1">
                             <a href="{{ route('subscription.edit', $sub->id) }}"
-                               class="btn btn-sm btn-danger">
+                               class="btn btn-sm btn-danger" style="height: 24px; padding-top: 0; border-radius: 10px;">
                                 Wijzig
                             </a>
                         </div>

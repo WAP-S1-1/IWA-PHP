@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-3">
                 <div class="row justify-content-center">
-                    <div class="col-md-4" style="font-weight:bold">E-mail</div>
+                    <div class="col-md-10" style="font-weight:bold">E-mail</div>
                     <hr class="w-75 mx-auto my-2">
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 <div class="col-md-3">
                     <div class="subscription-box">
                         <div class="row justify-content-evenly">
-                            <div class="col-11 text-truncate"> {{ $comp->email }}</div>
+                            <div class="col-10 text-truncate"> {{ $comp->email }}</div>
                         </div>
                     </div>
                 </div>
