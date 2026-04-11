@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             SubscriptionTypesSeeder::class,
             SubscriptionsSeeder::class,
             SubscriptionStationSeeder::class,
+            ContractsSeeder::class,
+            QuerySeeder::class,
         ]);
     }
 }
