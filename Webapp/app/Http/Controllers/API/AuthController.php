@@ -27,4 +27,25 @@ class AuthController extends Controller
             'customer' => auth('customer-api')->user()
         ]);
     }
+
+    public function logout()
+    {
+        // Should be middleware protected so no need to check token
+        // Log customer out
+        auth('customer-api')->logout();
+
+        // Inform of logout
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
+    }
+
+    public function me()
+    {
+        // Return the user of the bearer token. This is handled by auth and the api middleware
+        return response()->json([
+            'customer' => auth('customer-api')->user()
+        ]);
+    }
+
 }
