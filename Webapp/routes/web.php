@@ -23,6 +23,10 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
 // route voor inloggen
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/test', function () {
+    return view('test');
+});
+
 
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
