@@ -22,9 +22,24 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
     return view('login');
 });
 
-// route voor inloggen
+// Auth routes
+
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
+    ->name('password.request');
+
+Route::post('/forgot-password', [AuthController::class, 'checkUser'])
+    ->name('password.check');
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('password.reset');
+
+Route::get('/password/{user}', [AuthController::class, 'editPassword'])
+    ->name('auth.password.edit');
+
+Route::put('/password/{user}', [AuthController::class, 'updatePassword'])
+    ->name('auth.password.update');
 
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
@@ -69,14 +84,15 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::post('/users', [UsersController::class, 'store'])
         ->name('users.store');
 
-    Route::get('/users/edit/{users}', [UsersController::class, 'edit'])
+    Route::get('/users/edit/{user}', [UsersController::class, 'edit'])
         ->name('users.edit');
 
-    Route::put('/users/{users}', [UsersController::class, 'update'])
+    Route::put('/users/{user}', [UsersController::class, 'update'])
         ->name('users.update');
 
-    Route::delete('/users/{users}', [UsersController::class, 'destroy'])
+    Route::delete('/users/{user}', [UsersController::class, 'destroy'])
         ->name('users.destroy');
+
 
 //Monitoring routes
 

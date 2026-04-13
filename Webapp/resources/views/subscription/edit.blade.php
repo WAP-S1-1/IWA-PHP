@@ -61,7 +61,7 @@
                 <label for="notes" class="form-label">Notities</label>
                 <textarea class="form-control" style="background-color:rgba(255,255,255,0.4)" id="notes" name="notes">{{ old('notes', $subscription->notes) }}</textarea>
             </div>
-            <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Bijwerken</button>
+            <button type="submit" class="btn btn-dark w-100 p-1">Bijwerken</button>
         </form>
         <form action="{{ route('subscription.destroy', $subscription->id) }}" method="POST" style="width: 300px"
               onsubmit="return confirm('Weet je zeker dat je dit abonnement wilt verwijderen?');">
