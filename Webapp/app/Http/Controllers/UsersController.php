@@ -15,7 +15,7 @@ class UsersController extends Controller {
     public function index(Request $request)
     {
         $users = DB::table('users')
-            ->join('userroles', 'users.id', '=', 'userroles.id')
+            ->join('userroles', 'users.user_role', '=', 'userroles.id')
             ->select('*',
             'users.id as user_id')
             ->orderBy('users.id')
@@ -41,23 +41,26 @@ class UsersController extends Controller {
             'initials' => 'nullable|string|max:12',
             'prefix' => 'nullable|string|max:10',
             'email' => 'required|string|email|max:100|unique:users',
-            'employee_code' => 'required|string|max:10',
+            'employee_code' => 'required|string|max:10|unique:users',
             'user_role' => 'required|integer|exists:userroles,id',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
         }
 
-        $data = $request->all();
-        $data['name'] = $data['name'] ?? '';
-        $data['email'] = $data['email'] ?? '';
-        $data['employee_code'] = $data['employee_code'] ?? '';
-        $data['user_role'] = $data['user_role'] ?? 0;
-        $data['password'] = Hash::make($data['password']);
+        User::create([
+            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'initials' => $request->initials,
+            'prefix' => $request->prefix,
+            'email' => $request->email,
+            'employee_code' => $request->employee_code,
+            'user_role' => $request->user_role,
+            'password' => Hash::make($request->password),
+        ]);
 
-        User::create($data);
         return redirect()->route('users.index')
             ->with('success', 'User created successfully');
     }
@@ -66,21 +69,24 @@ class UsersController extends Controller {
     {
         $userroles = Userrole::all();
 
-        return view('users.edit', compact('user', 'userroles'));
+        return view('users/edit', compact('user', 'userroles'));
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'first_name' => 'nullable|string|max:45',
             'initials' => 'nullable|string|max:12',
             'prefix' => 'nullable|string|max:10',
-            'email' => 'required|string|email|max:100',
-            'employee_code' => 'required|string|max:10',
+            'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
+            'employee_code' => 'required|string|max:10|unique:users,employee_code,' . $user->id,
             'user_role' => 'required|integer|exists:userroles,id',
-            'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
+        }
 
         $user->update($request->only([
             'name',
@@ -90,7 +96,6 @@ class UsersController extends Controller {
             'email',
             'employee_code',
             'user_role',
-            'password',
         ]));
 
         return redirect()->route('users.index')
@@ -99,6 +104,11 @@ class UsersController extends Controller {
 
     public function destroy(User $user)
     {
+        if (auth()->id() === $user->id) {
+            return redirect()->back()
+                ->with('error', 'You cannot delete yourself');
+        }
+
         $user->delete();
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully');
