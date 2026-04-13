@@ -10,6 +10,8 @@ use App\Http\Middleware\NoCache;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterUser;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\QueryController;
 
 
 Route::get('/', function () {
@@ -35,6 +37,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');
 
+
     Route::get('/subscription/create', [SubscriptionController::class, 'create'])
         ->name('subscription.create');
 
@@ -50,10 +53,13 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::delete('/subscription/{subscription}', [SubscriptionController::class, 'destroy'])
         ->name('subscription.destroy');
 
-
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/monitoring', [MonitoringController::class, 'index'])
         ->name('monitoring.index');
+
+    Route::get('/contract',[ContractController::class, 'index'])->name('contracts');
+    Route::resource('contracts', ContractController::class);
+    Route::resource('contracts.queries', QueryController::class)->shallow();
 
 });
 

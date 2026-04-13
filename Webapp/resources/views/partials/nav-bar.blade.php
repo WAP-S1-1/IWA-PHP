@@ -13,16 +13,20 @@
         min-height: 100vh;
         padding: 20px;
     }
-
     .nav-tabs .nav-link{
         color: #0a0a0a;
     }
-
     .nav-tabs .nav-link.active,
     .nav-tabs .nav-item.show .nav-link {
         color: white !important;
         background-color: #B20A0E !important;
     }
+     .resizable-text {
+         font-size: clamp(0.75rem, 2vw, 1rem);
+         overflow: hidden;
+         white-space: normal;
+         word-break: break-word;
+     }
 </style>
 <body>
 <nav class="d-flex align-items-center justify-content-between border-bottom border-3" style=background-color:#F5F5F5>
@@ -35,15 +39,15 @@
 {{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
 {{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}
+            <a class="nav-link resizable-text {{ request()->routeIs('subscription.index') ? 'active' : '' }}"|| {{ request()->routeIs('companies.index') ? 'active' : '' }}
             " id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link {{ request()->routeIs('contracts.index') ? 'active' : '' }}"--}}
-{{--               id="contracts-tab" href="#contracts" role="tab">Contracten</a>--}}
-{{--        </li>--}}
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('contracts.index') ? 'active' : '' }}"
+               id="contracts-tab" href="{{ route('contracts.index') }}" role="tab">Contracten</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link resizable-text {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
                id="monitor-tab" href="{{ route('monitoring.index') }}" role="tab">Monitoring</a>
         </li>
 {{--        <li class="nav-item">--}}
@@ -53,7 +57,7 @@
         <li class="nav-item">
             <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                 @csrf
-                <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">Logout</button>
+                <button type="submit" class="nav-link resizable-text" style="background: none; border: none; cursor: pointer;">Logout</button>
             </form>
         </li>
     </ul>
