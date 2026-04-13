@@ -10,6 +10,8 @@ use App\Http\Middleware\JwtCookieAuth;
 use App\Http\Middleware\NoCache;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\QueryController;
 
 
 Route::get('/', function () {
@@ -83,4 +85,9 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get('/contract',[ContractController::class, 'index'])->name('contracts');
+    Route::resource('contracts', ContractController::class);
+    Route::resource('contracts.queries', QueryController::class)->shallow();
+
 });
