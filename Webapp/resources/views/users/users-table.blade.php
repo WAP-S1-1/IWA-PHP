@@ -1,9 +1,9 @@
 <style>
-    #subscriptions > .card {
+    #users > .card {
         display: inline-block;
         vertical-align: top;
     }
-    .subscription-box {
+    .users-box {
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0,0,0,.06);
@@ -34,75 +34,63 @@
             <div class="col-md-2">
                 <div class="row justify-content-start">
                     <div class="col-md-auto" style="font-weight:bold">ID</div>
-                    <div class="col-md-auto" style="font-weight:bold">Bedrijf</div>
+                    <div class="col-md-auto" style="font-weight:bold">Naam</div>
                     <hr class="w-100 mx-auto my-2">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="row justify-content-evenly">
-                    <div class="col-md-4" style="font-weight:bold">Startdatum</div>
-                    <div class="col-md-4" style="font-weight:bold"> Einddatum</div>
+                    <div class="col-md-4" style="font-weight:bold">E-mail</div>
                     <hr class="w-75 mx-auto my-2">
                 </div>
             </div>
             <div class="col">
                 <div class="row justify-content-evenly text-nowrap">
                     @if($mode === 'edit')
-                        <div class="col-2" style="font-weight:bold">Abonnement</div>
-                        <div class="col-5" style="font-weight:bold">Omschrijving</div>
-                        <div class="col-1" style="font-weight:bold">Prijs</div>
-                        <div class="col" style="font-weight:bold">Notities</div>
-                        <div class="col-2" style="font-weight: bold">Wijzigen</div>
+                        <div class="col-3" style="font-weight: bold">Rol</div>
+                        <div class="col-5" style="font-weight: bold">Omschrijving</div>
+                        <div class="col-2" style="font-weight: bold">Werknemerscode</div>
+                        <div class="col" style="font-weight: bold">Wijzigen</div>
                         <hr class="w-80 mx-auto my-2">
                     @else
-                        <div class="col-2" style="font-weight:bold">Abonnement</div>
+                        <div class="col-3" style="font-weight:bold">Rol</div>
                         <div class="col-6" style="font-weight:bold">Omschrijving</div>
-                        <div class="col-1" style="font-weight:bold">Prijs</div>
-                        <div class="col-2" style="font-weight:bold">Notities</div>
+                        <div class="col-2" style="font-weight: bold">Werknemerscode</div>
                         <hr class="w-80 mx-auto my-2">
                     @endif
                 </div>
             </div>
         </div>
-        @forelse($subscriptions as $sub)
+        @forelse($users as $user)
             <div class="row g-3 mb-2">
                 <div class="col-md-2">
-                    <div class="subscription-box">
+                    <div class="users-box">
                         <div class="row justify-content-evenly text-nowrap">
-                            <div class="col-1">{{ $sub->id ?? ''}}</div>
-                            <div class="col-10 text-truncate">{{ $sub->company_name ?? '' }}</div>
+                            <div class="col-1">{{ $user->user_id }}</div>
+                            <div class="col-10 text-truncate">{{ $user->first_name ?? '' }} {{ $user->prefix ?? '' }} {{ $user->name }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="subscription-box">
+                    <div class="users-box">
                         <div class="row justify-content-evenly">
-                            <div class="col-4"> {{ $sub->start_date }}</div>
-                            <div class="col-4"> {{ $sub->end_date ?? 'nvt' }}</div>
+                            <div class="col-11"> {{ $user->email }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="subscription-box">
+                    <div class="users-box">
                         <div class="row justify-content-evenly text-nowrap">
-                            @if($mode === 'edit')
-                                <div class="col-2">{{ $sub->type_name ?? '' }}</div>
-                                <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
-                                <div class="col-1">€{{ $sub->price}}</div>
-                                <div class="col text-truncate">{{ $sub->notes ?? '-' }}</div>
-                            @else
-                                <div class="col-2">{{ $sub->type_name ?? '' }}</div>
-                                <div class="col-6 text-truncate">{{ $sub->description ?? '' }}</div>
-                                <div class="col-1">€{{ $sub->price}}</div>
-                                <div class="col-2 text-truncate">{{ $sub->notes ?? '-' }}</div>
-                            @endif
+                            <div class="col-3">{{ $user->role }}</div>
+                            <div class="col-6 text-truncate">{{ $user->description ?? '' }}</div>
+                            <div class="col-2 text-end"> {{ $user->employee_code }}</div>
                         </div>
                     </div>
                 </div>
                 @if($mode === 'edit')
                     <div class="col-md-1">
-                        <a href="{{ route('subscription.edit', $sub->id) }}"
-                           class="btn btn-sm btn-danger">
+                        <a href="{{ route('users.edit', $user->user_id) }}"
+                           class="btn btn-sm btn-danger" style="height: 24px; padding-top: 0; border-radius: 10px;">
                             Wijzig
                         </a>
                     </div>
@@ -110,7 +98,7 @@
 
             </div>
         @empty
-            <p class="text-muted">Geen abonnementen gevonden.</p>
+            <p class="text-muted">Geen gebruikers gevonden.</p>
 @endforelse
 
 
