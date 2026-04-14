@@ -4,9 +4,9 @@
 @section('header', 'Contract wijzigen')
 
 @section('content')
-    <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
-        <div class="card shadow-lg p-4 rounded-5" style="width:fit-content;min-width:550px;height:fit-content; background-color:rgba(255,255,255,0.5)">
-            <h2>Contract bewerken</h2>
+    <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; align-items: stretch;">
+        <div class="card shadow-lg p-4 rounded-5 align-items-center" style="width:fit-content;min-width:550px; background-color:rgba(255,255,255,0.5)">
+        <h2>Contract bewerken</h2>
             <form id="contractForm" action="{{ route('contracts.update', $contract->id) }}" method="POST" style="width: 300px">
                 @csrf
                 @method('PUT')
@@ -66,15 +66,21 @@
                   onsubmit="return confirm('Weet je zeker dat je dit contract wilt verwijderen?');">
                 @csrf
                 @method('DELETE')
-
                 <button type="submit" class="btn btn-danger w-100 p-1">
                     Verwijderen
                 </button>
             </form>
         </div>
-        <div class="card shadow-lg p-4 rounded-5" style="width:fit-content;min-width:550px;height:fit-content; background-color:rgba(255,255,255,0.5)">
-            <h2>Query's bewerken</h2>
-            <div style="width: 300px; max-height: 600px; overflow-y: auto;">
+        <div class="card shadow-lg p-4 rounded-5 align-items-center" style="width:fit-content;min-width:550px; background-color:rgba(255,255,255,0.5); display: flex; flex-direction: column;">
+
+        <h2>Query's bewerken</h2>
+            <div style="width: 300px; max-height: 300px; overflow-y: auto;">
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible" style="width: fit-content; align-self: end">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ session('success') }}
+                    </div>
+                @endif
                 @forelse($contract->queries as $query)
                     <form id="queryEditForm{{ $query->id }}" action="{{ route('queries.update', $query) }}" method="POST" style="margin-bottom: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; background-color: rgba(255,255,255,0.3)">
                         @csrf

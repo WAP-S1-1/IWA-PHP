@@ -50,7 +50,9 @@ class ContractController extends Controller
             'eind_datum' => 'nullable|date|after:start_datum',
             'url' => 'nullable|url|max:100',
         ]);
-        return redirect()->route('contracts.index')->with('success', 'Contract created successfully!');
+
+        Contract::create($validated);
+        return redirect()->route('contracts.index')->with('success', 'Contract aangemaakt');
     }
 
     public function edit(Contract $contract)
@@ -64,22 +66,21 @@ class ContractController extends Controller
         $validated = $request->validate([
             'company_id' => 'nullable|exists:companies,id',
             'omschrijving' => 'required|string|max:45',
-            'start_datum' => 'nullable|date',  // ← Make nullable for updates
+            'start_datum' => 'nullable|date',
             'eind_datum' => 'nullable|date|after_or_equal:start_datum',
             'url' => 'nullable|url|max:100',
         ]);
 
-        // Only update fields that were actually changed
         $contract->update(array_filter($validated, fn($value) => $value !== null));
 
-        return redirect()->route('contracts.index')->with('success', 'Contract updated successfully!');
+        return redirect()->route('contracts.index')->with('success', 'Contract geüpdate');
     }
 
 
     public function destroy(Contract $contract){
         $contract->delete();
         return redirect()->route('contracts.index')
-            ->with('success', 'Contract deleted successfully');
+            ->with('success', 'Contract verwijderd');
     }
 }
 

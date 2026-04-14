@@ -15,17 +15,9 @@
         <div class="row">
             <div class="col">
                 @if($mode === 'edit')
-                    <h1>Abonnementen wijzigen</h1>
+                    <h1>Contracten wijzigen</h1>
                 @else
-                    <h1>Overzicht Abonnementen</h1>
-                @endif
-            </div>
-            <div class="col-md-3">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible" style="width: fit-content; align-self: end">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        {{ session('success') }}
-                    </div>
+                    <h1>Overzicht Contracten</h1>
                 @endif
             </div>
             <div class="col-md-3">
@@ -38,14 +30,16 @@
             </div>
         </div>
         <div class="row justify-content-start">
-            <div class="col-md-6">
+            @if($mode === 'edit')
+            <div class="col-md-5">
                 <div class="row align-content-around">
-                    @if($mode === 'edit')
                         <div class="col-1 ms-2" style="font-weight:bold">ID</div>
                         <div class="col-3" style="font-weight:bold">Omschrijving</div>
                         <div class="col-3" style="font-weight:bold">Bedrijf</div>
                         <hr class="w-100 mx-auto my-2">
                     @else
+                        <div class="col-md-6">
+                            <div class="row align-content-around">
                         <div class="col-1 ms-2" style="font-weight:bold">ID</div>
                         <div class="col-5" style="font-weight:bold">Omschrijving</div>
                         <div class="col-3" style="font-weight:bold">Bedrijf</div>

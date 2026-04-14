@@ -29,7 +29,7 @@ class QueryController extends Controller
             'omschrijving' => $validated['query_omschrijving'],
         ]);
 
-        return redirect()->route('contracts.edit', $contract)->with('success', 'Query created!');
+        return redirect()->route('contracts.edit', $contract)->with('success', 'Query toegevoegd');
     }
 
     public function edit(Query $query)
@@ -45,7 +45,7 @@ class QueryController extends Controller
 
         $query->update($validated);
 
-        return redirect()->route('queries.index', $query->contract)->with('success', 'Query updated!');
+        return redirect()->route('queries.index', $query->contract)->with('success', 'Query geüpdate!');
     }
 
     public function destroy(Query $query)
@@ -53,6 +53,6 @@ class QueryController extends Controller
         $contract = $query->contract;
         $query->delete();
 
-        return redirect()->route('contracts.index', $contract)->with('success', 'Query deleted!');
+        return redirect()->route('contracts.edit', $contract)->with('success', 'Query deleted!');
     }
 }
