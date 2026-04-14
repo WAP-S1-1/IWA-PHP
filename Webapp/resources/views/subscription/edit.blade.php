@@ -63,7 +63,7 @@
             </div>
             <div class="d-flex gap-2">
             <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Bijwerken</button>
-                <a href="{{ route('$subscription.index') }}" class="btn btn-secondary">Annuleren</a>
+                <a href="{{ route('subscription.index') }}" class="btn btn-secondary">Annuleren</a>
             </div>
         </form>
         <form action="{{ route('subscription.destroy', $subscription->id) }}" method="POST" style="width: 300px"

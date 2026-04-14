@@ -62,7 +62,7 @@ class SubscriptionController extends Controller{
 
         Subscription::create($data);
         return redirect()->route('subscription.index')
-            ->with('success', 'Subscription created successfully');
+            ->with('success', 'Abonnement aangemaakt');
     }
 
     public function edit(Subscription $subscription)
@@ -98,12 +98,12 @@ class SubscriptionController extends Controller{
         ]));
 
         return redirect()->route('subscription.index')
-            ->with('success', 'Subscription updated successfully');
+            ->with('success', 'Abonnement geüpdate');
     }
 
     public function destroy(Subscription $subscription){
         $subscription->delete();
         return redirect()->route('subscription.index')
-            ->with('success', 'Subscription deleted successfully');
+            ->with('success', 'Abonnenment verwijderd');
     }
 }

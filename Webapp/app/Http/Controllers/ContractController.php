@@ -48,7 +48,7 @@ class ContractController extends Controller
             'omschrijving' => 'required|string|max:256',
             'start_datum' => 'required|date',
             'eind_datum' => 'nullable|date|after:start_datum',
-            'url' => 'nullable|url|max:100',
+            'url' => 'required|url|max:100',
         ]);
 
         Contract::create($validated);

@@ -47,7 +47,6 @@
                         @enderror
                     </div>
                 </div>
-
                 <div class="mb-3" style="font-weight:500">
                     <label for="url" class="form-label">URL</label>
                     <input type="url" name="url" id="url" class="form-control @error('url') is-invalid @enderror"
@@ -56,7 +55,6 @@
                     <div class="text-danger small">{{ $message }}</div>
                     @enderror
                 </div>
-
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-dark flex-grow-1">Contract Opslaan</button>
                     <a href="{{ route('contracts.index') }}" class="btn btn-secondary">Annuleren</a>
@@ -72,7 +70,6 @@
             </form>
         </div>
         <div class="card shadow-lg p-4 rounded-5 align-items-center" style="width:fit-content;min-width:550px; background-color:rgba(255,255,255,0.5); display: flex; flex-direction: column;">
-
         <h2>Query's bewerken</h2>
             <div style="width: 300px; max-height: 300px; overflow-y: auto;">
                 @if(session('success'))
@@ -101,9 +98,7 @@
                     <p class="text-muted">Geen queries beschikbaar</p>
                 @endforelse
             </div>
-
             <hr style="margin: 1rem 0;">
-
             <form id="newQueryForm" action="{{ route('contracts.queries.store', $contract) }}" method="POST" style="width: 300px">
                 @csrf
                 <div class="mb-3" style="font-weight:500">
@@ -112,7 +107,6 @@
                 </div>
                 <button type="submit" class="btn btn-dark w-100">+ Query Toevoegen</button>
             </form>
-
         </div>
     </div>
 
