@@ -31,7 +31,7 @@ class AuthController extends Controller
         $credentials = $request->only('employee_code', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
-            redirect("/login");
+            return redirect("/login")->with('error', 'Verkeerd wachtwoord of personeelscode bestaat niet');
             //return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -47,44 +47,6 @@ class AuthController extends Controller
         $cookie = cookie('jwt-token', $token, 60*24, null, null, false, true);
 
         return redirect("/")->cookie($cookie);
-    }
-
-    /**
-     * Store a newly created user
-     */
-    // TODO: Move to user controller
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'first_name' => 'nullable|string|max:45',
-            'initials' => 'nullable|string|max:12',
-            'prefix' => 'nullable|string|max:10',
-            'email' => 'required|string|email|max:100|unique:users',
-            'employee_code' => 'required|string|max:10',
-            'user_role' => 'required|integer|exists:userroles,id',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'first_name' => $request->first_name,
-            'initials' => $request->initials,
-            'prefix' => $request->prefix,
-            'email' => $request->email,
-            'employee_code' => $request->employee_code,
-            'user_role' => $request->user_role,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ], 201);
     }
 
     /**
@@ -113,5 +75,4 @@ class AuthController extends Controller
 
         return redirect("/login")->cookie($cookie);
     }
-
 }

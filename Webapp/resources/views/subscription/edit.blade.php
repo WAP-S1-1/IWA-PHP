@@ -14,7 +14,7 @@
                 <select name="company" class="form-select" style="background-color:rgba(255,255,255,0.4)" required>
                     @foreach($companies as $company)
                         <option value="{{ $company->id }}"
-                            {{ $company->id == $company->name ? 'selected' : ''}}>
+                            {{ $company->id == $subscription->company ? 'selected' : ''}}>
                             {{ $company->name }}
                         </option>
                     @endforeach
@@ -62,7 +62,7 @@
                 <textarea class="form-control" style="background-color:rgba(255,255,255,0.4)" id="notes" name="notes">{{ old('notes', $subscription->notes) }}</textarea>
             </div>
             <div class="d-flex gap-2">
-            <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Bijwerken</button>
+                <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Abonnement Opslaan</button>
                 <a href="{{ route('subscription.index') }}" class="btn btn-secondary">Annuleren</a>
             </div>
         </form>
