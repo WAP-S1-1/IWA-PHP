@@ -50,44 +50,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Store a newly created user
-     */
-    // TODO: Move to user controller
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'first_name' => 'nullable|string|max:45',
-            'initials' => 'nullable|string|max:12',
-            'prefix' => 'nullable|string|max:10',
-            'email' => 'required|string|email|max:100|unique:users',
-            'employee_code' => 'required|string|max:10',
-            'user_role' => 'required|integer|exists:userroles,id',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'first_name' => $request->first_name,
-            'initials' => $request->initials,
-            'prefix' => $request->prefix,
-            'email' => $request->email,
-            'employee_code' => $request->employee_code,
-            'user_role' => $request->user_role,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ], 201);
-    }
-
-    /**
      * Get the authenticated user's profile
      */
     public function profile(Request $request)
@@ -114,4 +76,58 @@ class AuthController extends Controller
         return redirect("/login")->cookie($cookie);
     }
 
+    public function forgetPassword(Request $request)
+    {
+        return view('auth.forget-password');
+    }
+
+    public function checkUser(Request $request)
+    {
+        $request->validate([
+            'employee_code' => 'required'
+        ]);
+
+        $user = User::where('employee_code', $request->employee_code)->first();
+
+        if (!$user) {
+            return back()->withErrors(['employee_code' => 'Gebruiker niet gevonden']);
+        }
+
+        return view('auth.reset-password', compact('user'));
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::find($request->user_id);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect('/login')->with('success', 'Wachtwoord succesvol gewijzigd');
+    }
+
+    public function editPassword(User $user)
+    {
+        return view('auth/password', compact('user'));
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('users.index')
+            ->with('success', 'Password updated successfully');
+    }
 }
