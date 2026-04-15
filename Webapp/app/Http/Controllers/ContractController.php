@@ -8,13 +8,11 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-    // READ - Get all contracts
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch contracts with company relationship AND queries
+        $mode = $request->query('mode', 'view');
         $contracts = Contract::with('company', 'queries')->paginate(15);
 
-        // MAP the data to match what the view expects
         $contracts = $contracts->map(function($contract) {
             return (object) [
                 'id' => $contract->id,
@@ -24,70 +22,66 @@ class ContractController extends Controller
                 'omschrijving' => $contract->omschrijving,
                 'url' => $contract->url,
                 'company_id' => $contract->company_id,
-                'queries_count' => $contract->queries->count(), // Add this
+                'queries_count' => $contract->queries->count(),
                ];
         });
 
-        return view('contracts.index', compact('contracts'));
+        return view('contracts.index', compact('contracts', 'mode'));
     }
 
-    // READ - Show single contract
     public function show(Contract $contract)
     {
         $contract->load('company', 'queries');
         return view('contracts.show', compact('contract'));
     }
 
-    // CREATE - Show form
     public function create()
     {
         $companies = Company::all();
         return view('contracts.create', compact('companies'));
     }
 
-    // CREATE - Store in database
     public function store(Request $request)
     {
         $validated = $request->validate([
             'company_id' => 'required|exists:companies,id',
-            'omschrijving' => 'required|string|max:45',
+            'omschrijving' => 'required|string|max:256',
             'start_datum' => 'required|date',
             'eind_datum' => 'nullable|date|after:start_datum',
             'url' => 'required|url|max:100',
         ]);
 
         Contract::create($validated);
-
-        return redirect()->route('contracts.index')->with('success', 'Contract created successfully!');
+        return redirect()->route('contracts.index')->with('success', 'Contract aangemaakt');
     }
 
-    // UPDATE - Show edit form
     public function edit(Contract $contract)
     {
         $companies = Company::all();
         return view('contracts.edit', compact('contract', 'companies'));
     }
 
-    // UPDATE - Save changes
     public function update(Request $request, Contract $contract)
     {
         $validated = $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => 'nullable|exists:companies,id',
             'omschrijving' => 'required|string|max:45',
-            'start_datum' => 'required|date',
-            'eind_datum' => 'nullable|date|after:start_datum',
-            'url' => 'required|url|max:100',
+            'start_datum' => 'nullable|date',
+            'eind_datum' => 'nullable|date|after_or_equal:start_datum',
+            'url' => 'nullable|url|max:100',
         ]);
 
-        $contract->update($validated);
+        $contract->update(array_filter($validated, fn($value) => $value !== null));
 
-        return redirect()->route('contracts.show', $contract)->with('success', 'Contract updated successfully!');
+        return redirect()->route('contracts.index')->with('success', 'Contract geüpdate');
     }
 
-    // DELETE
-    public function destroy(Contract $contract)
-    {
+
+    public function destroy(Contract $contract){
         $contract->delete();
-        return redirect()->route('contracts.index')->with('success', 'Contract deleted successfully!');
+        return redirect()->route('contracts.index')
+            ->with('success', 'Contract verwijderd');
     }
 }
+
+

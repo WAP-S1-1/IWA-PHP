@@ -61,6 +61,8 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::resource('contracts', ContractController::class);
     Route::resource('contracts.queries', QueryController::class)->shallow();
 
+
+
 });
 
 Route::post('/register', [AuthController::class, 'store']);
