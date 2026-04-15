@@ -106,7 +106,7 @@
                 @if($mode === 'edit')
                     <div class="col-md-1">
                         <a href="{{ route('contracts.edit', $con->id) }}"
-                           class="btn btn-sm btn-danger">
+                           class="btn btn-sm btn-danger" style="height: 24px; padding-top: 0; border-radius: 10px;">
                             Wijzig
                         </a>
                     </div>
