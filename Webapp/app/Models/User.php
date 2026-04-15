@@ -74,10 +74,10 @@ class User extends Authenticatable implements JWTSubject
         }
 
         if (is_array($role)) {
-            return in_array($this->role->name, $role);
+            return in_array($this->role->role, $role);
         }
 
-        return $this->role->name === $role;
+        return $this->role->role === $role;
     }
 
 }
