@@ -57,8 +57,8 @@
                 <textarea class="form-control" style="background-color:rgba(255,255,255,0.4)" id="notes"></textarea>
             </div>
             <div class="d-flex gap-2">
-            <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Toevoegen</button>
-            <a href="{{ route('subscription.index') }}" class="btn btn-danger">Annuleren</a>
+                <button href="{{asset('subscription')}}" type="submit" class="btn btn-dark w-100 p-1">Abonnement Opslaan</button>
+                <a href="{{ route('subscription.index') }}" class="btn btn-danger">Annuleren</a>
             </div>
         </form>
     </div>

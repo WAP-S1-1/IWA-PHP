@@ -49,13 +49,13 @@
                     @if($mode === 'edit')
                         <div class="col-3" style="font-weight: bold">Rol</div>
                         <div class="col-5" style="font-weight: bold">Omschrijving</div>
-                        <div class="col-2" style="font-weight: bold">Werknemerscode</div>
+                        <div class="col-2" style="font-weight: bold">Personeelscode</div>
                         <div class="col" style="font-weight: bold">Wijzigen</div>
                         <hr class="w-80 mx-auto my-2">
                     @else
                         <div class="col-3" style="font-weight:bold">Rol</div>
                         <div class="col-6" style="font-weight:bold">Omschrijving</div>
-                        <div class="col-2" style="font-weight: bold">Werknemerscode</div>
+                        <div class="col-2" style="font-weight: bold">Personeelscode</div>
                         <hr class="w-80 mx-auto my-2">
                     @endif
                 </div>

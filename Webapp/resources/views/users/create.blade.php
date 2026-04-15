@@ -38,7 +38,7 @@
         </div>
 
         <div class="mb-3" style="font-weight:500">
-            <label for="employee_code" class="form-label">Personeelsnummer *</label>
+            <label for="employee_code" class="form-label">Personeelscode *</label>
             <input type="text" class="form-control" id="employee_code" name="employee_code" required>
         </div>
 
@@ -60,11 +60,14 @@
         </div>
 
         <div class="mb-3" style="font-weight:500">
-            <label for="password_confirmation" class="form-label">Herhaal wachtwoord *</label>
+            <label for="password_confirmation" class="form-label">Bevestig wachtwoord *</label>
             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
         </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark w-100 p-1">Gebruiker Opslaan</button>
+            <a href="{{ route('users.index') }}" class="btn btn-danger">Annuleren</a>
+        </div>
 
-        <button type="submit" class="btn btn-dark w-100 p-1">Toevoegen</button>
     </form>
 </div>
 

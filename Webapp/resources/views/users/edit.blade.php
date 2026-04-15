@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-3" style="font-weight:500">
-                <label for="employee_code" class="form-label">Personeelsnummer *</label>
+                <label for="employee_code" class="form-label">Personeelscode *</label>
                 <input type="text" class="form-control" value="{{ $user->employee_code }}" id="employee_code" name="employee_code">
             </div>
 
@@ -57,13 +57,15 @@
             </div>
 
             <div class="mb-3" style="font-weight:500">
-                <a href="{{ route('auth.password.edit', $user->id) }}"
+                <a href="{{ route('password.edit', $user->id) }}"
                    class="btn btn-warning w-100 mt-2">
-                    Change Password
+                    Wachtwoord Wijzigen
                 </a>
             </div>
-
-            <button type="submit" class="btn btn-dark w-100 p-1">Wijzigen</button>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark w-100 p-1">Gebruiker Opslaan</button>
+                <a href="{{ route('users.index') }}" class="btn btn-secondary">Annuleren</a>
+            </div>
         </form>
         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="width: 300px"
               onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?');">
