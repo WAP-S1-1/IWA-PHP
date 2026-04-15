@@ -75,6 +75,10 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
 //Users routes
 
+    Route::post('/users/get-prefix', [UsersController::class, 'getPrefix'])
+        ->name('users.get-prefix')
+        ->middleware(JwtCookieAuth::class);
+
     Route::get('/users', [UsersController::class, 'index'])
         ->name('users.index');
 
@@ -107,3 +111,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::resource('contracts.queries', QueryController::class)->shallow();
 
 });
+
+Route::get('/register', [AuthController::class, 'index'])
+    ->name('register');
+

@@ -12,56 +12,63 @@
     @endif
         <form action="{{ route('users.store') }}" method="POST" style="width: 300px">
         @csrf
-        <div class="mb-3" style="font-weight:500">
-            <label for="name" class="form-label">Achternaam *</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-        </div>
 
-        <div class="mb-3" style="font-weight:500">
+        <div class="row mb-3" style="font-weight:500">
+            <div class="col-6">
             <label for="first_name" class="form-label">Voornaam</label>
             <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Voornaam">
-        </div>
+            </div>
 
-        <div class="mb-3" style="font-weight:500">
-            <label for="initials" class="form-label">Voorletters</label>
-            <input type="text" class="form-control" id="initials" name="initials" placeholder="Voorletters">
+            <div class="col-6" style="font-weight:500">
+                <label for="initials" class="form-label">Voorletters</label>
+                <input type="text" class="form-control" id="initials" name="initials" placeholder="Voorletters">
+            </div>
         </div>
-
-        <div class="mb-3" style="font-weight:500">
+    <div class="row mb-3" style="font-weight:500">
+        <div class="col-6" style="font-weight:500">
+            <label for="name" class="form-label">Achternaam *</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Achternaam" required>
+        </div>
+        <div class="col-6" style="font-weight:500">
             <label for="prefix" class="form-label">Tussenvoegsel</label>
             <input type="text" class="form-control" id="prefix" name="prefix" placeholder="Tussenvoegsel">
         </div>
+    </div>
 
         <div class="mb-3" style="font-weight:500">
             <label for="email" class="form-label">E-mail *</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Vul hier de IWA emailadres" required>
         </div>
 
-        <div class="mb-3" style="font-weight:500">
-            <label for="employee_code" class="form-label">Personeelsnummer *</label>
-            <input type="text" class="form-control" id="employee_code" name="employee_code" required>
-        </div>
-
-        <div class="mb-3" style="font-weight:500">
-            <label for="user_role" class="form-label">Rol *</label>
-            <select class="form-select" id="user_role" name="user_role" required>
+            <div class="mb-3" style="font-weight:500">
+                <label for="user_role" class="form-label">Rol *</label>
+                <select class="form-select" id="user_role" name="user_role" required
+                        hx-post="{{ route('users.get-prefix') }}"
+                        hx-target="#employee_code"
+                        hx-swap="outerHTML"
+                        hx-headers='{"X-Requested-With":"XMLHttpRequest"}'>
                 <option value="">Selecteer een rol</option>
-                @foreach($userroles as $userrole)
-                    <option value="{{ $userrole->id }}">
-                        {{ $userrole->role }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+                    @foreach($userroles as $userrole)
+                        <option value="{{ $userrole->id }}">
+                            {{ $userrole->role }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-        <div class="mb-3" style="font-weight:500">
+            <div class="mb-3" style="font-weight:500">
+                <label for="employee_code" class="form-label">Personeelsnummer *</label>
+                <input type="text" class="form-control" id="employee_code" name="employee_code" placeholder="Vul hier een 4-cijferige nummer" required>
+            </div>
+
+            <div class="mb-3" style="font-weight:500">
             <label for="password" class="form-label">Wachtwoord *</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Vul hier de eenmalige wachtwoord in" required>
         </div>
 
         <div class="mb-3" style="font-weight:500">
             <label for="password_confirmation" class="form-label">Herhaal wachtwoord *</label>
-            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Herhaal de eenmalige wachtwoord" required>
         </div>
 
         <button type="submit" class="btn btn-dark w-100 p-1">Toevoegen</button>
@@ -70,4 +77,6 @@
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
 @endsection
