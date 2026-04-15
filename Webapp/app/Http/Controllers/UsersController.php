@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use function Laravel\Prompts\select;
 
 class UsersController extends Controller {
@@ -47,7 +48,19 @@ class UsersController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
+            $errors = $validator->errors();
+
+            if ($errors->has('email')) {
+                return redirect()->back()->with('error', 'Dit e-mailadres bestaat al');
+            }
+
+            if ($errors->has('employee_code')) {
+                return redirect()->back()->with('error', 'Dit personeelscode bestaat al');
+            }
+
+            if ($errors->has('password')) {
+                return redirect()->back()->with('error', 'De bevestiging van het wachtwoord komt niet overeen');
+            }
         }
 
         User::create([
@@ -85,7 +98,15 @@ class UsersController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
+            $errors = $validator->errors();
+
+            if ($errors->has('email')) {
+                return redirect()->back()->with('error', 'Dit e-mailadres bestaat al');
+            }
+
+            if ($errors->has('employee_code')) {
+                return redirect()->back()->with('error', 'Dit personeelscode bestaat al');
+            }
         }
 
         $user->update($request->only([
@@ -99,18 +120,65 @@ class UsersController extends Controller {
         ]));
 
         return redirect()->route('users.index')
-            ->with('success', 'User updated successfully');
+            ->with('success', 'Gebruiker gewijzigd');
     }
 
     public function destroy(User $user)
     {
         if (auth()->id() === $user->id) {
             return redirect()->back()
-                ->with('error', 'You cannot delete yourself');
+                ->with('error', 'Je kan jezelf niet verwijderen!');
         }
 
         $user->delete();
         return redirect()->route('users.index')
-            ->with('success', 'User deleted successfully');
+            ->with('success', 'Gebruiker verwijderd');
+    }
+
+    public function editPassword(User $user)
+    {
+        return view('users.password', compact('user'));
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        $currentUser = auth()->user();
+
+        if (!in_array($currentUser->user_role, [4, 6]) && $currentUser->id !== $user->id) {
+            return redirect()->back()
+                ->with('error', 'Je mag dit wachtwoord niet wijzigen');
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if (Hash::check($request->password, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'Nieuw wachtwoord is hetzelfde als het oude wachtwoord');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        if ($currentUser->id === $user->id) {
+            $token = $request->cookie('jwt-token');
+            if ($token) {
+                JWTAuth::setToken($token)->invalidate();
+            }
+
+            // Remove cookie
+            $cookie = cookie('jwt-token', '', -1);
+
+            $response = redirect('/login')
+                ->with('success', 'Wachtwoord gewijzigd, log opnieuw in')
+                ->cookie($cookie);
+
+            return $response->cookie('token', '', -1);
+        }
+
+        return redirect()->route('users.index')
+            ->with('success', 'Wachtwoord gewijzigd');
     }
 }

@@ -26,20 +26,7 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
-    ->name('password.request');
 
-Route::post('/forgot-password', [AuthController::class, 'checkUser'])
-    ->name('password.check');
-
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->name('password.reset');
-
-Route::get('/password/{user}', [AuthController::class, 'editPassword'])
-    ->name('auth.password.edit');
-
-Route::put('/password/{user}', [AuthController::class, 'updatePassword'])
-    ->name('auth.password.update');
 
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
@@ -93,6 +80,11 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])
         ->name('users.destroy');
 
+    Route::get('/users/change-password/{user}', [UsersController::class, 'editPassword'])
+        ->name('password.edit');
+
+    Route::put('/users/change-password/{user}', [UsersController::class, 'updatePassword'])
+        ->name('password.update');
 
 //Monitoring routes
 

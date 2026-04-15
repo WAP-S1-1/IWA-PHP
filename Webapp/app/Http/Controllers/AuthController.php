@@ -31,7 +31,7 @@ class AuthController extends Controller
         $credentials = $request->only('employee_code', 'password');
 
         if (!$token = auth()->attempt($credentials)) {
-            redirect("/login");
+            return redirect("/login")->with('error', 'Verkeerd wachtwoord of personeelscode bestaat niet');
             //return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -74,60 +74,5 @@ class AuthController extends Controller
         $cookie = cookie('jwt-token', '', -1);
 
         return redirect("/login")->cookie($cookie);
-    }
-
-    public function forgetPassword(Request $request)
-    {
-        return view('auth.forget-password');
-    }
-
-    public function checkUser(Request $request)
-    {
-        $request->validate([
-            'employee_code' => 'required'
-        ]);
-
-        $user = User::where('employee_code', $request->employee_code)->first();
-
-        if (!$user) {
-            return back()->withErrors(['employee_code' => 'Gebruiker niet gevonden']);
-        }
-
-        return view('auth.reset-password', compact('user'));
-    }
-
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
-        $user = User::find($request->user_id);
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect('/login')->with('success', 'Wachtwoord succesvol gewijzigd');
-    }
-
-    public function editPassword(User $user)
-    {
-        return view('auth/password', compact('user'));
-    }
-
-    public function updatePassword(Request $request, User $user)
-    {
-        $request->validate([
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->route('users.index')
-            ->with('success', 'Password updated successfully');
     }
 }
