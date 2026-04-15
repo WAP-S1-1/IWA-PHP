@@ -22,12 +22,14 @@ class QueryController extends Controller
     public function store(Request $request, Contract $contract)
     {
         $validated = $request->validate([
-            'omschrijving' => 'required|string|max:256',
+            'query_omschrijving' => 'required|string|max:256',
         ]);
 
-        $contract->queries()->create($validated);
+        $contract->queries()->create([
+            'omschrijving' => $validated['query_omschrijving'],
+        ]);
 
-        return redirect()->route('queries.index', $contract)->with('success', 'Query created!');
+        return redirect()->route('contracts.edit', $contract)->with('success', 'Query toegevoegd');
     }
 
     public function edit(Query $query)
@@ -43,7 +45,7 @@ class QueryController extends Controller
 
         $query->update($validated);
 
-        return redirect()->route('queries.index', $query->contract)->with('success', 'Query updated!');
+        return redirect()->route('queries.index', $query->contract)->with('success', 'Query geüpdate!');
     }
 
     public function destroy(Query $query)
@@ -51,6 +53,6 @@ class QueryController extends Controller
         $contract = $query->contract;
         $query->delete();
 
-        return redirect()->route('queries.index', $contract)->with('success', 'Query deleted!');
+        return redirect()->route('contracts.edit', $contract)->with('success', 'Query deleted!');
     }
 }
