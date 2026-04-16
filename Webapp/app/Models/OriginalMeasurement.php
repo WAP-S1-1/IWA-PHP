@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class OriginalMeasurement extends Model
 {
-    use HasFactory;
-
     protected $table = 'original_measurement';
     protected $primaryKey = 'id';
     public $timestamps = false;
@@ -17,12 +15,6 @@ class OriginalMeasurement extends Model
         'corrected_measurement',
         'missing_field',
         'inavlid_temperature',
-        'original_data',
-        'correction_reason'
-    ];
-
-    protected $casts = [
-        'original_data' => 'array',
     ];
 
     public function correctedMeasurement()
