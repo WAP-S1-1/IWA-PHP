@@ -63,9 +63,10 @@ class ContractController extends Controller
         $results = DB::select($sql);
 
         return response()->json([
-            'user' => auth('customer-api')->user(),
-            'query' => $sql,
-            'results' => $results
+            "meta" => [
+                "result_count" => count($results),
+            ],
+            'data' => $results,
         ]);
     }
 
