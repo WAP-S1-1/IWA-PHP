@@ -55,6 +55,13 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::get('/monitoring', [MonitoringController::class, 'index'])
         ->name('monitoring.index');
 
+    Route::get('/stations/{station}/measurements', [MeasurementController::class, 'show'])
+        ->name('stations.measurements');
+
+
+    Route::get('/stations/{station}/measurements', [MonitoringController::class, 'showMeasurements'])
+        ->name('stations.measurements');
+
 });
 
 Route::post('/register', [AuthController::class, 'store']);
