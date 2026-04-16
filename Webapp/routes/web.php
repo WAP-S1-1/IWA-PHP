@@ -26,6 +26,10 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/test', function () {
+    return view('test');
+});
+
 Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
     ->name('password.request');
 
