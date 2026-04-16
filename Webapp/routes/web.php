@@ -5,11 +5,13 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\UsersController;
 use App\Http\Middleware\JwtCookieAuth;
 use App\Http\Middleware\NoCache;
 use App\Http\Middleware\RedirectIfAuthenticatedJwt;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RegisterUser;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\QueryController;
 
 
 Route::get('/', function () {
@@ -20,21 +22,42 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
     return view('login');
 });
 
-// route voor inloggen
+// Auth routes
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/test', function () {
     return view('test');
 });
 
+Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
+    ->name('password.request');
+
+Route::post('/forgot-password', [AuthController::class, 'checkUser'])
+    ->name('password.check');
+
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('password.reset');
+
+Route::get('/password/{user}', [AuthController::class, 'editPassword'])
+    ->name('auth.password.edit');
+
+Route::put('/password/{user}', [AuthController::class, 'updatePassword'])
+    ->name('auth.password.update');
 
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');;
 
+
+//Companies routes
+
     Route::get('/companies', [CompanyController::class, 'index'])
         ->name('companies.index');
+
+
+//Subscription routes
 
     Route::get('/subscription', [SubscriptionController::class, 'index'])
         ->name('subscription.index');
@@ -54,13 +77,47 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::delete('/subscription/{subscription}', [SubscriptionController::class, 'destroy'])
         ->name('subscription.destroy');
 
+//Users routes
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/users/get-prefix', [UsersController::class, 'getPrefix'])
+        ->name('users.get-prefix')
+        ->middleware(JwtCookieAuth::class);
+
+    Route::get('/users', [UsersController::class, 'index'])
+        ->name('users.index');
+
+    Route::get('/users/create', [UsersController::class, 'create'])
+        ->name('users.create');
+
+    Route::post('/users', [UsersController::class, 'store'])
+        ->name('users.store');
+
+    Route::get('/users/edit/{user}', [UsersController::class, 'edit'])
+        ->name('users.edit');
+
+    Route::put('/users/{user}', [UsersController::class, 'update'])
+        ->name('users.update');
+
+    Route::delete('/users/{user}', [UsersController::class, 'destroy'])
+        ->name('users.destroy');
+
+
+//Monitoring routes
+
     Route::get('/monitoring', [MonitoringController::class, 'index'])
         ->name('monitoring.index');
 
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::get('/contract',[ContractController::class, 'index'])->name('contracts');
+    Route::resource('contracts', ContractController::class);
+    Route::resource('contracts.queries', QueryController::class)->shallow();
+
+
+
 });
 
-Route::post('/register', [AuthController::class, 'store']);
+Route::get('/register', [AuthController::class, 'index'])
+    ->name('register');
 
-Route::get('/register', [RegisterUser::class, 'index']);

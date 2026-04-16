@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            ProjectWebSeeder::class,
+            UsersAndUserrolesSeeder::class,
             CountrySeeder::class,
             StationSeeder::class,
             GeolocationSeeder::class,
@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             SubscriptionTypesSeeder::class,
             SubscriptionsSeeder::class,
             SubscriptionStationSeeder::class,
+            ContractsSeeder::class,
+            QuerySeeder::class,
         ]);
     }
 }
