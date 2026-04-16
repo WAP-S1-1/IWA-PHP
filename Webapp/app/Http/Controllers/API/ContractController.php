@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Query;
+use App\Models\Contract;
+use Illuminate\Support\Facades\DB;
 
 // TODO: Fully ChatGPT generated code. Needs to be rewritten by the team but can't due to time constraints
 class ContractController extends Controller
@@ -28,13 +29,59 @@ class ContractController extends Controller
 
     public function stations($identifier, $queryID)
     {
-        $query = Query::with([
-            'criteriumGroups.criteria',
-            'criteriumGroups.criteriumType'
-        ])->findOrFail($queryID);
+        // Checking if user has access to contract with $identifier
+        $user = auth('customer-api')->user();
+
+        $contract = Contract::query()->findOrFail($identifier);
+
+        if ($user->company_id !== $contract->company_id) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        // AI
+        $contract = Contract::with([
+            'queries.criteriumGroups.criteria',
+            'queries.criteriumGroups.criteriumType',
+        ])->findOrFail($identifier);
+
+        $query = $contract->queries->firstWhere('id', $queryID);
+
+        $this->joinTables = [];
+
+        $this->collectJoins($query);
+
+        $sql = "SELECT * FROM station ";
+
+        foreach (array_keys($this->joinTables) as $table) {
+            $sql .= " " . $this->resolveJoin($table);
+        }
+
+        $sql .= " WHERE " . $this->buildQuery($query);
+
+        $results = DB::select($sql);
+
         return response()->json([
-            '$query' => $this->buildQuery($query),
+            'user' => auth('customer-api')->user(),
+            'query' => $sql,
+            'results' => $results
         ]);
+    }
+
+    private function collectJoins($query): void
+    {
+        foreach ($query->criteriumGroups as $group) {
+            $type = $group->criteriumType;
+
+            if (!$type) continue;
+
+            $table = $type->referenced_table;
+
+            if ($table !== 'station') {
+                $this->joinTables[$table] = true;
+            }
+        }
     }
 
     public function buildQuery($query)
@@ -59,6 +106,11 @@ class ContractController extends Controller
         $field = $type->referenced_field;
         $table = $type->referenced_table;
 
+        // AUTO REGISTER JOIN (IMPORTANT PART)
+        if ($table !== 'station') {
+            $this->joinTables[$table] = true;
+        }
+
         $operator = $this->comparisons[$criterion['value_comparison']] ?? '=';
 
         $value = match ($criterion['value_type']) {
@@ -73,6 +125,19 @@ class ContractController extends Controller
         }
 
         return "$table.$field $operator $value";
+    }
+
+    private function resolveJoin(string $table): string
+    {
+        return match ($table) {
+            'geolocation' =>
+            'LEFT JOIN geolocation ON geolocation.station_name = station.name',
+
+            'station' => '',
+
+            default =>
+            throw new \Exception("No join defined for table: $table"),
+        };
     }
 
     private function buildGroup($groups)

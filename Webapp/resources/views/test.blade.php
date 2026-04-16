@@ -265,7 +265,7 @@
 
         print({ endpoint: url, status: res.status, response: data });
 
-        if (res.status === 401 || res.status === 403) {
+        if (res.status === 401) {
             clearAuth();
         }
     }

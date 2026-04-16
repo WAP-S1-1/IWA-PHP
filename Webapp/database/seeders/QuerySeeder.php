@@ -30,7 +30,7 @@ class QuerySeeder extends Seeder
             [
                 'contract_id' => 1,
                 'omschrijving' => 'Alle stations in Noorwegen en Zweden boven de 200 meter en alle
-                                    stations boven 75 graden noorderbreedte. ',
+                                    stations onder 75 graden noorderbreedte. ',
             ],
         ];
 
@@ -41,28 +41,28 @@ class QuerySeeder extends Seeder
         $criteriumTypes = [
             [
                 'omschrijving' => 'Een lijst van landcodes',
-                'referenced_table' => 'Geolocatie',
-                'referenced_field' => 'Country_code'
+                'referenced_table' => 'geolocation',
+                'referenced_field' => 'country_code'
             ],
             [
                 'omschrijving' => 'Hoogte van het station',
-                'referenced_table' => 'Station',
-                'referenced_field' => 'Elevation'
+                'referenced_table' => 'station',
+                'referenced_field' => 'elevation'
             ],
             [
                 'omschrijving' => 'Coördinaten, breedtegraad',
-                'referenced_table' => 'Station',
-                'referenced_field' => 'Lattitude'
+                'referenced_table' => 'station',
+                'referenced_field' => 'latitude'
             ],
             [
                 'omschrijving' => 'Coördinaten, lengtegraad',
-                'referenced_table' => 'Station',
-                'referenced_field' => 'Longitude'
+                'referenced_table' => 'station',
+                'referenced_field' => 'longitude'
             ],
             [
                 'omschrijving' => 'Regiocode',
-                'referenced_table' => 'Nearestlocation',
-                'referenced_field' => 'Administrative_region1'
+                'referenced_table' => 'nearestlocation',
+                'referenced_field' => 'administrative_region1'
             ],
 
         ];
@@ -153,7 +153,7 @@ class QuerySeeder extends Seeder
                 'string_value' => null,
                 'float_value' => 75.0,
                 'value_type' => 3,
-                'value_comparison' => 5
+                'value_comparison' => 3
             ],
         ];
 
