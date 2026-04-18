@@ -110,6 +110,13 @@
     </div>
 
     <div class="card">
+        <h2>Station by Name</h2>
+        <input type="text" id="identifier2" placeholder="Identifier">
+        <input type="text" id="stationName" placeholder="Station Name">
+        <button onclick="getStationByName()">Get Station</button>
+    </div>
+
+    <div class="card">
         <h2>Token</h2>
         <pre id="tokenOut"></pre>
     </div>
@@ -247,6 +254,41 @@
         const queryID = document.getElementById("queryID").value;
 
         const url = `${API_BASE}/${identifier}/${queryID}/stations`;
+
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            }
+        });
+
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = { error: "Invalid JSON response" };
+        }
+
+        print({ endpoint: url, status: res.status, response: data });
+
+        if (res.status === 401) {
+            clearAuth();
+        }
+    }
+
+    async function getStationByName() {
+        const token = getToken();
+
+        if (!token) {
+            print({ error: "No token found" });
+            return;
+        }
+
+        const identifier = document.getElementById("identifier2").value;
+        const name = document.getElementById("stationName").value;
+
+        const url = `${API_BASE}/${identifier}/station/${encodeURIComponent(name)}`;
 
         const res = await fetch(url, {
             method: "GET",
