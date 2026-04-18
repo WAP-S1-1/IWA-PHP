@@ -5,8 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Userrole;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-class ProjectWebSeeder extends Seeder
+class UsersAndUserrolesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -61,6 +62,17 @@ class ProjectWebSeeder extends Seeder
                 'employee_code' => 'A0003',
                 'user_role' => 6,
                 'password' => 'scrypt:32768:8:1$WtuByIUWcKCpkyts$e255a8fd4603c7dc69d416dae629c7f757df74e76f8eb05583d1ff2b7c157702c9dd980c18077dbd27ec019c57ca4bcf74a8c8ac775e578ffab09e4de2728e51',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Admin',
+                'first_name' => '',
+                'initials' => '',
+                'prefix' => null,
+                'email' => 'admin@iwa.nl',
+                'employee_code' => '1',
+                'user_role' => 6,
+                'password' => Hash::make('password'),
             ],
             // ... add the rest of the users here, same format as above
         ];

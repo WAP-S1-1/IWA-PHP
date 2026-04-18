@@ -27,9 +27,9 @@
             <input type="password" class="form-control" style="background-color:rgba(255,255,255,0.4)" id="password" name="password" required>
         </div>
 
-        <p style="text-decoration: underline; text-align: center">
+        <a style="text-decoration: underline; text-align: center">
             Wachtwoord vergeten?
-        </p>
+        </a>
 
         <button type="submit" class="btn btn-dark w-100 p-1">
             Login

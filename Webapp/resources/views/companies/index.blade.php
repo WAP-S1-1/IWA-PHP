@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="d-flex">
-        @include('partials.side-bar')
+        @include('partials.commercial-sidebar')
         @include('companies.companies-table')
     </div>
 
