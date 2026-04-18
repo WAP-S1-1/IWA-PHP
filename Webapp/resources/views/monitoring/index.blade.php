@@ -62,7 +62,8 @@
                         $city = $firstGeo->city ?? 'City';
                     @endphp
 
-                    <div class="col-auto">
+
+                    <div class="col-auto"> <a href="{{ route('stations.measurements', $station) }}" class="text-decoration-none d-block">
                         <div class="card stations-card">
                             <div class="card-body p-3 overflow-hidden">
                                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
@@ -89,7 +90,9 @@
                                 <p>Elevation {{ $station->elevation ?? '' }} m</p>
                             </div>
                         </div>
+                        </a>
                     </div>
+
                 @endforeach
             </div>
 
