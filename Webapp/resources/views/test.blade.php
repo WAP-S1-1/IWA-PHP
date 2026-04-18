@@ -2,72 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JWT Full Test Dashboard</title>
+    <title>JWT Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 40px auto;
+            margin: 0;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            margin-top: 0;
         }
 
         input, button {
             width: 100%;
             padding: 10px;
-            margin: 5px 0;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+        }
+
+        input {
+            background: #0f172a;
+            color: white;
+            border: 1px solid #334155;
         }
 
         button {
-            cursor: pointer;
+            background: #3b82f6;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .actions button {
+            margin-top: 10px;
+        }
+
+        .full-width {
+            grid-column: span 2;
         }
 
         pre {
-            background: #111;
-            color: #0f0;
-            padding: 10px;
+            background: black;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 250px;
             overflow: auto;
+            font-size: 12px;
+            white-space: pre-wrap;      /* wrap long lines */
+            word-break: break-all;     /* break long tokens */
         }
 
-        .row {
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
 
-<h1>JWT Full Test Dashboard</h1>
+<h1>JWT Test Dashboard</h1>
 
-<!-- LOGIN -->
-<div class="row">
-    <h2>Login</h2>
+<div class="container">
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <div class="card">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
 
-    <button onclick="login()">Login</button>
-</div>
+    <div class="card actions">
+        <h2>Actions</h2>
+        <button onclick="checkMe()">Check /me</button>
+        <button onclick="logout()">Logout</button>
+    </div>
 
-<!-- ACTIONS -->
-<div class="row">
-    <h2>Actions</h2>
+    <div class="card">
+        <h2>Stations</h2>
+        <input type="text" id="identifier" placeholder="Identifier">
+        <input type="number" id="queryID" placeholder="Query ID">
+        <button onclick="getStations()">Get Stations</button>
+    </div>
 
-    <button onclick="checkMe()">Check /me</button>
-    <button onclick="logout()">Logout</button>
-</div>
+    <div class="card">
+        <h2>Token</h2>
+        <pre id="tokenOut"></pre>
+    </div>
 
-<!-- OUTPUTS -->
-<div class="row">
-    <h2>Token</h2>
-    <pre id="tokenOut"></pre>
-</div>
+    <div class="card">
+        <h2>Decoded JWT</h2>
+        <pre id="decodedOut"></pre>
+    </div>
 
-<div class="row">
-    <h2>Decoded JWT</h2>
-    <pre id="decodedOut"></pre>
-</div>
+    <div class="card full-width">
+        <h2>Response</h2>
+        <pre id="output"></pre>
+    </div>
 
-<div class="row">
-    <h2>Response</h2>
-    <pre id="output"></pre>
 </div>
 
 <script>
@@ -119,7 +175,6 @@
 
         if (data.token) {
             localStorage.setItem("token", data.token);
-
             showToken(data.token);
 
             const decoded = parseJwt(data.token);
@@ -151,13 +206,8 @@
             data = { error: "Invalid JSON response" };
         }
 
-        print({
-            endpoint: "/me",
-            status: res.status,
-            response: data
-        });
+        print({ endpoint: "/me", status: res.status, response: data });
 
-        // ✅ Only now decide if token is invalid
         if (res.status === 401 || res.status === 403 || data.error === "invalid_token") {
             clearAuth();
         }
@@ -182,15 +232,42 @@
 
         const data = await res.json();
 
-        print({
-            endpoint: "/logout",
-            status: res.status,
-            response: data
+        print({ endpoint: "/logout", status: res.status, response: data });
+    }
+
+    async function getStations() {
+        const token = getToken();
+
+        if (!token) {
+            print({ error: "No token found" });
+            return;
+        }
+
+        const identifier = document.getElementById("identifier").value;
+        const queryID = document.getElementById("queryID").value;
+
+        const url = `${API_BASE}/${identifier}/${queryID}/stations`;
+
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            }
         });
 
-        //localStorage.removeItem("token");
-        //showToken(null);
-        //document.getElementById("decodedOut").textContent = "";
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = { error: "Invalid JSON response" };
+        }
+
+        print({ endpoint: url, status: res.status, response: data });
+
+        if (res.status === 401) {
+            clearAuth();
+        }
     }
 </script>
 
