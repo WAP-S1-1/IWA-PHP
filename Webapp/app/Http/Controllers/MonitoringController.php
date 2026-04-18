@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Measurement;
 use App\Models\Station;
-use App\Models\Measurement;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
