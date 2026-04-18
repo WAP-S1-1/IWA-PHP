@@ -2,9 +2,6 @@
 
 namespace App\Models\contracts;
 
-use App\Models\ComparisonOperatorType;
-use App\Models\CriteriumGroup;
-use App\Models\OperatorType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
