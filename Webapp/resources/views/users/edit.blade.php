@@ -39,12 +39,7 @@
                 <label for="email" class="form-label">E-mail *</label>
                 <input type="email" class="form-control" value="{{ $user->email }}" id="email" name="email" required>
             </div>
-
-            <div class="mb-3" style="font-weight:500">
-                <label for="employee_code" class="form-label">Personeelscode *</label>
-                <input type="text" class="form-control" value="{{ $user->employee_code }}" id="employee_code" name="employee_code">
-            </div>
-
+            
             <div class="mb-3" style="font-weight:500">
                 <label for="user_role" class="form-label">Rol *</label>
                 <select class="form-select" id="user_role" name="user_role" required
@@ -60,6 +55,11 @@
                         </option>
                     @endforeach
                 </select>
+            </div>
+
+            <div class="mb-3" style="font-weight:500">
+                <label for="employee_code" class="form-label">Personeelscode *</label>
+                <input type="text" class="form-control" value="{{ $user->employee_code }}" id="employee_code" name="employee_code">
             </div>
 
             <div class="mb-3" style="font-weight:500">
