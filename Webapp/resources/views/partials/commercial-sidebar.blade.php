@@ -30,8 +30,8 @@
     </div>
     <div class="ms-4 d-flex flex-column overflow-hidden">
         <a href="{{asset('companies')}}" class="mb-1 sidebar-link resizable-text">Overzicht</a>
-        <a class="mb-1 sidebar-link resizable-text">Bijwerken</a>
-        <a class="mb-1 sidebar-link resizable-text">Toevoegen</a>
+        <a class="mb-1 sidebar-link resizable-text" style="text-decoration: line-through;">Bijwerken</a>
+        <a class="mb-1 sidebar-link resizable-text" style="text-decoration: line-through;">Toevoegen</a>
     </div>
     <div class="d-flex align-items-start align-middle overflow-hidden">
         <img class="align-self-start m-3" style="height:50px" src="{{asset('subscription.svg')}}" alt="subscriptions">
