@@ -41,23 +41,23 @@
         @auth
             @if(auth()->user()->hasRole(['Administrator', 'Administratief medewerker']))
         <li class="nav-item">
-            <a class="nav-link resizable-text {{ request()->routeIs('users.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('users.*') ? 'active' : '' }}"
                id="users-tab" href="{{ route('users.index') }}" role="tab" >Gebruikers</a>
         </li>
             @endif
                 @if(auth()->user()->hasRole(['Administrator', 'Commercieel medewerker']))
         <li class="nav-item">
-            <a class="nav-link resizable-text {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('subscription.*') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}"
                id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link resizable-text {{ request()->routeIs('contracts.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('contracts.*') ? 'active' : '' }}"
                id="contracts-tab" href="{{ route('contracts.index') }}" role="tab">Contracten</a>
         </li>
                 @endif
                 @if(auth()->user()->hasRole(['Administrator', 'Technisch medewerker']))
         <li class="nav-item">
-            <a class="nav-link resizable-text {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('monitoring.*') ? 'active' : '' }}"
                id="monitor-tab" href="{{ route('monitoring.index') }}" role="tab">Monitoring</a>
         </li>
                 @endif
