@@ -39,13 +39,13 @@
 {{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
 {{--        </li>--}}
         @auth
-            {{--@if(auth()->user()->hasRole(['Administrator', 'Commercieel medewerker']))--}}
+            @if(auth()->user()->hasRole(['Administrator', 'Administratief medewerker']))
         <li class="nav-item">
             <a class="nav-link resizable-text {{ request()->routeIs('users.index') ? 'active' : '' }}"
                id="users-tab" href="{{ route('users.index') }}" role="tab" >Gebruikers</a>
         </li>
-            {{--@endif--}}
-                {{--@if(auth()->user()->hasRole(['Administrator', 'Commercieel medewerker']))--}}
+            @endif
+                @if(auth()->user()->hasRole(['Administrator', 'Commercieel medewerker']))
         <li class="nav-item">
             <a class="nav-link resizable-text {{ request()->routeIs('subscription.index') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}"
                id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
@@ -54,13 +54,13 @@
             <a class="nav-link resizable-text {{ request()->routeIs('contracts.index') ? 'active' : '' }}"
                id="contracts-tab" href="{{ route('contracts.index') }}" role="tab">Contracten</a>
         </li>
-                {{--@endif--}}
-                {{--@if(auth()->user()->hasRole(['Administrator', 'Technisch medewerker']))--}}
+                @endif
+                @if(auth()->user()->hasRole(['Administrator', 'Technisch medewerker']))
         <li class="nav-item">
             <a class="nav-link resizable-text {{ request()->routeIs('monitoring.index') ? 'active' : '' }}"
                id="monitor-tab" href="{{ route('monitoring.index') }}" role="tab">Monitoring</a>
         </li>
-                {{--@endif --}}
+                @endif
 {{--        <li class="nav-item">--}}
 {{--            <a class="nav-link {{ request()->routeIs('api.index') ? 'active' : '' }}"--}}
 {{--               id="API-tab" href="#API" role="tab" >API beheer</a>--}}

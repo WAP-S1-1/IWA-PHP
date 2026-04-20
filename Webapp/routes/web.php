@@ -52,7 +52,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
 
 //Subscription routes
-    Route::middleware(RoleMiddleware::class.":Administrator, Commercieel medewerker")->group(function () {
+    Route::middleware(RoleMiddleware::class.":Administrator,Commercieel medewerker")->group(function () {
         Route::get('/subscription', [SubscriptionController::class, 'index'])
             ->name('subscription.index');
 
@@ -82,7 +82,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     });
 
 //Users routes
-    Route::middleware(RoleMiddleware::class.":Administrator, Administratief medewerkers")->group(function () {
+    Route::middleware(RoleMiddleware::class.":Administrator,Administratief medewerker")->group(function () {
         Route::post('/users/get-prefix', [UsersController::class, 'getPrefix'])
             ->name('users.get-prefix')
             ->middleware(JwtCookieAuth::class);
@@ -107,7 +107,7 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     });
 
 //Monitoring routes
-    Route::middleware(RoleMiddleware::class . ":Administrator, Technisch medewerker, Technisch onderzoeker")->group(function () {
+    Route::middleware(RoleMiddleware::class . ":Administrator,Technisch medewerker,Technisch onderzoeker")->group(function () {
         Route::get('/monitoring', [MonitoringController::class, 'index'])
             ->name('monitoring.index');
 
