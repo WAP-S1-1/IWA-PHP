@@ -13,24 +13,26 @@
         <form action="{{ route('users.update', $user->id) }}" method="POST" style="width: 300px">
             @csrf
             @method('PUT')
-            <div class="mb-3" style="font-weight:500">
-                <label for="name" class="form-label">Achternaam *</label>
-                <input type="text" class="form-control" value="{{ $user->name }}" id="name" name="name" required>
+            <div class="row mb-3" style="font-weight: 500">
+                <div class="col-6" style="font-weight:500">
+                    <label for="first_name" class="form-label">Voornaam</label>
+                    <input type="text" class="form-control" value="{{ $user->first_name }}" id="first_name" name="first_name" placeholder="Voornaam">
+                </div>
+                <div class="col-6" style="font-weight:500">
+                    <label for="initials" class="form-label">Voorletters</label>
+                    <input type="text" class="form-control" value="{{ $user->initials }}" id="initials" name="initials" placeholder="Voorletters">
+                </div>
             </div>
 
-            <div class="mb-3" style="font-weight:500">
-                <label for="first_name" class="form-label">Voornaam</label>
-                <input type="text" class="form-control" value="{{ $user->first_name }}" id="first_name" name="first_name" placeholder="Voornaam">
-            </div>
-
-            <div class="mb-3" style="font-weight:500">
-                <label for="initials" class="form-label">Voorletters</label>
-                <input type="text" class="form-control" value="{{ $user->initials }}" id="initials" name="initials" placeholder="Voorletters">
-            </div>
-
-            <div class="mb-3" style="font-weight:500">
-                <label for="prefix" class="form-label">Tussenvoegsel</label>
-                <input type="text" class="form-control" value="{{ $user->prefix }}" id="prefix" name="prefix" placeholder="Tussenvoegsel">
+            <div class="row mb-3" style="font-weight: 500">
+                <div class="col-6" style="font-weight:500">
+                    <label for="name" class="form-label">Achternaam *</label>
+                    <input type="text" class="form-control" value="{{ $user->name }}" id="name" name="name" required>
+                </div>
+                <div class="col-6" style="font-weight:500">
+                    <label for="prefix" class="form-label">Tussenvoegsel</label>
+                    <input type="text" class="form-control" value="{{ $user->prefix }}" id="prefix" name="prefix" placeholder="Tussenvoegsel">
+                </div>
             </div>
 
             <div class="mb-3" style="font-weight:500">
@@ -45,7 +47,11 @@
 
             <div class="mb-3" style="font-weight:500">
                 <label for="user_role" class="form-label">Rol *</label>
-                <select class="form-select" id="user_role" name="user_role" required>
+                <select class="form-select" id="user_role" name="user_role" required
+                        hx-post="{{ route('users.get-prefix') }}"
+                        hx-target="#employee_code"
+                        hx-swap="outerHTML"
+                        hx-headers='{"X-Requested-With":"XMLHttpRequest"}'>
                     <option value="">Selecteer een rol</option>
                     @foreach($userroles as $userrole)
                         <option value="{{ $userrole->id }}"
@@ -80,4 +86,5 @@
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 @endsection
