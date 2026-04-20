@@ -21,7 +21,10 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
     return view('login');
 });
 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 // Auth routes
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -51,8 +54,6 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::middleware(RoleMiddleware::class.':Administrator')->get('/test', function () {
         return view('test');
     });
-
-    Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
 //Subscription routes
@@ -128,8 +129,5 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
         Route::get('/stations/{station}/measurements', [MonitoringController::class, 'showMeasurements'])
             ->name('stations.measurements');
     });
-
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
 });
 
