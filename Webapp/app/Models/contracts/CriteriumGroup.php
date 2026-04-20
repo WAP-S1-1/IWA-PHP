@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\contracts;
 
 use App\Models\contracts\Criterium;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +18,7 @@ class CriteriumGroup extends Model
         'operator',
     ];
 
-    public function query(): BelongsTo
+    public function query_(): BelongsTo
     {
         return $this->belongsTo(Query::class, 'query');
     }
