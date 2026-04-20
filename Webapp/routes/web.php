@@ -21,8 +21,6 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
     return view('login');
 });
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
 // Auth routes
 
 
@@ -32,22 +30,9 @@ Route::get('/test', function () {
     return view('test');
 });
 
-Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
-    ->name('password.request');
-
-Route::post('/forgot-password', [AuthController::class, 'checkUser'])
-    ->name('password.check');
-
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->name('password.reset');
-
-Route::get('/password/{user}', [AuthController::class, 'editPassword'])
-    ->name('auth.password.edit');
-
-Route::put('/password/{user}', [AuthController::class, 'updatePassword'])
-    ->name('auth.password.update');
-
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');;
 
