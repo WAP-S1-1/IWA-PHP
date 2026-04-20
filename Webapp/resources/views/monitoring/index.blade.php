@@ -41,15 +41,15 @@
             </a>
             <a href="{{ route('monitoring.index', ['status' => Station::STATUS_OFFLINE]) }}"
                class="btn btn-sm {{ ($filter ?? '') === Station::STATUS_OFFLINE ? 'btn-danger' : 'btn-outline-danger' }}">
-                Red
+                Offline
             </a>
             <a href="{{ route('monitoring.index', ['status' => Station::STATUS_ERROR]) }}"
                class="btn btn-sm {{ ($filter ?? '') === Station::STATUS_ERROR ? 'btn-warning' : 'btn-outline-warning' }}">
-                Orange
+                Error
             </a>
             <a href="{{ route('monitoring.index', ['status' => Station::STATUS_ONLINE]) }}"
                class="btn btn-sm {{ ($filter ?? '') === Station::STATUS_ONLINE ? 'btn-success' : 'btn-outline-success' }}">
-                Green
+                Online
             </a>
         </div>
 

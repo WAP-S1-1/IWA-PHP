@@ -55,7 +55,21 @@ class MonitoringController extends Controller
                 });
                 break;
                 case Station::STATUS_ERROR:
-                    $query = $query->where('last_100_bad_count', '>=', 1);
+                    $query = $query->where('last_100_bad_count', '>=', 1)->whereNot(function ($q) {
+                        $thresholdDate = now()->subSeconds(300)->toDateString();
+                        $thresholdTime = now()->subSeconds(300)->toTimeString();
+
+                        $q->whereDoesntHave('latestMeasurement')
+                            ->orWhereHas('latestMeasurement', function ($q2) use ($thresholdDate, $thresholdTime) {
+                                $q2->where(function ($q3) use ($thresholdDate, $thresholdTime) {
+                                    $q3->where('date', '<', $thresholdDate)
+                                        ->orWhere(function ($q4) use ($thresholdDate, $thresholdTime) {
+                                            $q4->where('date', $thresholdDate)
+                                                ->where('time', '<', $thresholdTime);
+                                        });
+                                });
+                            });
+                    });
                 break;
 
                 default:

@@ -38,6 +38,7 @@
             <label for="password" class="form-label">Wachtwoord</label>
             <input type="password" class="form-control" style="background-color:rgba(255,255,255,0.4)" id="password" name="password" required>
         </div>
+
         <button type="submit" class="btn btn-dark w-100 p-1">
             Login
         </button>
