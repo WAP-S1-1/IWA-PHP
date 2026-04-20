@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             SubscriptionStationSeeder::class,
             ContractsSeeder::class,
             QuerySeeder::class,
+            NearestLocationSeeder::class,
+            CustomerSeeder::class,
         ]);
     }
 }
