@@ -149,9 +149,13 @@ class UsersController extends Controller {
                 ->with('error', 'Je mag dit wachtwoord niet wijzigen');
         }
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Wachtwoord moet minimaal 8 karakters lang zijn, en de wachtwoorden moeten overeen komen");
+        }
 
         if (Hash::check($request->password, $user->password)) {
             return redirect()->back()
