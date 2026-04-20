@@ -83,13 +83,18 @@ class MonitoringController extends Controller
 
                 $last = $station->latestMeasurement;
 
-                $measurementTime = Carbon::createFromFormat(
-                    'Y-m-d H:i:s',
-                    $last->date->format('Y-m-d') . ' ' . $last->time->format('H:i:s')
-                );
+                if (!$last){
+                    $station->status = Station::STATUS_OFFLINE;
+                }
+                else{
+                    $measurementTime = Carbon::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $last->date->format('Y-m-d') . ' ' . $last->time->format('H:i:s')
+                    );
 
-                $station->status = (!$last || $measurementTime->diffInUTCSeconds(now()) > 300)
-                    ? Station::STATUS_OFFLINE : Station::STATUS_ONLINE;
+                    $station->status = ($measurementTime->diffInUTCSeconds(now()) > 300)
+                        ? Station::STATUS_OFFLINE : Station::STATUS_ONLINE;
+                }
             }
             else{
                 $station->status = (int)$filter;

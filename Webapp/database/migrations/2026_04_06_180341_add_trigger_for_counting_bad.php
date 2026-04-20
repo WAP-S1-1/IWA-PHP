@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,41 +12,40 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Make sure the column exists first
-        DB::statement("
-            ALTER TABLE station
-            ADD COLUMN IF NOT EXISTS last_100_bad_count INT UNSIGNED NOT NULL DEFAULT 0
-        ");
+        // Ensure column exists (cross-compatible)
+        if (!Schema::hasColumn('station', 'last_100_bad_count')) {
+            Schema::table('station', function (Blueprint $table) {
+                $table->unsignedInteger('last_100_bad_count')->default(0);
+            });
+        }
 
-        // Drop trigger if it exists
+        // Drop trigger if exists
         DB::statement("DROP TRIGGER IF EXISTS measurement_after_insert");
 
         // Create trigger
         DB::statement("
-            CREATE TRIGGER measurement_after_insert
-            AFTER INSERT ON measurement
-            FOR EACH ROW
-            BEGIN
-                DECLARE bad_count INT;
+        CREATE TRIGGER measurement_after_insert
+        AFTER INSERT ON measurement
+        FOR EACH ROW
+        BEGIN
+            DECLARE bad_count INT;
 
-                -- Count bad packets among the last 100 measurements for this station
-                SELECT COUNT(*) INTO bad_count
-                FROM (
-                    SELECT om.corrected_measurement
-                    FROM measurement m
-                    JOIN original_measurement om
-                        ON om.corrected_measurement = m.id
-                    WHERE m.station = NEW.station
-                    ORDER BY m.date DESC, m.time DESC
-                    LIMIT 100
-                ) last_100;
+            SELECT COUNT(*) INTO bad_count
+            FROM (
+                SELECT om.corrected_measurement
+                FROM measurement m
+                JOIN original_measurement om
+                    ON om.corrected_measurement = m.id
+                WHERE m.station = NEW.station
+                ORDER BY m.date DESC, m.time DESC
+                LIMIT 100
+            ) AS last_100;
 
-                -- Update station's last_100_bad_count
-                UPDATE station
-                SET last_100_bad_count = bad_count
-                WHERE name = NEW.station;
-            END;
-        ");
+            UPDATE station
+            SET last_100_bad_count = bad_count
+            WHERE name = NEW.station;
+        END;
+    ");
     }
 
     /**
