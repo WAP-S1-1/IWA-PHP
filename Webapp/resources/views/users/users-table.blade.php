@@ -33,30 +33,28 @@
         <div class="row justify-content-start">
             <div class="col-md-2">
                 <div class="row justify-content-start">
-                    <div class="col-3" style="font-weight:bold">ID</div>
-                    <div class="col-4" style="font-weight:bold">Naam</div>
+                    <div class="col-md-auto" style="font-weight:bold">ID</div>
+                    <div class="col-md-auto" style="font-weight:bold">Naam</div>
+                    <hr class="w-100 mx-auto my-2">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row justify-content-evenly">
+                    <div class="col-md-4" style="font-weight:bold">E-mail</div>
                     <hr class="w-75 mx-auto my-2">
                 </div>
             </div>
-            <div class="col-3">
-                <div class="row justify-content-start">
-                    <div class="col-4" style="font-weight:bold">E-mail</div>
-                    <hr class="w-75 mx-auto my-2">
-                </div>
-            </div>
+            <div class="col">
+                <div class="row justify-content-evenly text-nowrap">
                     @if($mode === 'edit')
-                <div class="col-7">
-                    <div class="row justify-content-start text-nowrap">
                         <div class="col-3" style="font-weight: bold">Rol</div>
                         <div class="col-5" style="font-weight: bold">Omschrijving</div>
                         <div class="col-2" style="font-weight: bold">Personeelscode</div>
-                        <div class="col-md-2" style="font-weight: bold">Wijzigen</div>
+                        <div class="col" style="font-weight: bold">Wijzigen</div>
                         <hr class="w-80 mx-auto my-2">
                     @else
-                            <div class="col-7">
-                                <div class="row justify-content-around text-nowrap">
-                        <div class="col-2" style="font-weight:bold">Rol</div>
-                        <div class="col-4" style="font-weight:bold">Omschrijving</div>
+                        <div class="col-3" style="font-weight:bold">Rol</div>
+                        <div class="col-6" style="font-weight:bold">Omschrijving</div>
                         <div class="col-2" style="font-weight: bold">Personeelscode</div>
                         <hr class="w-80 mx-auto my-2">
                     @endif
@@ -83,7 +81,7 @@
                 <div class="col">
                     <div class="users-box">
                         <div class="row justify-content-evenly text-nowrap">
-                            <div class="col-3 text-truncate">{{ $user->role }}</div>
+                            <div class="col-3">{{ $user->role }}</div>
                             <div class="col-6 text-truncate">{{ $user->description ?? '' }}</div>
                             <div class="col-2 text-end"> {{ $user->employee_code }}</div>
                         </div>

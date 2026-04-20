@@ -35,9 +35,6 @@
 {{--        <li class="nav-item">--}}
 {{--            <a class="nav-link " id="home-tab" href="#home" role="tab">Home</a>--}}
 {{--        </li>--}}
-{{--        <li class="nav-item">--}}
-{{--            <a class="nav-link" id="users-tab" href="#users" role="tab" >Gebruikers</a>--}}
-{{--        </li>--}}
         @auth
             @if(auth()->user()->hasRole(['Administrator', 'Administratief medewerker']))
         <li class="nav-item">
@@ -46,8 +43,12 @@
         </li>
             @endif
                 @if(auth()->user()->hasRole(['Administrator', 'Commercieel medewerker']))
+                    <li class="nav-item">
+                        <a class="nav-link resizable-text {{ request()->routeIs('companies.*') ? 'active' : '' }}"
+                           id="companies-tab"  href="{{ route('companies.index') }}" role="tab">Bedrijven</a>
+                    </li>
         <li class="nav-item">
-            <a class="nav-link resizable-text {{ request()->routeIs('subscription.*') ? 'active' : '' }} || {{ request()->routeIs('companies.index') ? 'active' : '' }}"
+            <a class="nav-link resizable-text {{ request()->routeIs('subscription.*') ? 'active' : '' }}"
                id="subscriptions-tab"  href="{{ route('subscription.index') }}" role="tab">Abonnementen</a>
         </li>
         <li class="nav-item">

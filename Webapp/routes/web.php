@@ -25,6 +25,10 @@ Route::middleware(['web', RedirectIfAuthenticatedJwt::class])->get('/login', fun
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/test', function () {
+    return view('test');
+});
+
 Route::get('/forgot-password', [AuthController::class, 'forgetPassword'])
     ->name('password.request');
 
@@ -104,6 +108,12 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
         Route::delete('/users/{user}', [UsersController::class, 'destroy'])
             ->name('users.destroy');
+
+        Route::get('/users/change-password/{user}', [UsersController::class, 'editPassword'])
+            ->name('password.edit');
+
+        Route::put('/users/change-password/{user}', [UsersController::class, 'updatePassword'])
+            ->name('password.update');
     });
 
 //Monitoring routes
@@ -118,5 +128,8 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
         Route::get('/stations/{station}/measurements', [MonitoringController::class, 'showMeasurements'])
             ->name('stations.measurements');
     });
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 });
 
