@@ -45,6 +45,7 @@ Route::get('/password/{user}', [AuthController::class, 'editPassword'])
 Route::put('/password/{user}', [AuthController::class, 'updatePassword'])
     ->name('auth.password.update');
 
+
 Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');;
@@ -79,10 +80,6 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
 //Users routes
 
-    Route::post('/users/get-prefix', [UsersController::class, 'getPrefix'])
-        ->name('users.get-prefix')
-        ->middleware(JwtCookieAuth::class);
-
     Route::get('/users', [UsersController::class, 'index'])
         ->name('users.index');
 
@@ -101,18 +98,17 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])
         ->name('users.destroy');
 
+    Route::get('/users/change-password/{user}', [UsersController::class, 'editPassword'])
+        ->name('password.edit');
+
+    Route::put('/users/change-password/{user}', [UsersController::class, 'updatePassword'])
+        ->name('password.update');
 
 //Monitoring routes
 
     Route::get('/monitoring', [MonitoringController::class, 'index'])
         ->name('monitoring.index');
 
-    Route::get('/stations/{station}/measurements', [MeasurementController::class, 'show'])
-        ->name('stations.measurements');
-
-
-    Route::get('/stations/{station}/measurements', [MonitoringController::class, 'showMeasurements'])
-        ->name('stations.measurements');
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -123,7 +119,3 @@ Route::middleware([JwtCookieAuth::class, NoCache::class])->group(function () {
 
 
 });
-
-Route::get('/register', [AuthController::class, 'index'])
-    ->name('register');
-
