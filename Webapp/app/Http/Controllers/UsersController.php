@@ -8,30 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use function Laravel\Prompts\select;
 
 class UsersController extends Controller {
-
-    const ROLE_PREFIXES = [
-        1 => 'T',  // Technisch medewerker
-        2 => 'O',  // Technisch onderzoeker
-        3 => 'C',  // Commercieel medewerker
-        4 => 'AD',  // Administratief medewerker
-        5 => 'B',  // Technisch beheerder
-        6 => 'A',  // Administrator
-    ];
-
-    public function getPrefix(Request $request)
-    {
-        $roleId = $request->input('user_role');
-        $existingCode = $request->input('employee_code');
-        $newPrefix = self::ROLE_PREFIXES[$roleId] ?? '';
-        $numbers = preg_replace('/[^0-9]/', '', $existingCode);
-        $value = !empty($numbers) ? htmlspecialchars($newPrefix . $numbers) : htmlspecialchars($newPrefix);
-
-        return '<input type="text" class="form-control" id="employee_code" name="employee_code" value="' . $value . '" required>';
-    }
-
 
     public function index(Request $request)
     {
@@ -68,17 +48,20 @@ class UsersController extends Controller {
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
+            $errors = $validator->errors();
+
+            if ($errors->has('email')) {
+                return redirect()->back()->with('error', 'Dit e-mailadres bestaat al');
+            }
+
+            if ($errors->has('employee_code')) {
+                return redirect()->back()->with('error', 'Dit personeelscode bestaat al');
+            }
+
+            if ($errors->has('password')) {
+                return redirect()->back()->with('error', 'De bevestiging van het wachtwoord komt niet overeen');
+            }
         }
-
-
-// In store() method, update the validator:
-        $validator = Validator::make($request->all(), [
-            // ... other rules ...
-            'employee_code' => 'required|string|max:10|unique:users|starts_with:' . (self::ROLE_PREFIXES[$request->user_role] ?? ''),
-            // ... other rules ...
-        ]);
-
 
         User::create([
             'name' => $request->name,
@@ -114,14 +97,16 @@ class UsersController extends Controller {
             'user_role' => 'required|integer|exists:userroles,id',
         ]);
 
-        // In update() method, update the validator similarly:
-        $validator = Validator::make($request->all(), [
-            'employee_code' => 'required|string|max:10|unique:users,employee_code,' . $user->id . '|starts_with:' . (self::ROLE_PREFIXES[$request->user_role] ?? ''),
-
-        ]);
-
         if ($validator->fails()) {
-            return redirect()->back()->with('error', e($validator->errors()->all()[0]));
+            $errors = $validator->errors();
+
+            if ($errors->has('email')) {
+                return redirect()->back()->with('error', 'Dit e-mailadres bestaat al');
+            }
+
+            if ($errors->has('employee_code')) {
+                return redirect()->back()->with('error', 'Dit personeelscode bestaat al');
+            }
         }
 
         $user->update($request->only([
@@ -130,30 +115,74 @@ class UsersController extends Controller {
             'initials',
             'prefix',
             'email',
+            'employee_code',
             'user_role',
-            'unique:users,employee_code,' . ($user->id ?? ''),
-            function ($attribute, $value, $fail) use ($request) {
-                $expectedPrefix = self::ROLE_PREFIXES[$request->user_role] ?? null;
-                if (!$expectedPrefix || !str_starts_with(strtoupper($value), $expectedPrefix)) {
-                    $fail("The employee code must start with '{$expectedPrefix}' for this role.");
-                }
-            }
-
         ]));
 
         return redirect()->route('users.index')
-            ->with('success', 'User geüpdate');
+            ->with('success', 'Gebruiker gewijzigd');
     }
 
     public function destroy(User $user)
     {
         if (auth()->id() === $user->id) {
             return redirect()->back()
-                ->with('error', 'Je kan jezelf niet verwijderen');
+                ->with('error', 'Je kan jezelf niet verwijderen!');
         }
 
         $user->delete();
         return redirect()->route('users.index')
-            ->with('success', 'User verwijderd');
+            ->with('success', 'Gebruiker verwijderd');
+    }
+
+    public function editPassword(User $user)
+    {
+        return view('users.password', compact('user'));
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        $currentUser = auth()->user();
+
+        if (!in_array($currentUser->user_role, [4, 6]) && $currentUser->id !== $user->id) {
+            return redirect()->back()
+                ->with('error', 'Je mag dit wachtwoord niet wijzigen');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Wachtwoord moet minimaal 8 karakters lang zijn, en de wachtwoorden moeten overeen komen");
+        }
+
+        if (Hash::check($request->password, $user->password)) {
+            return redirect()->back()
+                ->with('error', 'Nieuw wachtwoord is hetzelfde als het oude wachtwoord');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        if ($currentUser->id === $user->id) {
+            $token = $request->cookie('jwt-token');
+            if ($token) {
+                JWTAuth::setToken($token)->invalidate();
+            }
+
+            // Remove cookie
+            $cookie = cookie('jwt-token', '', -1);
+
+            $response = redirect('/login')
+                ->with('success', 'Wachtwoord gewijzigd, log opnieuw in')
+                ->cookie($cookie);
+
+            return $response->cookie('token', '', -1);
+        }
+
+        return redirect()->route('users.index')
+            ->with('success', 'Wachtwoord gewijzigd');
     }
 }

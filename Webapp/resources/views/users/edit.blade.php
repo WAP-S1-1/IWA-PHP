@@ -39,12 +39,13 @@
             </div>
 
             <div class="mb-3" style="font-weight:500">
+                <label for="employee_code" class="form-label">Personeelscode *</label>
+                <input type="text" class="form-control" value="{{ $user->employee_code }}" id="employee_code" name="employee_code">
+            </div>
+
+            <div class="mb-3" style="font-weight:500">
                 <label for="user_role" class="form-label">Rol *</label>
-                <select class="form-select" id="user_role" name="user_role" required
-                        hx-post="{{ route('users.get-prefix') }}"
-                        hx-include="#employee_code"
-                        hx-target="#employee_code"
-                        hx-swap="outerHTML">
+                <select class="form-select" id="user_role" name="user_role" required>
                     <option value="">Selecteer een rol</option>
                     @foreach($userroles as $userrole)
                         <option value="{{ $userrole->id }}"
@@ -55,21 +56,16 @@
                 </select>
             </div>
 
-
             <div class="mb-3" style="font-weight:500">
-                <label for="employee_code" class="form-label">Personeelsnummer *</label>
-                <input type="text" class="form-control" value="{{ $user->employee_code }}" id="employee_code" name="employee_code" required>
-            </div>
-
-
-            <div class="mb-3" style="font-weight:500">
-                <a href="{{ route('auth.password.edit', $user->id) }}"
+                <a href="{{ route('password.edit', $user->id) }}"
                    class="btn btn-warning w-100 mt-2">
-                    Change Password
+                    Wachtwoord Wijzigen
                 </a>
             </div>
-
-            <button type="submit" class="btn btn-dark w-100 p-1">Wijzigen</button>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark w-100 p-1">Gebruiker Opslaan</button>
+                <a href="{{ route('users.index') }}" class="btn btn-secondary">Annuleren</a>
+            </div>
         </form>
         <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="width: 300px"
               onsubmit="return confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?');">
@@ -81,6 +77,7 @@
             </button>
         </form>
     </div>
+
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 @endsection
