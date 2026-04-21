@@ -140,6 +140,17 @@ class UsersAndUserrolesSeeder extends Seeder
                 'user_role' => 5,
                 'password' => 'pbkdf2:sha256:150000$Hbw9ERGI$0b93464e514e7d7c5ca45acd0e508c3d5db081cea527a19e07ea784294655653',
             ],
+            [
+                'id' => 11,
+                'name' => 'Admin',
+                'first_name' => '',
+                'initials' => '',
+                'prefix' => '',
+                'email' => 'admin@iwa.nl',
+                'employee_code' => 'A0011',
+                'user_role' => 6,
+                'password' => Hash::make('password'),
+            ]
         ];
 
         foreach ($users as $userData) {

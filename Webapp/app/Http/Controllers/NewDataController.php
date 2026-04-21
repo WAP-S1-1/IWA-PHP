@@ -6,6 +6,7 @@ use App\Http\Requests\WeatherDataRequest;
 use App\Models\Measurement;
 use App\Models\OriginalMeasurement;
 use App\Models\Station;
+use PharIo\Version\Exception;
 
 class NewDataController extends Controller
 {
@@ -14,10 +15,19 @@ class NewDataController extends Controller
         // Get validated data as defined in WeatherDataRequest
         $data = $request->validated();
 
+        error_log("Validated");
+
         // Loop through all data points and process them
-        foreach ($data['WEATHERDATA'] as $entry) {
-            $this->processDataPoint($entry);
+        try {
+            foreach ($data['WEATHERDATA'] as $entry) {
+                $this->processDataPoint($entry);
+            }
         }
+        catch(\Throwable $exception){
+            error_log("Error processing data: " . $exception->getMessage());
+        }
+
+        error_log("Proccessed");
 
         return response()->json([
             'success' => true
@@ -59,7 +69,7 @@ class NewDataController extends Controller
         $this->informDB($data, $missingFields, $tempCorrection);
     }
 
-    private function informDB(array $correctData, array $missingFields, float $tempCorrection){
+    private function informDB(array $correctData, array $missingFields, ?float $tempCorrection){
         // Create measurement
         $measurement = Measurement::create($correctData);
 
