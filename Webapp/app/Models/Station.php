@@ -15,7 +15,7 @@ class Station extends Model
 
     protected $table = 'station';
     protected $primaryKey = 'name';
-    public $incrementing = false;
+    public $incrementing = false; // primary key is string
     public $timestamps = false;
     protected $keyType = 'string';
 

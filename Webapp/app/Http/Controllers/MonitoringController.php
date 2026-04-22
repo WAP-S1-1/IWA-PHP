@@ -103,7 +103,7 @@ class MonitoringController extends Controller
     {
         $station = Station::with(['geolocations', 'latestMeasurement'])->where('name', $station_name)->firstOrFail();
 
-        // Calculate status dynamically based on latest measurement
+        // Calculate status dynamically based on latest measurement - SAME LOGIC AS index()
         $last = $station->latestMeasurement;
 
         if (!$last) {
