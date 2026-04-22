@@ -30,7 +30,7 @@
             <a href="{{ route('monitoring.index') }}" class="btn btn-outline-dark rounded-pill">
                 <i class="bi bi-arrow-left"></i> ← Terug naar Overzicht
             </a>
-            <span class="badge rounded-pill status-badge {{ $station->status === 'orange' ? 'bg-warning' : ($station->status === 'red' ? 'bg-danger' : 'bg-success') }}">
+            <span class="badge rounded-pill status-badge {{ $station->status === 'error' ? 'bg-warning' : ($station->status === 'offline' ? 'bg-danger' : 'bg-success') }}">
             Status: {{ ucfirst($station->status) }}
         </span>
         </div>

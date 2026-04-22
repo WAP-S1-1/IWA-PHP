@@ -30,14 +30,14 @@
         p{font-weight: bold; color:#294B71 }
     </style>
 <div class="card shadow-lg mx-auto mt-5 align-items-center rounded-top-4 overflow-hidden resizable-text" style="width:86%;height:10vh;background-color:#262626;">
-    <h1>All weatherstations</h1>
+    <h1>Alle weerstations</h1>
 </div>
     <div class="card shadow-lg p-4 mx-auto align-items-center rounded-bottom-4 overflow-hidden"
          style="width:86%; background-color:rgba(255,255,255,0.5)">
         <div class="d-flex justify-content-center gap-2 mb-3">
             <a href="{{ route('monitoring.index', ['status' => null]) }}"
                class="btn btn-sm {{ ($filter ?? '') === '' ? 'btn-dark' : 'btn-outline-dark' }}">
-                All
+                Alle
             </a>
             <a href="{{ route('monitoring.index', ['status' => Station::STATUS_OFFLINE]) }}"
                class="btn btn-sm {{ ($filter ?? '') === Station::STATUS_OFFLINE ? 'btn-danger' : 'btn-outline-danger' }}">
