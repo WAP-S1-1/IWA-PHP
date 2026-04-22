@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class Measurement extends Model
 {
-    use HasFactory;
-
     protected $table = 'measurement';
     protected $primaryKey = 'id';
     public $timestamps = false;
@@ -30,8 +28,6 @@ class Measurement extends Model
         'conditions',
         'cloud_cover',
         'wind_direction',
-        'is_corrected',
-        'correction_details'
     ];
 
     protected $casts = [
@@ -47,8 +43,6 @@ class Measurement extends Model
         'snow_depth' => 'float',
         'cloud_cover' => 'float',
         'wind_direction' => 'integer',
-        'is_corrected' => 'integer',
-        'correction_details' => 'array'
     ];
 
     public function station()
@@ -61,51 +55,48 @@ class Measurement extends Model
         return $this->hasMany(OriginalMeasurement::class, 'corrected_measurement', 'id');
     }
 
-    public static function IncomingWeatherData()
+    // TODO: Lineair extrapolation
+    public static function getExtrapolatedData($stationId, $currentDateTime): array
     {
-        $data = file_get_contents('php://input');
-
-        // check voor binnekomende data
-        if (empty($data)) {
-            Log::warning('Geen data ontvangen via php://input');
-            throw new HttpResponseException(
-                response()->json([
-                    'success' => false,
-                    'error' => 'Geen data ontvangen',
-                    'message' => 'De request bevat geen data'
-                ], 400)
-            );
-        }
-
-        $finalData = json_decode($data, true);
-
-        // Controleer of de JSON geldig is
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::warning('Ongeldige JSON ontvangen', [
-                'error' => json_last_error_msg(),
-                'data' => substr($data, 0, 500) // Log alleen eerste 500 karakters
-            ]);
-            throw new HttpResponseException(
-                response()->json([
-                    'success' => false,
-                    'error' => 'Ongeldige JSON data',
-                    'message' => json_last_error_msg()
-                ], 400)
-            );
-        }
-
-        // Return de measurement data array
-        return $finalData['WEATHERDATA'] ?? [];
-    }
-
-    public static function LastThirtyWeatherData($stationId, $currentDateTime)
-    {
-        return self::where('station', $stationId)
-            ->whereRaw("CONCAT(date, ' ', time) < ?", [$currentDateTime])
+        // Get data from the last 30 days
+        $data = self::where('station', $stationId)
             ->orderBy('date', 'DESC')
             ->orderBy('time', 'DESC')
             ->limit(30)
             ->get();
+
+        if ($data->count() == 0) {
+            return [];
+        }
+
+        // Get only the extrapolatable fields
+        $fields = [
+            'temperature',
+            'dewpoint_temperature',
+            'air_pressure_station',
+            'air_pressure_sea_level',
+            'visibility',
+            'wind_speed',
+            'percipation',
+            'snow_depth',
+            'conditions',
+            'cloud_cover',
+            'wind_direction',
+        ];
+
+        $extrapolatedData = array_fill_keys($fields, null);
+
+        foreach ($data as $entry) {
+            foreach ($fields as $field) {
+                $extrapolatedData[$field] += $entry->{$field};
+            }
+        }
+
+        foreach ($extrapolatedData as $field => $value) {
+            $extrapolatedData[$field] = $value/$data->count();
+        }
+
+        return $extrapolatedData;
     }
 
 }

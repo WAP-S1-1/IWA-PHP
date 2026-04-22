@@ -28,5 +28,9 @@ class RouteServiceProvider extends ServiceProvider
         // Register web routes
         Route::middleware('web')
             ->group(base_path('routes/web.php'));
+
+        Route::prefix('IWA/contracten')
+            ->middleware('api')
+            ->group(base_path('routes/customerApi.php'));
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Customer\Customer;
 use App\Models\User;
 
 return [
@@ -45,7 +46,11 @@ return [
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
-        ]
+        ],
+        'customer-api' => [
+            'driver' => 'jwt',
+            'provider' => 'customers',
+        ],
     ],
 
     /*
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => Customer::class,
         ],
 
         // 'users' => [
