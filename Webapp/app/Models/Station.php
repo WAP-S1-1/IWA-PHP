@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Station extends Model
 {
     // status constanten
-    const int STATUS_ONLINE = 1;
-    const int STATUS_ERROR = 2;
-    const int STATUS_OFFLINE = 0;
+    const STATUS_ONLINE = 'online';
+    const STATUS_ERROR = 'error';
+    const STATUS_OFFLINE = 'offline';
 
 
     protected $table = 'station';
