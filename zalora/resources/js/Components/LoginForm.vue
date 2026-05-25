@@ -30,16 +30,33 @@ const form = reactive({
 
 // latere functie
 
-async function submitForm (){
-   // console.log(form)
-    await fetch("/api/test", {
+async function submitForm () {
+
+    // const token = localStorage.getItem("token");
+    // console.log(form)
+    const respons = await fetch("/api/test", {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+           //  "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(form)
     })
+
+
+    if (!respons.ok) {
+        return alert("wrong personsnumber or password")
+    }
+
+    const data = await respons.json();
+
+    const token = data.token;
+
+    // opslaan van de token die je net hebt aangemaakt
+    localStorage.setItem("token", token);
 }
+
+
 
 </script>
 
@@ -170,8 +187,25 @@ async function submitForm (){
     left: 3px;
 }
 
-@media windowsscreen {
+@media (min-width: 500px){
 
+    .wrapper {
+
+        min-height: 527px;
+        min-width: 1024px;
+
+    }
+
+}
+
+@media (min-height: 450px) {
+
+    .wrapper {
+
+        min-height: 527px;
+        min-width: 1024px;
+
+    }
 }
 
 </style>
