@@ -1,3 +1,6 @@
 <template>
-    <h1>Home</h1>
+    <Map />
 </template>
+<script setup>
+import Map from "./Map.vue"
+</script>
