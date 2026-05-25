@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-// Component logic here if needed
+
 
 import { reactive} from "vue"
 const form = reactive({
@@ -171,7 +171,7 @@ async function submitForm (){
 }
 
 @media windowsscreen {
-    
+
 }
 
 </style>
