@@ -1,4 +1,4 @@
 import { createApp} from 'vue'
-import Home from '../views/Home.vue'
+import ShowMap from '../views/ShowMap.vue'
 import 'bootstrap/dist/css/bootstrap.min.css';
-createApp(Home).mount('#app')
+createApp(ShowMap).mount('#app')

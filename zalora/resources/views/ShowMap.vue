@@ -1,16 +1,16 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import Main from "./components/Main.vue";
+import Map from "./components/Map.vue";
 </script>
 
 <template>
     <head>
-        <meta charSet="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>Home</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Show Map</title>
     </head>
-    <Navbar/>
-    <Main />
+    <Navbar />
+    <Map />
 </template>
 
 <style>
