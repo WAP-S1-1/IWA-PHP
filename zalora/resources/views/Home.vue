@@ -1,20 +1,23 @@
-<template>
-    <head>
-        <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Home</title>
-</head>
-<Navbar />
-<Map />
-</template>
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import Map from "./components/Map.vue";
+import Main from "./components/Main.vue";
 </script>
+
+<template>
+    <head>
+        <meta charSet="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Home</title>
+    </head>
+    <Navbar/>
+    <Main />
+</template>
+
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 </style>

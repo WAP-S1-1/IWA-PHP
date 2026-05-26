@@ -1,3 +1,9 @@
+<script setup>
+import { ref } from 'vue'
+
+const menuOpen = ref(false)
+</script>
+
 <template>
     <header class="header">
         <h1>Zalora</h1>
@@ -7,17 +13,12 @@
         </button>
         <nav class="nav"
         :class="{ show: menuOpen}">
-            <a href="#">Home</a>
-            <a href="#">Login</a>
+            <a href="/home">Home</a>
+            <a href="/map">Show Map</a>
+            <a href="/logout">Logout</a>
         </nav>
     </header>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-
-const menuOpen = ref(false)
-</script>
 
 <style scoped>
 .header {
@@ -38,6 +39,9 @@ const menuOpen = ref(false)
 
 h1 {
     font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0;
+    line-height: 0;
 }
 
 .menu-btn {
@@ -85,6 +89,11 @@ h1 {
         width: auto;
         border: none;
         gap: 1rem;
+    }
+
+    .nav a:not(:last-child) {
+        border-right: 2px solid white;
+        padding-right: 1rem;
     }
 
     .nav a {
