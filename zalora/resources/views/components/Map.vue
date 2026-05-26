@@ -1,7 +1,9 @@
 <script setup>
+import { ref } from "vue";
 import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import { ref} from "vue";
+
+// const API_KEY = "insert api_key here"
 
 const zoom = ref(4);
 
@@ -12,7 +14,7 @@ const bounds = [
     [25, 145]  // northeast
 ];
 
-const countries = [
+const cities = [
     {
         name: "Singapore",
         position: [1.3521, 103.8198]
@@ -28,6 +30,10 @@ const countries = [
     {
         name: "Manila",
         position: [14.5995, 120.9842]
+    },
+    {
+        name: "Kuala Lumpur",
+        position: [3.1390, 101.6869]
     }
 ];
 </script>
@@ -40,20 +46,29 @@ const countries = [
             style="height: 600px; width: 100%;"
             :max-bounds="bounds"
             :minZoom="4"
-            :maxZoom="8"
+            :maxZoom="14"
+            ref="mapRef"
         >
+            <!-- Base Map-->
             <LTileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution="&copy; OpenStreetMap contributors"
             />
 
+            <!-- Cloud HeatMap-->
+<!--            <LTileLayer-->
+<!--                :url="`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${API_KEY}`"-->
+<!--                layer-type="overlay"-->
+<!--                name="Clouds"-->
+<!--                :opacity="0.6"-->
+<!--            />-->
+
             <LMarker
-                v-for="country in countries"
-                :key="country.name"
-                :lat-lng="country.position"
+                v-for="city in cities"
+                :key="city.name"
+                :lat-lng="city.position"
             >
                 <LPopup>
-                    {{ country.name }}
+                    {{ city.name }}
                 </LPopup>
             </LMarker>
         </LMap>
@@ -64,10 +79,13 @@ const countries = [
 .map-wrapper {
     margin-top: 20px;
     margin-left: 5vw;
+    margin-bottom: 20px;
     height: 500px;
     width: 90vw;
     border-radius: 16px;
     overflow: hidden;
     border: 2px solid black;
+    position: relative;
+    z-index: 1;
 }
 </style>
