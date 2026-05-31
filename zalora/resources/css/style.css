@@ -10,21 +10,24 @@
 }
 
 body {
-    font-family: "Lucida Console", sans-serif;
+    font-family: "Lucida Console", monospace;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
 }
 
-p1 {
-    font-family: "Lucida Console", "Lucida Bright", Helvetica, sans-serif;
-    font-size: 20px;
+.welcome-msg {
     margin: 20px 20px 0;
     text-align: center;
 }
 
+.welcome-msg p, .information-msg p{
+    font-family: "Montserrat", "Lucida Console", monospace;
+    font-size: 15px;
+}
+
 a {
-    font-family: "Lucida Console", "Lucida Bright", Helvetica, sans-serif;
+    font-family: "Lucida Console", "Lucida Console", monospace;
 }
 
 img {
@@ -40,39 +43,43 @@ img {
     background-color: black;
 }
 
-.container {
+.container{
     width: 100%;
-    padding: 1rem;
-}
-
-
-.hero {
-    padding: 4rem 1rem;
-    text-align: center;
-}
-
-.tag {
-    color: var(--secondary);
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-}
-
-.hero-text {
-    max-width: 600px;
-    margin: auto;
-    margin-bottom: 2rem;
-}
-
-.hero-buttons {
+    padding: 2rem;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 1rem;
+}
+
+.container p{
+    float:right;
+    display: inline-block;
+    vertical-align: top
+}
+.container p:link {
+    color: black;
+}
+
+.information-msg {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .welcome-msg p, .information-msg p{
+        font-size: 25px
+    }
+
+
 }
 
 .primary-btn,
@@ -98,40 +105,61 @@ img {
     transform: translateY(-2px);
 }
 
-.features {
-    display: grid;
-    gap: 1rem;
-    padding-bottom: 4rem;
-}
-
-.card {
-    background: white;
-    padding: 2rem;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-}
-
-.card h3 {
-    margin-bottom: 1rem;
-}
-
-.cta {
-    text-align: center;
-    padding: 4rem 1rem;
-}
-
-.cta h2 {
-    margin-bottom: 1rem;
-    font-size: 2rem;
-}
-
-.cta p {
-    margin-bottom: 2rem;
-}
-
 .footer {
+    background: black;
+    color: #ffffff;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.footer-section {
+    min-width: 200px;
+}
+
+.footer-section h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.footer-section p,
+.footer-section li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer a {
+    color: #c7d2fe;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer > p {
     text-align: center;
-    padding: 2rem 1rem;
-    border-top: 1px solid var(--border);
-    background: white;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
+    }
 }

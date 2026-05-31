@@ -17,7 +17,7 @@ const menuOpen = ref(false)
         <nav class="nav"
         :class="{ show: menuOpen}">
             <a href="/home">Home</a>
-            <a href="/map">Show Map</a>
+            <a href="/map">Map</a>
             <a href="/logout">Logout</a>
         </nav>
     </header>
