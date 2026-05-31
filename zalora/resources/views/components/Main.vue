@@ -1,28 +1,18 @@
 <script setup>
+import '../../css/style.css';
+import cloud from '../../../public/cloud.svg'
 
 </script>
 
 <template>
-    <p>
-        This app shows the current cloud coverage in Southeast Asia <br><br>
-        To see the map, click on the button below
-    </p>
+    <p1>
+        This app shows the current cloud coverage in your area
+    </p1>
     <a class="btn btn-dark" href="/map">
-        Show Map
+        <img :src="cloud" alt="Map">
     </a>
+
+    <p1>
+    <a href="/map">Today's cloud coverage</a>
+    </p1>
 </template>
-
-<style scoped>
-p {
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    margin: 20px 20px 0;
-    text-align: center;
-}
-
-a {
-    display: block;
-    margin: 0 auto;
-    width: 150px;
-}
-</style>

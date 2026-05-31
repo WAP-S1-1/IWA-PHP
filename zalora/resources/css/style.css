@@ -1,8 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+
 
 :root {
     --bg: #f5f7fb;
@@ -14,19 +10,34 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Lucida Console", sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
+}
+
+p1 {
+    font-family: "Lucida Console", "Lucida Bright", Helvetica, sans-serif;
+    font-size: 20px;
+    margin: 20px 20px 0;
+    text-align: center;
+}
+
+a {
+    font-family: "Lucida Console", "Lucida Bright", Helvetica, sans-serif;
 }
 
 img {
     max-width: 100%;
 }
 
-button {
+
+.btn {
+    display: inline-flex;
+    padding: 1rem 2rem;
     cursor: pointer;
-    border: none;
+    border-radius: 30px;
+    background-color: black;
 }
 
 .container {
@@ -34,51 +45,6 @@ button {
     padding: 1rem;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    position: sticky;
-    top: 0;
-
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-
-    padding: 1rem;
-    z-index: 100;
-}
-
-.logo {
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.menu-btn {
-    font-size: 1.5rem;
-    background: none;
-}
-
-.nav {
-    display: none;
-
-    position: absolute;
-    top: 70px;
-    left: 0;
-
-    width: 100%;
-}
-
-.nav.show {
-    display: flex;
-}
-
-.nav a {
-    padding: 1rem;
-    text-decoration: none;
-    color: var(--text);
-    border-top: 1px solid var(--border);
-}
 
 .hero {
     padding: 4rem 1rem;
@@ -168,60 +134,4 @@ button {
     padding: 2rem 1rem;
     border-top: 1px solid var(--border);
     background: white;
-}
-
-/* TABLET */
-@media (min-width: 768px) {
-
-    .container {
-        max-width: 720px;
-        margin: auto;
-    }
-
-    .hero h1 {
-        font-size: 4rem;
-    }
-
-    .hero-buttons {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .features {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* DESKTOP */
-@media (min-width: 1024px) {
-
-    .container {
-        max-width: 1100px;
-    }
-
-    .menu-btn {
-        display: none;
-    }
-
-    .nav {
-        display: flex;
-        position: static;
-        flex-direction: row;
-        width: auto;
-        border: none;
-        gap: 1rem;
-    }
-
-    .nav a {
-        border: none;
-        padding: 0;
-    }
-
-    .hero {
-        padding: 8rem 2rem;
-    }
-
-    .features {
-        grid-template-columns: repeat(3, 1fr);
-    }
 }
