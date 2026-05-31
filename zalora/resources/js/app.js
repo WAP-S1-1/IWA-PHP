@@ -1,5 +1,10 @@
 import { createApp } from 'vue'
-const app = createApp({
-    template: `<h1>Vue is working!</h1>`
-})
+import { createPinia } from 'pinia'
+import App    from './App.vue'
+import router from './router'
+import '../css/app.css'   // ← add this
+
+const app = createApp(App)
+app.use(createPinia())
+app.use(router)
 app.mount('#app')
