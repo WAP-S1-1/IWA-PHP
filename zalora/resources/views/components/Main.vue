@@ -1,8 +1,8 @@
 <script setup>
 import '../../css/style.css';
 import cloud from '../../../public/cloud.svg'
+import jacket from '../../../public/Cooling jacket.svg'
 const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -24,6 +24,11 @@ const today = new Date().toLocaleDateString('en-US', {
             <a href="/map">Today's cloud coverage</a>
         </p>
     </div>
+
+   <!-- <div class="information-msg">
+        <img :src="jacket" alt="model with jacket">
+    </div>
+    -->
 
     <div class="information-msg">
         <p>{{ today }}</p>
