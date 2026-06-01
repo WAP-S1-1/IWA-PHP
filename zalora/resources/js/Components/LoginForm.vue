@@ -1,69 +1,55 @@
 <template>
-   <div class="wrapper">
+    <div class="wrapper">
         <h1 id="Zalora-titel">Zalora</h1>
         <div id="Form-outer-div">
-        <div id="Form-div">
-        <form @submit.prevent="submitForm" id="submitform">
-            <h3 id="Zalora-titel2">Login</h3>
-            <!-- <label  id="personeelsnummer-label" for="personeelsnummer">Voer je personeelsnummer in</label><br> -->
-            <input v-model="form.personnumber" id="personeelsnummer" type="text" placeholder="Personeelsnummer" required><br>
+            <div id="Form-div">
+                <form @submit.prevent="handleLogin" id="submitform">
+                    <h3 id="Zalora-titel2">Login</h3>
 
-          <!--  <label id="personeelsnummer-label" for="password">Voer je wachtwoord in</label><br> -->
-            <input v-model="form.password" id="password" type="password" placeholder="Password" required><br>
-            <button id="submit" type="submit"> Login</button>
+                    <div v-if="error" style="color: red; font-size: 0.85rem; margin-bottom: 8px;">{{ error }}</div>
 
-        </form>
-        </div>
+                    <input v-model="form.email" id="email" type="text" placeholder="email" required><br>
+                    <input v-model="form.password" id="password" type="password" placeholder="Password" required><br>
+
+                    <button id="submit" type="submit" :disabled="loading">
+                        {{ loading ? 'Logging in…' : 'Login' }}
+                    </button>
+
+                </form>
+            </div>
         </div>
     </div>
-
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
+const router  = useRouter()
+const auth    = useAuthStore()
+const loading = ref(false)
+const error   = ref(null)
 
-import { reactive} from "vue"
-const form = reactive({
-    personnumber: '',
-    password: ''
-})
+const form = ref({ email: '', password: '' })
 
-// latere functie
-
-async function submitForm () {
-
-    // const token = localStorage.getItem("token");
-    // console.log(form)
-    const respons = await fetch("/api/test", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-           //  "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(form)
-    })
-
-
-    if (!respons.ok) {
-        return alert("wrong personsnumber or password")
+async function handleLogin() {
+    loading.value = true
+    error.value   = null
+    try {
+        await auth.login(form.value.email, form.value.password)
+        router.push('/dashboard')
+    } catch (err) {
+        error.value = err.response?.data?.message ?? 'Something went wrong.'
+    } finally {
+        loading.value = false
     }
-
-    const data = await respons.json();
-
-    const token = data.token;
-
-    // opslaan van de token die je net hebt aangemaakt
-    localStorage.setItem("token", token);
 }
-
-
-
 </script>
 
 <style scoped>
 
 .wrapper {
-
     min-height: 100vh;
     background-image: url("../../Images/calmbackground.png");
 }
@@ -99,15 +85,6 @@ async function submitForm () {
 }
 #Form-outer-div:hover {
     background: linear-gradient(180deg, rgba(200, 200, 200, 0.9) 0%, rgba(225, 225, 225, 0.95) 100%);
-
-}
-
-#personeelsnummer-label {
-    margin-block: 4px;
-    position: relative;
-    top: 50px;
-    left: 1px;
-    color: #222222;
 }
 
 #submitform {
@@ -116,7 +93,7 @@ async function submitForm () {
     left: 20px;
 }
 
-#personeelsnummer {
+#email {
     margin-block: 4px;
     position: relative;
     top: 10px;
@@ -141,11 +118,11 @@ async function submitForm () {
     padding: 5px;
     box-sizing: border-box;
 }
-#password:hover{
+#password:hover {
     border: 1px solid rgba(75, 75, 75, 0.9);
 }
 
-#personeelsnummer:hover{
+#email:hover {
     border: 1px solid rgba(75, 75, 75, 0.9);
 }
 
@@ -163,6 +140,11 @@ async function submitForm () {
 #submit:hover {
     background: rgba(230, 230, 230, 0.95);
     cursor: pointer;
+}
+
+#submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 #Zalora-titel {
@@ -187,24 +169,17 @@ async function submitForm () {
     left: 3px;
 }
 
-@media (min-width: 500px){
-
+@media (min-width: 500px) {
     .wrapper {
-
         min-height: 527px;
         min-width: 1024px;
-
     }
-
 }
 
 @media (min-height: 450px) {
-
     .wrapper {
-
         min-height: 527px;
         min-width: 1024px;
-
     }
 }
 
