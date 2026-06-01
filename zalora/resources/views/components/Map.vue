@@ -103,24 +103,23 @@ function onMapReady() {
     const map = mapRef.value.leafletObject;
 
     L.heatLayer(fakeCloudData, {
-        radius: 50,
-        blur: 50,
+        radius: 40,
+        blur: 30,
         maxZoom: 4,
         gradient: {
-            0.0: "#1f1f1f",
-            0.1: "#3d3d3d",
-            0.2: "#5c5c5c",
-            0.3: "#7d7d7d",
-            0.4: "#9e9e9e",
-            0.5: "#b5b5b5",
-            0.6: "#c7c7c7",
-            0.7: "#d9d9d9",
-            0.8: "#ebebeb",
-            0.9: "#f5f5f5",
-            1.0: "#ffffff"
+            1.0: "#a0a0a0",
+            0.9: "#adadad",
+            0.8: "#b8b8b8",
+            0.7: "#c2c2c2",
+            0.6: "#cccccc",
+            0.5: "#d6d6d6",
+            0.4: "#dfdfdf",
+            0.3: "#e8e8e8",
+            0.2: "#f0f0f0",
+            0.1: "#f8f8f8",
+            0.0: "#ffffff"
         }
     }).addTo(map);
-
 }
 </script>
 
@@ -140,9 +139,9 @@ function onMapReady() {
             <LTileLayer
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
-<!--            <LTileLayer-->
-<!--                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"-->
-<!--            />-->
+            <LTileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
 
             <!-- Cloud HeatMap-->
