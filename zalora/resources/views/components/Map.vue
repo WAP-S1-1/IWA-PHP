@@ -129,7 +129,7 @@ function onMapReady() {
         <LMap
             v-model:zoom="zoom"
             :center="center"
-            style="height: 720px; width: 100%;"
+            style="height: 620px; width: 100%;"
             :max-bounds="bounds"
             :minZoom="4"
             :maxZoom="14"
@@ -171,7 +171,7 @@ function onMapReady() {
     margin-top: 20px;
     margin-left: 5vw;
     margin-bottom: 20px;
-    height: 700px;
+    height: 600px;
     width: 90vw;
     border-radius: 16px;
     overflow: hidden;
