@@ -9,20 +9,10 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
         }),
-        tailwindcss(),
         vue(),
+        tailwindcss(),
     ],
-    resolve: {
-        alias: {
-            'vue': 'vue/dist/vue.esm-bundler.js',
-        },
-    },
     define: {
         __VUE_OPTIONS_API__: true,
         __VUE_PROD_DEVTOOLS__: false,
@@ -33,4 +23,4 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
-});
+})
