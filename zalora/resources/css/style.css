@@ -21,7 +21,7 @@ body {
     text-align: center;
 }
 
-.welcome-msg p, .information-msg p{
+.welcome-msg p, .information-msg p, .ad-container p{
     font-family: "Montserrat", "Lucida Console", monospace;
     font-size: 15px;
 }
@@ -47,7 +47,9 @@ img {
     width: 100%;
     padding: 2rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
 }
 
@@ -69,13 +71,32 @@ img {
     gap: 1rem;
 }
 
+.ad-container {
+    width: 100%;
+    color: white;
+    background-color: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding-top: 3rem;
+}
+
+.jacket-container {
+    width: 100%;
+    background-color: #0a0a0a;
+    display: flex;
+    justify-content: center;
+}
+
 @media (min-width: 768px) {
     .container {
         max-width: 1200px;
         margin: auto;
     }
 
-    .welcome-msg p, .information-msg p{
+    .welcome-msg p, .information-msg p, .ad-container p{
         font-size: 25px
     }
 
@@ -84,6 +105,8 @@ img {
 
 .primary-btn,
 .secondary-btn {
+    height: 50px;
+    width: 80px;
     padding: 1rem;
     border-radius: 12px;
     font-size: 1rem;
@@ -97,6 +120,7 @@ img {
 
 .secondary-btn {
     background: white;
+    color:black;
     border: 1px solid var(--border);
 }
 

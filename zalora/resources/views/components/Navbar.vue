@@ -7,18 +7,18 @@ const menuOpen = ref(false)
 
 <template>
     <header class="header">
-        <a href="/home">
+        <router-link to="/">
             <img :src="logo" alt="Logo" width="246" height="41">
-        </a>
+        </router-link>
         <button class="menu-btn"
         @click="menuOpen = !menuOpen">
             ☰
         </button>
         <nav class="nav"
         :class="{ show: menuOpen}">
-            <a href="/home">Home</a>
-            <a href="/map">Map</a>
-            <a href="/logout">Logout</a>
+            <router-link to="/">Home</router-link>
+            <router-link to="/map">Map</router-link>
+            <router-link to="/logout">Logout</router-link>
         </nav>
     </header>
 </template>

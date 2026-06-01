@@ -12,7 +12,7 @@ import Footer from "./components/Footer.vue";
     </head>
     <Navbar />
     <Map />
-    <Footer >
+    <Footer />
 </template>
 
 <style>

@@ -1,7 +1,7 @@
 <script setup>
 import '../../css/style.css';
 import cloud from '../../../public/cloud.svg'
-import jacket from '../../../public/Cooling jacket.svg'
+import jacket from '../../../public/jacket(gray).png'
 const today = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -25,15 +25,19 @@ const today = new Date().toLocaleDateString('en-US', {
         </p>
     </div>
 
-   <!-- <div class="information-msg">
-        <img :src="jacket" alt="model with jacket">
-    </div>
-    -->
-
     <div class="information-msg">
         <p>{{ today }}</p>
         <p>Kuala Lumpur</p>
         <p>31</p>
     </div>
+
+    <div class="ad-container">
+        <p>Buy your cooling garment here!</p>
+        <button class="secondary-btn">Shop</button>
+    </div>
+        <div class="jacket-container">
+            <img :src="jacket" alt="jacket">
+        </div>
+
 
 </template>
