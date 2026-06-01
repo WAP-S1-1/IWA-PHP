@@ -8,6 +8,11 @@
                 {{ error }}
             </div>
 
+            <div v-if="result" class="text-xs bg-gray-100 rounded-lg px-4 py-3 mb-4">
+                <p class="font-medium text-gray-500 mb-1">Auth test result:</p>
+                <pre>{{ result }}</pre>
+            </div>
+
             <form @submit.prevent="handleLogin" class="space-y-4">
                 <div>
                     <label class="block text-xs font-medium uppercase tracking-wide text-gray-500 mb-1.5">
@@ -43,6 +48,13 @@
                     {{ loading ? 'Signing in…' : 'Sign in' }}
                 </button>
             </form>
+
+            <button
+                @click="testAuth"
+                class="w-full mt-3 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-500 transition-colors"
+            >
+                Test Auth
+            </button>
         </div>
     </div>
 </template>
@@ -51,11 +63,13 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import axios from 'axios'
 
-const router   = useRouter()
-const auth     = useAuthStore()
-const loading  = ref(false)
-const error    = ref(null)
+const router  = useRouter()
+const auth    = useAuthStore()
+const loading = ref(false)
+const error   = ref(null)
+const result  = ref(null)
 
 const form = ref({ email: '', password: '' })
 
@@ -69,6 +83,16 @@ async function handleLogin() {
         error.value = err.response?.data?.message ?? 'Something went wrong.'
     } finally {
         loading.value = false
+    }
+}
+
+async function testAuth() {
+    result.value = null
+    try {
+        const { data } = await axios.get('/api/me')
+        result.value = JSON.stringify(data, null, 2)
+    } catch (err) {
+        result.value = JSON.stringify(err.response?.data, null, 2)
     }
 }
 </script>
