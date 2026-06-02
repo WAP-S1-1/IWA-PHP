@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'external' => [
+        'base_url' => env('EXTERNAL_API_BASE_URL'),
+        'email' => env('EXTERNAL_API_EMAIL'),
+        'password' => env('EXTERNAL_API_PASSWORD'),
+    ],
+
 ];
