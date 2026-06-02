@@ -1,8 +1,15 @@
 <script setup>
-import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 import logo from '../../../public/zalora_logo.png'
 
-const menuOpen = ref(false)
+const auth   = useAuthStore()
+const router = useRouter()
+
+async function handleLogout() {
+    await auth.logout()
+    router.push('/login')
+}
 </script>
 
 <template>
@@ -18,7 +25,8 @@ const menuOpen = ref(false)
         :class="{ show: menuOpen}">
             <router-link to="/">Home</router-link>
             <router-link to="/map">Map</router-link>
-            <router-link to="/logout">Logout</router-link>
+            <a href="#" @click.prevent="handleLogout">Logout</a>
+
         </nav>
     </header>
 </template>

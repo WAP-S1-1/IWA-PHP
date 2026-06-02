@@ -9,10 +9,9 @@ import ShowMap from '../../views/ShowMap.vue';
 const routes = [
     { path: '/login', component: LoginForm },
     { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
-    { path: '/', redirect: '/dashboard' },
-    { path: '/home', component: Home },
-    { path: '/', component: Home },
-    { path: '/map', component: ShowMap },
+    { path: '/home', component: Home, meta: { requiresAuth: true }},
+    { path: '/', redirect: '/home' },
+    { path: '/map', component: ShowMap, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
