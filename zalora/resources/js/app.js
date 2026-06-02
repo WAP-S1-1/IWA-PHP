@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
-import LoginForm from './Components/LoginForm.vue'
-
-createApp(LoginForm).mount('#app')
+const app = createApp({
+    template: `<h1>Vue is working!</h1>`
+})
+app.mount('#app')
