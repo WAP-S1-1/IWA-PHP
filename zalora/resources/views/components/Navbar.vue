@@ -1,10 +1,12 @@
 <script setup>
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import logo from '../../../public/zalora_logo.png'
 
 const auth   = useAuthStore()
 const router = useRouter()
+const menuOpen = ref(false)
 
 async function handleLogout() {
     await auth.logout()
