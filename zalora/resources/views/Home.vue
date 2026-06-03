@@ -1,6 +1,7 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
 import Main from "./components/Main.vue";
+import Footer from "./components/Footer.vue";
 </script>
 
 <template>
@@ -11,13 +12,5 @@ import Main from "./components/Main.vue";
     </head>
     <Navbar/>
     <Main />
+    <Footer />
 </template>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-}
-</style>
