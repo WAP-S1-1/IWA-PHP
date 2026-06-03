@@ -7,7 +7,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                'resources/js/home.js',
+                'resources/js/map.js',
+            ],
             refresh: true,
         }),
         vue(),
@@ -23,4 +28,4 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
-})
+});
