@@ -27,6 +27,7 @@ async function handleLogout() {
         :class="{ show: menuOpen}">
             <router-link to="/">Home</router-link>
             <router-link to="/map">Map</router-link>
+            <router-link to="/temperature">Temperature</router-link>
             <a href="#" @click.prevent="handleLogout">Logout</a>
 
         </nav>
