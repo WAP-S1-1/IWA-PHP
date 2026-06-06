@@ -1,16 +1,41 @@
-.container{
+:root {
+    --p-size: clamp(0.9rem, 1.6vw, 1.1rem);
+
+}
+
+.temperature-container{
     background-color: lightgray;
-    margin-top: 20px;
+    border-radius:20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:2rem;
+    margin: 2rem;
+    width: max-content;
 }
 
 .temperature {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 3fr 1fr 1fr;
     gap: 20px
 }
 
-.column{
-    
+.column li, .column  p {
+    font-size: var(--p-size);
+}
+
+@media (max-width: 600px) {
+    .temperature-container{
+        padding:1rem;
+        margin: 1rem;
+        width: 90%;
+    }
+
+    .temperature {
+        grid-template-columns: 3fr 0.5fr 0.5fr;
+        gap: 12px;
+        font-size: 0.75rem;
+    }
 }
 
 
