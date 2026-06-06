@@ -38,7 +38,7 @@ const result = ref(null)
 
 async function testAuth() {
     try {
-        const { data } = await axios.get('/api/me')
+        const { data } = await axios.get('/api/weather')
         result.value = JSON.stringify(data, null, 2)
     } catch (err) {
         result.value = JSON.stringify(err.response?.data, null, 2)
