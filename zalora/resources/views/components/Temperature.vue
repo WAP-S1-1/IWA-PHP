@@ -12,26 +12,70 @@ const countryMap = {
 
 onMounted(async () => {
     try {
-        // Change the port if your Webapp is running on a different port
-        const response = await fetch('http://localhost:8000/api/weather/southeast-asia');
+        const response = await fetch('message.txt'); //CHANGE THIS!!
         const json = await response.json();
+        const actualData = Array.isArray(json) ? json : (json.data || []);
 
-        if (json.success && json.data) {
-            weatherData.value = json.data.map(item => {
-                const country = countryMap[item.country_code] || item.country_code;
-                const city = item.town || item.place || item.station;
+        const processedData = actualData.map(item => {
+            // 1. Determine Country and City
+            const cCode = item.country_code || (item.station_id ? item.station_id.substring(0, 2) : '');
+            const country = countryMap[cCode] || cCode;
+            const city = item.station_name || item.town || item.place || item.station;
 
-                return {
-                    location: `${city}, ${country}`,
-                    highest: `${Number(item.highest_temp).toFixed(1)}°C`,
-                    lowest: `${Number(item.lowest_temp).toFixed(1)}°C`
-                };
-            });
-        }
+            // 2. Calculate Highest and Lowest Temperatures
+            let highestStr = "N/A";
+            let lowestStr = "N/A";
+            let highestVal = -999;
+
+            if (item.measurements && item.measurements.length > 0) {
+                const temps = item.measurements.map(m => Number(m.temperature_c)).filter(t => !isNaN(t));
+
+                if(temps.length > 0){
+                    highestVal = Math.max(...temps);
+                    const lowestVal = Math.min(...temps);
+                    highestStr = `${highestVal.toFixed(1)}°C`;
+                    lowestStr = `${lowestVal.toFixed(1)}°C`;
+
+                }
+               }
+            return {
+                location: `${city}, ${country}`,
+                highest: highestStr,
+                lowest: lowestStr,
+                rawHighest: highestVal
+            };
+        });
+        weatherData.value = processedData
+            .sort((a,b) => b.rawHighest-a.rawHighest)
+            .slice(0,10);
+
+        console.log("Filtered Data:", weatherData.value);
     } catch (error) {
         console.error("Failed to fetch Southeast Asia weather:", error);
     }
 });
+const downloadCSV = () => {
+    // 1. Define the spreadsheet headers
+    const headers = ['Rank', 'Location', 'Highest Temperature', 'Lowest Temperature'];
+
+    // 2. Map through your top 10 array into spreadsheet rows
+    const rows = weatherData.value.map((item, index) => [
+        index + 1,
+        `"${item.location}"`,
+        item.highest,
+        item.lowest
+    ]);
+
+    // 3. Combine headers and rows with line breaks
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'top_10_weather.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+};
 </script>
 
 
@@ -67,6 +111,7 @@ onMounted(async () => {
             </div>
         </div>
     </div>
+    <button @click="downloadCSV">Download data</button>
 </template>
 
 <style scoped>

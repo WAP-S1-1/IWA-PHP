@@ -23,6 +23,17 @@
 .column li, .column  p {
     font-size: var(--p-size);
 }
+button{
+    display: inline-flex;
+    padding: 1rem 2rem;
+    margin-left: 2rem;
+    cursor: pointer;
+    border-radius: 30px;
+    background-color: black;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
 
 @media (max-width: 600px) {
     .temperature-container{
