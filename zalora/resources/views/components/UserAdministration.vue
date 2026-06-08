@@ -1,5 +1,4 @@
 <script setup>
-import Navbar from "./Navbar.vue";
 /*
 await fetch("http://localhost:8080", {
       const data = localStorage.getItem("token");
@@ -13,7 +12,6 @@ await fetch("http://localhost:8080", {
 </script>
 
 <template>
-    <Navbar/>
     <div id="wrapper2">
 
 

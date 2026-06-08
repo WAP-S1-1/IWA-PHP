@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import UserAdministrationStaff from '../views/components/UserAdministrationStaff.vue'
+import UserAdministration from '../views/components/UserAdministration.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-createApp(UserAdministrationStaff).mount('#app')
+createApp(UserAdministration).mount('#app')

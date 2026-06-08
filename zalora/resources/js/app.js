@@ -1,8 +1,12 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import {useAuthStore} from "./stores/auth.js";
 import router from "./router/index.js";
-import app from "./app.vue";
+import App from "./app.vue";
  // import LoginForm from './Components/LoginForm.vue'
+
+const app = createApp(App)
+const pinia = createPinia()
 
 app.use(pinia)
 
