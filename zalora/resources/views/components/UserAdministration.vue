@@ -1,184 +1,709 @@
-<script setup>
-/*
-await fetch("http://localhost:8080", {
-      const data = localStorage.getItem("token");
-
-   Method: 'POST',
-   headers: {
-       'Content-Type': 'application/json',
-       "Authorization": `Bearer ${token}'
-   }
-}) */
-</script>
-
 <template>
-    <div id="wrapper2">
+    <div>
+        <Navbar />
+        <div id="wrapper2">
+            <!-- left side info - hidden on mobile, visible on desktop -->
+            <div id="left-side" class="desktop-only">
+                <h5>SYSTEM NODE</h5>
+                <div class="side-stats">
+                    <p>active directory</p>
+                    <p>role: administrator</p>
+                    <p>access level: full</p>
+                    <p style="margin-top: 0.8rem;">user registry</p>
+                </div>
+                <div style="margin-top: auto; font-size: 0.7rem; color: #6f6f6f;">
+                    local storage · persistent
+                </div>
+            </div>
 
+            <!-- main panel: user table + add button + total users -->
+            <div class="main-panel">
+                <div class="panel-header">
+                    <h2>registered employees</h2>
+                    <button @click="openAddModal" class="btn-primary">+ Add user</button>
+                </div>
 
-        <div id="left-side">
-            <h5>test</h5>
+                <!-- Total users card - moved here from right side -->
+                <div class="total-users-card">
+                    <span class="total-label">total users</span>
+                    <strong class="total-number">{{ users.length }}</strong>
+                </div>
+
+                <div class="user-table-wrapper">
+                    <table class="user-table">
+                        <thead>
+                        <tr>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>Email</th>
+                            <th>Personal number</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-if="users.length === 0" class="empty-row">
+                            <td colspan="5">No users yet. Click "Add user"</td>
+                        </tr>
+                        <tr v-for="user in users" :key="user.id">
+                            <td data-label="Firstname">{{ user.firstname }}</td>
+                            <td data-label="Lastname">{{ user.lastname }}</td>
+                            <td data-label="Email">{{ user.email || '—' }}</td>
+                            <td data-label="Personal number">{{ user.personalNumber || '—' }}</td>
+                            <td data-label="Actions" class="action-buttons">
+                                <button @click="openUpdateModal(user.id)" class="btn-update">Edit</button>
+                                <button @click="deleteUserById(user.id)" class="btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- right side controls - hidden entirely (only total users was kept and moved) -->
         </div>
-        <div id="right-side">
-            <h5>testtest</h5>
-        </div>
-        <div id="div-adduser">
-            <form @submit.prevent="submitUserForm" id="submitUserForm">
-            <p>You can add an user here.</p>
-                <label id="FirstnameLabel">Firstname</label> <input type="text" id="Firstname"  placeholder="Firstname" required> <br>
-                <label id="LastnameLabel">Lastname</label> <input type="text"  id="Lastname" placeholder="Lastname" required> <br>
-                <label id="emailadresLabel">e-mailadres(optional)</label> <input type="email" id="emailadres" placeholder="E-mailadres"> <br>
-                <label id="personeelsnummerAddUserLabel">Personal number</label> <input type="text" id="personeelsnummerAddUser" placeholder="personal number"> <br>
-                <label id="passwordAddUserLabel">Password</label> <input type="password" id="passwordAddUser" placeholder="Password"> <br>
+        <footer>user management · black & white interface</footer>
 
-            <button id="AddUser" type="button">Add User</button>
-            </form>
+        <!-- modal popup (add / update) -->
+        <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3>{{ modalTitle }}</h3>
+                    <button class="modal-close" @click="closeModal">&times;</button>
+                </div>
+                <form @submit.prevent="handleModalSubmit">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Firstname *</label>
+                            <input type="text" v-model="formData.firstname" placeholder="Enter first name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Lastname *</label>
+                            <input type="text" v-model="formData.lastname" placeholder="Enter last name" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Email (optional)</label>
+                            <input type="email" v-model="formData.email" placeholder="user@example.com" />
+                        </div>
+                        <div class="form-group">
+                            <label>Personal number</label>
+                            <input type="text" v-model="formData.personalNumber" placeholder="e.g., EMP-1234" />
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" v-model="formData.password" placeholder="********" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" @click="closeModal">Cancel</button>
+                        <button type="submit" class="btn-submit">Save user</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </template>
 
+<script>
+import Navbar from "./Navbar.vue";
+
+export default {
+    name: "UserAdministration",
+    components: {
+        Navbar
+    },
+    data() {
+        return {
+            users: [],
+            nextId: 1,
+            showModal: false,
+            modalMode: "add", // 'add' or 'update'
+            editingUserId: null,
+            formData: {
+                firstname: "",
+                lastname: "",
+                email: "",
+                personalNumber: "",
+                password: ""
+            }
+        };
+    },
+    computed: {
+        modalTitle() {
+            return this.modalMode === "add" ? "Add new user" : "Update user";
+        }
+    },
+    mounted() {
+        this.loadInitialData();
+    },
+    methods: {
+        loadInitialData() {
+            const stored = localStorage.getItem("mono_users_v2");
+            if (stored) {
+                try {
+                    this.users = JSON.parse(stored);
+                    if (this.users.length) {
+                        this.nextId = Math.max(...this.users.map(u => u.id)) + 1;
+                    } else {
+                        this.nextId = 1;
+                    }
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            // default demo users
+            if (this.users.length === 0) {
+                this.users = [
+                    {
+                        id: this.nextId++,
+                        firstname: "Elena",
+                        lastname: "Voss",
+                        email: "elena.voss@example.com",
+                        personalNumber: "P-1001",
+                        password: "demo123"
+                    },
+                    {
+                        id: this.nextId++,
+                        firstname: "Marcus",
+                        lastname: "Cole",
+                        email: "marcus.cole@example.com",
+                        personalNumber: "P-1002",
+                        password: "secure321"
+                    }
+                ];
+                this.saveToLocalStorage();
+            }
+        },
+        saveToLocalStorage() {
+            localStorage.setItem("mono_users_v2", JSON.stringify(this.users));
+        },
+        resetForm() {
+            this.formData = {
+                firstname: "",
+                lastname: "",
+                email: "",
+                personalNumber: "",
+                password: ""
+            };
+        },
+        openAddModal() {
+            this.modalMode = "add";
+            this.editingUserId = null;
+            this.resetForm();
+            this.showModal = true;
+        },
+        openUpdateModal(userId) {
+            const user = this.users.find(u => u.id === userId);
+            if (!user) return;
+            this.modalMode = "update";
+            this.editingUserId = userId;
+            this.formData = {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email || "",
+                personalNumber: user.personalNumber || "",
+                password: ""
+            };
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.resetForm();
+        },
+        handleModalSubmit() {
+            if (!this.formData.firstname || !this.formData.lastname) {
+                alert("Firstname and Lastname are required.");
+                return;
+            }
+
+            if (this.modalMode === "add") {
+                const newUser = {
+                    id: this.nextId++,
+                    firstname: this.formData.firstname,
+                    lastname: this.formData.lastname,
+                    email: this.formData.email || null,
+                    personalNumber: this.formData.personalNumber || null,
+                    password: this.formData.password || "default-pass"
+                };
+                this.users.push(newUser);
+                this.saveToLocalStorage();
+                this.closeModal();
+            } else if (this.modalMode === "update" && this.editingUserId) {
+                const index = this.users.findIndex(u => u.id === this.editingUserId);
+                if (index !== -1) {
+                    const updatedPassword = this.formData.password !== "" ? this.formData.password : this.users[index].password;
+                    this.users[index] = {
+                        ...this.users[index],
+                        firstname: this.formData.firstname,
+                        lastname: this.formData.lastname,
+                        email: this.formData.email || null,
+                        personalNumber: this.formData.personalNumber || null,
+                        password: updatedPassword
+                    };
+                    this.saveToLocalStorage();
+                    this.closeModal();
+                } else {
+                    alert("User not found, please refresh.");
+                }
+            }
+        },
+        deleteUserById(id) {
+            const confirmDel = confirm("Delete user permanently? This action cannot be undone.");
+            if (!confirmDel) return;
+            this.users = this.users.filter(u => u.id !== id);
+            this.saveToLocalStorage();
+        }
+    }
+};
+</script>
+
 <style scoped>
+/* ===== MOBILE-FIRST STYLES (default for all screen sizes) ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
+}
+
+/* Hide desktop-only elements on mobile */
+.desktop-only {
+    display: none;
+}
+
 #wrapper2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: calc(100vh - 72px);
+    padding: 1rem;
+    background: #f5f5f5;
 }
 
-#div-adduser {
-    background: darkgray;
-    width: 50%;
-    height: 30em;
+/* main panel - full width on mobile */
+.main-panel {
+    width: 100%;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e4e4e4;
+    overflow: hidden;
+}
 
-
+.panel-header {
+    background: #fefefe;
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid #eaeaea;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-
-    /* Optionele styling */
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
+.panel-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f1f1f;
+    letter-spacing: -0.2px;
+}
 
-#div-adduser p {
+.btn-primary {
+    background: #111111;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
     color: white;
-    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background: #2c2c2c;
+}
+
+/* Total users card - moved from right side, prominent on mobile */
+.total-users-card {
+    background: #0e0e0e;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: white;
+}
+
+.total-label {
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #c0c0c0;
+}
+
+.total-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+}
+
+.user-table-wrapper {
+    overflow-x: auto;
+    padding: 0 1rem 1.5rem 1rem;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    min-width: 500px;
+}
+
+.user-table th {
+    text-align: left;
+    padding: 0.85rem 0.5rem;
+    background: #fafafa;
+    color: #2b2b2b;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.75rem;
+}
+
+.user-table td {
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #efefef;
+    color: #2c2c2c;
+    vertical-align: middle;
+}
+
+.user-table tr:hover {
+    background: #f9f9f9;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-update {
+    background: transparent;
+    border: 1px solid #aaa;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-update:hover {
+    background: #eaeaea;
+}
+
+.btn-danger {
+    background: transparent;
+    border: 1px solid #bcbcbc;
+    color: #3a3a3a;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-danger:hover {
+    background: #f1f1f1;
+    border-color: #888;
+    color: #000;
+}
+
+.empty-row td {
+    text-align: center;
+    padding: 2rem;
+    color: #8f8f8f;
+    font-style: italic;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 1rem;
+    color: #7c7c7c;
+    border-top: 1px solid #ececec;
+    background: white;
+}
+
+/* Modal styles - mobile first */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: #111111;
+    padding: 1rem 1.5rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #ccc;
+    transition: 0.2s;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: white;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    background: #ffffff;
+}
+
+.form-group {
     margin-bottom: 1rem;
 }
 
-#AddUser {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    background-color: white;
-    color: #0a53be;
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: #1e1e1e;
+    font-size: 0.8rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid #cfcfcf;
+    border-radius: 20px;
+    background: white;
+    transition: 0.2s;
+    font-size: 0.85rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #666;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+}
+
+.modal-footer {
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background: #ffffff;
+}
+
+.btn-submit {
+    background: #111;
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 0.6rem 1.4rem;
+    border-radius: 40px;
+    font-weight: 500;
     cursor: pointer;
-    transition: transform 0.2s;
-    margin-left: 5px;
+    font-size: 0.85rem;
 }
 
-#AddUser:hover {
-    transform: scale(1.05);
-
+.btn-cancel {
+    background: #eaeaea;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.85rem;
 }
 
-#Firstname {
-    background: rgba(255, 255, 255, 0.85);
-    color: #111111;
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    width: 85%;
-    padding: 1px;
-    box-sizing: border-box;
-    margin-left: 5px;
+/* ===== DESKTOP STYLES (media query for larger screens) ===== */
+@media (min-width: 1024px) {
+    #wrapper2 {
+        padding: 2rem 1rem;
+        position: relative;
+    }
+
+    /* Show left sidebar on desktop */
+    .desktop-only {
+        display: flex;
+    }
+
+    #left-side {
+        background: #1a1a1a;
+        width: 260px;
+        height: auto;
+        min-height: 400px;
+        position: fixed;
+        left: 0;
+        top: 88px;
+        bottom: 2rem;
+        border-radius: 0 20px 20px 0;
+        box-shadow: 4px 0 12px rgba(0,0,0,0.05);
+        border-right: 1px solid #2e2e2e;
+        flex-direction: column;
+        padding: 2rem 1.2rem;
+        gap: 2rem;
+    }
+
+    #left-side h5 {
+        color: #f0f0f0;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        border-left: 3px solid #aaaaaa;
+        padding-left: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .side-stats {
+        background: #0f0f0f;
+        border-radius: 18px;
+        padding: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .side-stats p {
+        color: #cbcbcb;
+        font-size: 0.8rem;
+        margin: 0.5rem 0;
+    }
+
+    /* Main panel with margins for desktop */
+    .main-panel {
+        max-width: 1000px;
+        width: 100%;
+        margin: 0 auto;
+        margin-left: 300px;
+        margin-right: 0;
+    }
+
+    .panel-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 1.4rem;
+        font-size: 0.85rem;
+    }
+
+    .total-users-card {
+        margin: 1rem 1.5rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .total-label {
+        font-size: 0.9rem;
+    }
+
+    .total-number {
+        font-size: 2.2rem;
+    }
+
+    .user-table-wrapper {
+        padding: 0 1.5rem 1.8rem 1.5rem;
+    }
+
+    .user-table {
+        font-size: 0.85rem;
+        min-width: auto;
+    }
+
+    .user-table th {
+        padding: 1rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .user-table td {
+        padding: 0.8rem 0.75rem;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+    }
 }
 
-#Lastname {
-    background: rgba(255, 255, 255, 0.85);
-    color: #111111;
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    width: 85%;
-    padding: 1px;
-    box-sizing: border-box;
-    margin-left: 5px;
+/* Medium screens (tablet) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .main-panel {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .total-users-card {
+        margin: 1rem 1.5rem;
+    }
 }
 
-#emailadres {
-    background: rgba(255, 255, 255, 0.85);
-    color: #111111;
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    width: 85%;
-    padding: 1px;
-    box-sizing: border-box;
-    margin-left: 5px;
-}
+/* Small screens adjustments */
+@media (max-width: 480px) {
+    .panel-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
 
-#AddUser {
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    margin-block: 1em;
-    margin-left: 5px;
-}
+    .btn-primary {
+        width: 100%;
+        text-align: center;
+    }
 
-#FirstnameLabel {
-    margin-left: 5px;
-}
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
 
-#LastnameLabel {
-    margin-left: 5px;
-}
-#emailadresLabel {
-    margin-left: 5px;
-}
+    .btn-update, .btn-danger {
+        width: 100%;
+        text-align: center;
+    }
 
-#personeelsnummerAddUser {
-    margin-left: 5px;
-    background: rgba(255, 255, 255, 0.85);
-    color: #111111;
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    width: 85%;
-    padding: 1px;
-    box-sizing: border-box;
-}
+    .modal-body {
+        padding: 1.2rem;
+    }
 
-#personeelsnummerAddUserLabel {
-    margin-left: 5px;
-}
+    .modal-footer {
+        flex-direction: column;
+    }
 
-#passwordAddUser {
-    background: rgba(255, 255, 255, 0.85);
-    color: #111111;
-    border: 1px solid rgba(180, 180, 180, 0.9);
-    border-radius: 8px;
-    width: 85%;
-    padding: 1px;
-    box-sizing: border-box;
-    margin-left: 5px;
+    .btn-submit, .btn-cancel {
+        width: 100%;
+        text-align: center;
+    }
 }
-
-#passwordAddUserLabel {
-    margin-left: 5px;
-}
-
-#left-side {
-    background: #0dcaf0;
-    width: 10%;
-    height: 40em;
-    position: fixed;
-    left: 0;
-}
-
-#right-side {
-    background: #0a3622;
-    position: fixed;
-    right: 0;
-    width: 10%;
-    height: 40em;
-}
-
 </style>
