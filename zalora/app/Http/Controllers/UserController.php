@@ -12,26 +12,21 @@ class UserController extends Controller
 {
     public function index()
     {
-        return response()->json(Auth::guard('api')->user());
+        return response()->json(User::all());
     }
 
-    public function show()
+    public function show(User $user)
     {
-        return response()->json(Auth::guard('api')->user());
+        return response()->json($user);
     }
+
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|confirmed|min:8',
-            'role' => ['required', Rule::in(['admin', 'staff', 'user'])],
+            'role' => ['required', Rule::in(['user', 'staff', 'admin'])],
         ]);
 
         $user = User::create([
@@ -47,11 +42,11 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, String $id)
+    public function update(Request $request, User $user)
     {
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email',
+            'email' => 'sometimes|string|email|max:255|unique:users,email' . $user->id,
             'password' => 'sometimes|string|confirmed|min:8',
             'role' => 'sometimes|string'
         ]);
@@ -60,14 +55,14 @@ class UserController extends Controller
             $validated['password'] = Hash::make($validated['password']);
         }
 
-        User::all()->findOrFail($id)->update($validated);
+        $user->update($validated);
 
-        return response()->json($id);
+        return response()->json($user);
     }
 
-    public function destroy(String $id)
+    public function destroy(User $user)
     {
-        User::all()->findOrFail($id)->delete();
+        $user->delete();
 
         return response()->json([
             'message' => 'User deleted successfully'
