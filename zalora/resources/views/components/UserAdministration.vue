@@ -2,68 +2,64 @@
     <div>
         <Navbar />
         <div id="wrapper2">
-            <!-- left side info - hidden on mobile, visible on desktop -->
             <div id="left-side" class="desktop-only">
-                <h5>SYSTEM NODE</h5>
+                <h5>ACCOUNT INFO</h5>
                 <div class="side-stats">
-                    <p>active directory</p>
                     <p>role: administrator</p>
                     <p>access level: full</p>
                     <p style="margin-top: 0.8rem;">user registry</p>
                 </div>
-                <div style="margin-top: auto; font-size: 0.7rem; color: #6f6f6f;">
-                    local storage · persistent
-                </div>
             </div>
 
-            <!-- main panel: user table + add button + total users -->
-            <div class="main-panel">
-                <div class="panel-header">
-                    <h2>registered employees</h2>
-                    <button @click="openAddModal" class="btn-primary">+ Add user</button>
+            <div class="content-container">
+
+                <div class="welcome-message">
+                    <h1>Welkom, {{name}}</h1>
                 </div>
 
-                <!-- Total users card - moved here from right side -->
-                <div class="total-users-card">
-                    <span class="total-label">total users</span>
-                    <strong class="total-number">{{ users.length }}</strong>
+                <div class="main-panel">
+                    <div class="panel-header">
+                        <h2>registered employees</h2>
+                        <button @click="openAddModal" class="btn-primary">+ Add user</button>
+                    </div>
+
+                    <div class="total-users-card">
+                        <span class="total-label">total users</span>
+                        <strong class="total-number">{{ users.length }}</strong>
+                    </div>
+
+                    <div class="user-table-wrapper">
+                        <table class="user-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-if="users.length === 0" class="empty-row">
+                                <td colspan="4">No users found. Click "Add user"</td>
+                            </tr>
+                            <tr v-for="user in users" :key="user.id">
+                                <td data-label="Name">{{ user.name }}</td>
+                                <td data-label="Email">{{ user.email }}</td>
+                                <td data-label="Role"><span class="role-badge">{{ user.role || 'user' }}</span></td>
+                                <td data-label="Actions" class="action-buttons">
+                                    <button @click="openUpdateModal(user)" class="btn-update">Edit</button>
+                                    <button @click="deleteUserById(user.id)" class="btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="user-table-wrapper">
-                    <table class="user-table">
-                        <thead>
-                        <tr>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
-                            <th>Email</th>
-                            <th>Personal number</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-if="users.length === 0" class="empty-row">
-                            <td colspan="5">No users yet. Click "Add user"</td>
-                        </tr>
-                        <tr v-for="user in users" :key="user.id">
-                            <td data-label="Firstname">{{ user.firstname }}</td>
-                            <td data-label="Lastname">{{ user.lastname }}</td>
-                            <td data-label="Email">{{ user.email || '—' }}</td>
-                            <td data-label="Personal number">{{ user.personalNumber || '—' }}</td>
-                            <td data-label="Actions" class="action-buttons">
-                                <button @click="openUpdateModal(user.id)" class="btn-update">Edit</button>
-                                <button @click="deleteUserById(user.id)" class="btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-
-            <!-- right side controls - hidden entirely (only total users was kept and moved) -->
         </div>
         <footer>user management · black & white interface</footer>
 
-        <!-- modal popup (add / update) -->
         <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
             <div class="modal-container">
                 <div class="modal-header">
@@ -73,24 +69,20 @@
                 <form @submit.prevent="handleModalSubmit">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Firstname *</label>
-                            <input type="text" v-model="formData.firstname" placeholder="Enter first name" required />
+                            <label>Full Name *</label>
+                            <input type="text" v-model="formData.name" placeholder="John Doe" required />
                         </div>
                         <div class="form-group">
-                            <label>Lastname *</label>
-                            <input type="text" v-model="formData.lastname" placeholder="Enter last name" required />
+                            <label>Email *</label>
+                            <input type="email" v-model="formData.email" placeholder="user@example.com" required />
                         </div>
                         <div class="form-group">
-                            <label>Email (optional)</label>
-                            <input type="email" v-model="formData.email" placeholder="user@example.com" />
+                            <label>Role *</label>
+                            <input type="text" v-model="formData.role" placeholder="e.g., admin, user" required />
                         </div>
                         <div class="form-group">
-                            <label>Personal number</label>
-                            <input type="text" v-model="formData.personalNumber" placeholder="e.g., EMP-1234" />
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" v-model="formData.password" placeholder="********" />
+                            <label>Password <span v-if="modalMode === 'update'">(leave blank to keep unchanged)</span>*</label>
+                            <input type="password" v-model="formData.password" placeholder="********" :required="modalMode === 'add'" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -113,17 +105,16 @@ export default {
     },
     data() {
         return {
+            name: "Kees van de Spek",
             users: [],
-            nextId: 1,
             showModal: false,
-            modalMode: "add", // 'add' or 'update'
+            modalMode: "add",
             editingUserId: null,
             formData: {
-                firstname: "",
-                lastname: "",
+                name: "",
                 email: "",
-                personalNumber: "",
-                password: ""
+                password: "",
+                role: ""
             }
         };
     },
@@ -133,57 +124,21 @@ export default {
         }
     },
     mounted() {
-        this.loadInitialData();
+        this.fetchUsers();
     },
     methods: {
-        loadInitialData() {
-            const stored = localStorage.getItem("mono_users_v2");
-            if (stored) {
-                try {
-                    this.users = JSON.parse(stored);
-                    if (this.users.length) {
-                        this.nextId = Math.max(...this.users.map(u => u.id)) + 1;
-                    } else {
-                        this.nextId = 1;
-                    }
-                } catch (e) {
-                    console.warn(e);
-                }
-            }
-            // default demo users
-            if (this.users.length === 0) {
+        async fetchUsers() {
+            try {
                 this.users = [
-                    {
-                        id: this.nextId++,
-                        firstname: "Elena",
-                        lastname: "Voss",
-                        email: "elena.voss@example.com",
-                        personalNumber: "P-1001",
-                        password: "demo123"
-                    },
-                    {
-                        id: this.nextId++,
-                        firstname: "Marcus",
-                        lastname: "Cole",
-                        email: "marcus.cole@example.com",
-                        personalNumber: "P-1002",
-                        password: "secure321"
-                    }
+                    { id: 1, name: "Elena Voss", email: "elena.voss@example.com", role: "administrator" },
+                    { id: 2, name: "Marcus Cole", email: "marcus.cole@example.com", role: "user" }
                 ];
-                this.saveToLocalStorage();
+            } catch (error) {
+                console.error("Error fetching users:", error);
             }
-        },
-        saveToLocalStorage() {
-            localStorage.setItem("mono_users_v2", JSON.stringify(this.users));
         },
         resetForm() {
-            this.formData = {
-                firstname: "",
-                lastname: "",
-                email: "",
-                personalNumber: "",
-                password: ""
-            };
+            this.formData = { name: "", email: "", password: "", role: "" };
         },
         openAddModal() {
             this.modalMode = "add";
@@ -191,73 +146,47 @@ export default {
             this.resetForm();
             this.showModal = true;
         },
-        openUpdateModal(userId) {
-            const user = this.users.find(u => u.id === userId);
-            if (!user) return;
+        openUpdateModal(user) {
             this.modalMode = "update";
-            this.editingUserId = userId;
-            this.formData = {
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email || "",
-                personalNumber: user.personalNumber || "",
-                password: ""
-            };
+            this.editingUserId = user.id;
+            this.formData = { name: user.name, email: user.email, role: user.role, password: "" };
             this.showModal = true;
         },
         closeModal() {
             this.showModal = false;
             this.resetForm();
         },
-        handleModalSubmit() {
-            if (!this.formData.firstname || !this.formData.lastname) {
-                alert("Firstname and Lastname are required.");
-                return;
-            }
-
-            if (this.modalMode === "add") {
-                const newUser = {
-                    id: this.nextId++,
-                    firstname: this.formData.firstname,
-                    lastname: this.formData.lastname,
-                    email: this.formData.email || null,
-                    personalNumber: this.formData.personalNumber || null,
-                    password: this.formData.password || "default-pass"
-                };
-                this.users.push(newUser);
-                this.saveToLocalStorage();
-                this.closeModal();
-            } else if (this.modalMode === "update" && this.editingUserId) {
-                const index = this.users.findIndex(u => u.id === this.editingUserId);
-                if (index !== -1) {
-                    const updatedPassword = this.formData.password !== "" ? this.formData.password : this.users[index].password;
-                    this.users[index] = {
-                        ...this.users[index],
-                        firstname: this.formData.firstname,
-                        lastname: this.formData.lastname,
-                        email: this.formData.email || null,
-                        personalNumber: this.formData.personalNumber || null,
-                        password: updatedPassword
-                    };
-                    this.saveToLocalStorage();
-                    this.closeModal();
-                } else {
-                    alert("User not found, please refresh.");
+        async handleModalSubmit() {
+            try {
+                if (this.modalMode === "add") {
+                    this.users.push({ id: Date.now(), ...this.formData });
+                } else if (this.modalMode === "update" && this.editingUserId) {
+                    const index = this.users.findIndex(u => u.id === this.editingUserId);
+                    if (index !== -1) {
+                        this.users[index] = { ...this.users[index], ...this.formData };
+                    }
                 }
+                this.closeModal();
+            } catch (error) {
+                alert("Something went wrong saving the user.");
+                console.error(error);
             }
         },
-        deleteUserById(id) {
+        async deleteUserById(id) {
             const confirmDel = confirm("Delete user permanently? This action cannot be undone.");
             if (!confirmDel) return;
-            this.users = this.users.filter(u => u.id !== id);
-            this.saveToLocalStorage();
+            try {
+                this.users = this.users.filter(u => u.id !== id);
+            } catch (error) {
+                alert("Could not delete user.");
+                console.error(error);
+            }
         }
     }
 };
 </script>
 
 <style scoped>
-/* ===== MOBILE-FIRST STYLES (default for all screen sizes) ===== */
 * {
     margin: 0;
     padding: 0;
@@ -265,7 +194,6 @@ export default {
     font-family: system-ui, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
 }
 
-/* Hide desktop-only elements on mobile */
 .desktop-only {
     display: none;
 }
@@ -279,10 +207,29 @@ export default {
     background: #f5f5f5;
 }
 
-/* main panel - full width on mobile */
-.main-panel {
+/* Nieuwe wrapper-container voor de content, zodat uitlijning met de sidebar klopt */
+.content-container {
     width: 100%;
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Gestylede losse welcome boodschap zonder rebeccapurple */
+.welcome-message {
+    padding: 0 0.5rem;
+}
+
+.welcome-message h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111111;
+    letter-spacing: -0.5px;
+}
+
+.main-panel {
+    width: 100%;
     background: #ffffff;
     border-radius: 24px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -325,7 +272,6 @@ export default {
     background: #2c2c2c;
 }
 
-/* Total users card - moved from right side, prominent on mobile */
 .total-users-card {
     background: #0e0e0e;
     margin: 1rem;
@@ -379,6 +325,16 @@ export default {
     border-bottom: 1px solid #efefef;
     color: #2c2c2c;
     vertical-align: middle;
+}
+
+.role-badge {
+    background: #f0f0f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #444;
 }
 
 .user-table tr:hover {
@@ -439,7 +395,7 @@ footer {
     background: white;
 }
 
-/* Modal styles - mobile first */
+/* Modal styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -553,14 +509,13 @@ footer {
     font-size: 0.85rem;
 }
 
-/* ===== DESKTOP STYLES (media query for larger screens) ===== */
+/* ===== DESKTOP STYLES ===== */
 @media (min-width: 1024px) {
     #wrapper2 {
         padding: 2rem 1rem;
         position: relative;
     }
 
-    /* Show left sidebar on desktop */
     .desktop-only {
         display: flex;
     }
@@ -568,7 +523,6 @@ footer {
     #left-side {
         background: #1a1a1a;
         width: 260px;
-        height: auto;
         min-height: 400px;
         position: fixed;
         left: 0;
@@ -604,13 +558,16 @@ footer {
         margin: 0.5rem 0;
     }
 
-    /* Main panel with margins for desktop */
-    .main-panel {
+    /* Verschuift de gehele content container (titel + panel) netjes naar rechts */
+    .content-container {
         max-width: 1000px;
-        width: 100%;
-        margin: 0 auto;
         margin-left: 300px;
         margin-right: 0;
+        gap: 1.5rem;
+    }
+
+    .welcome-message h1 {
+        font-size: 2.2rem;
     }
 
     .panel-header h2 {
@@ -658,19 +615,13 @@ footer {
     }
 }
 
-/* Medium screens (tablet) */
 @media (min-width: 768px) and (max-width: 1023px) {
-    .main-panel {
+    .content-container {
         max-width: 90%;
         margin: 0 auto;
     }
-
-    .total-users-card {
-        margin: 1rem 1.5rem;
-    }
 }
 
-/* Small screens adjustments */
 @media (max-width: 480px) {
     .panel-header {
         flex-direction: column;
@@ -680,7 +631,6 @@ footer {
 
     .btn-primary {
         width: 100%;
-        text-align: center;
     }
 
     .action-buttons {
@@ -690,11 +640,6 @@ footer {
 
     .btn-update, .btn-danger {
         width: 100%;
-        text-align: center;
-    }
-
-    .modal-body {
-        padding: 1.2rem;
     }
 
     .modal-footer {
@@ -703,7 +648,6 @@ footer {
 
     .btn-submit, .btn-cancel {
         width: 100%;
-        text-align: center;
     }
 }
 </style>
