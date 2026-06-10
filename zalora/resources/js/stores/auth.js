@@ -10,7 +10,18 @@ export const useAuthStore = defineStore('auth', () => {
     }
     const user  = ref(null)
 
-    const isAuthenticated = computed(() => !!token.value)
+    const isAuthenticated = computed(() => isTokenValid(token.value))
+
+    function isTokenValid(t) {
+        if (!t) return false
+        try {
+            const payload = JSON.parse(atob(t.split('.')[1]))
+            // exp is in seconds, Date.now() in ms
+            return payload.exp * 1000 > Date.now()
+        } catch {
+            return false
+        }
+    }
 
     function setToken(t) {
         token.value = t

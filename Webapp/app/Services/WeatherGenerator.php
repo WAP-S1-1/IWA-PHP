@@ -21,7 +21,7 @@ public static function generateData(DateTime $when, string $range): array{
     } else {
         $start = (clone $when)->modify('-1 months');
         $clamp = 2.0;
-        $frequency = "+1 hour";
+        $frequency = "+12 hour";
         $end   = $when;
     }
 
