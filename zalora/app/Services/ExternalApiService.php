@@ -24,6 +24,10 @@ class ExternalApiService
     {
         $response = $this->send($method, $url, $data);
 
+        error_log("Method: $method, Url: $url");
+        error_log('Status: ' . $response->status());
+        error_log('Body: ' . $response->body());
+
         if ($response->status() === 401) {
             $this->auth->refresh();
             $response = $this->send($method, $url, $data);
@@ -32,6 +36,9 @@ class ExternalApiService
                 abort(401, 'External API auth failed');
             }
         }
+
+        error_log('Status: ' . $response->status());
+        error_log('Body: ' . $response->body());
 
         return response(
             $response->body(),
@@ -43,8 +50,14 @@ class ExternalApiService
     {
         $method = strtolower($method);
 
-        $request = Http::withToken($this->auth->token())
-            ->baseUrl(config('services.external.base_url'));
+        $request = Http::baseUrl(config('services.external.base_url'))
+            ->withToken($this->auth->token())
+            ->acceptJson()
+            ->asJson()
+            ->timeout(10)
+            ->withHeaders([
+                'Accept' => 'application/json',
+            ]);
 
         return match ($method) {
             'get' => $request->get($url, $data),
