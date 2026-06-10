@@ -24,26 +24,31 @@ class ExternalApiService
     {
         $response = $this->send($method, $url, $data);
 
-        error_log("Method: $method, Url: $url");
-        error_log('Status: ' . $response->status());
-        error_log('Body: ' . $response->body());
-
         if ($response->status() === 401) {
-            $this->auth->refresh();
+            $this->auth->login();
+
             $response = $this->send($method, $url, $data);
 
             if ($response->status() === 401) {
-                abort(401, 'External API auth failed');
+                return response()->json([
+                    'message' => 'External API auth failed'
+                ], 401);
             }
         }
 
-        error_log('Status: ' . $response->status());
-        error_log('Body: ' . $response->body());
+        // Try to decode JSON safely
+        $body = $response->body();
+        $json = json_decode($body, true);
 
-        return response(
-            $response->body(),
-            $response->status()
-        )->header('Content-Type', 'application/json');
+        $finalResponse = is_array($json) ? $json : [
+            'raw' => $body
+        ];
+
+        return response()
+            ->json($finalResponse, $response->status())
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+            ]);
     }
 
     private function send($method, $url, $data = [])
@@ -53,18 +58,27 @@ class ExternalApiService
         $request = Http::baseUrl(config('services.external.base_url'))
             ->withToken($this->auth->token())
             ->acceptJson()
-            ->asJson()
-            ->timeout(10)
-            ->withHeaders([
-                'Accept' => 'application/json',
-            ]);
+            ->timeout(10);
 
         return match ($method) {
             'get' => $request->get($url, $data),
-            'delete' => $request->delete($url, $data),
-            'put' => $request->put($url, $data),
-            'patch' => $request->patch($url, $data),
-            default => $request->post($url, $data),
+
+            'delete' => $request->withBody(
+                json_encode($data),
+                'application/json'
+            )->delete($url),
+
+            'put' => $request->withBody(
+                json_encode($data),
+                'application/json'
+            )->put($url),
+
+            'patch' => $request->withBody(
+                json_encode($data),
+                'application/json'
+            )->patch($url),
+
+            default => $request->asJson()->post($url, $data),
         };
     }
 }

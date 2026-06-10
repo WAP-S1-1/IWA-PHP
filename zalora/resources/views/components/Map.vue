@@ -28,7 +28,12 @@ async function onMapReady() {
     const map = mapRef.value.leafletObject;
 
     try {
-        const { data } = await axios.get("/api/weather");
+        const { data } = await axios.get("/api/weather", {
+            params: {
+                datetime: new Date().toISOString(),
+                interval: "hour"
+            }
+        });
 
         const heatData = data.map((station) => {
             const avg =

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Services\WeatherGenerator;
 use Illuminate\Http\Request;
 use DateTime;
-use DateTimeZone;
 
 class ZaloraController extends Controller
 {
@@ -19,14 +18,12 @@ class ZaloraController extends Controller
 
         try {
             $dateTime = new DateTime($validated['datetime']);
-        } catch (\DateMalformedStringException $e) {
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'The given data was invalid.',
+                'message' => 'Invalid datetime format',
                 'errors' => [
-                    'datetime' => [
-                        'The datetime field must be a valid date and time.'
-                    ]
-                ]
+                    'datetime' => ['Must be a valid date/time'],
+                ],
             ], 422);
         }
 
