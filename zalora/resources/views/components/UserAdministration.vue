@@ -7,7 +7,7 @@
                 <h5>SYSTEM NODE</h5>
                 <div class="side-stats">
                     <p>active directory</p>
-                    <p>role: administrator</p>
+                    <p>role: {{ currentUser.role }}</p>
                     <p>access level: full</p>
                     <p style="margin-top: 0.8rem;">user registry</p>
                 </div>
@@ -20,7 +20,7 @@
             <div class="main-panel">
                 <div class="panel-header">
                     <h2>registered employees</h2>
-                    <button @click="openAddModal" class="btn-primary">+ Add user</button>
+                    <button v-if="isAdmin" @click="openAddModal" class="btn-primary">+ Add user</button>
                 </div>
 
                 <!-- Total users card - moved here from right side -->
@@ -33,23 +33,20 @@
                     <table class="user-table">
                         <thead>
                         <tr>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
+                            <th>Name</th>
                             <th>Email</th>
-                            <th>Personal number</th>
-                            <th>Actions</th>
+                            <th>Role</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-if="users.length === 0" class="empty-row">
-                            <td colspan="5">No users yet. Click "Add user"</td>
+                            <td colspan="3">No users yet. Click "Add user"</td>
                         </tr>
                         <tr v-for="user in users" :key="user.id">
-                            <td data-label="Firstname">{{ user.firstname }}</td>
-                            <td data-label="Lastname">{{ user.lastname }}</td>
+                            <td data-label="Firstname">{{ user.name }}</td>
                             <td data-label="Email">{{ user.email || '—' }}</td>
-                            <td data-label="Personal number">{{ user.personalNumber || '—' }}</td>
-                            <td data-label="Actions" class="action-buttons">
+                            <td data-label="Personal number">{{ user.role || '—' }}</td>
+                            <td v-if="isAdmin" data-label="Actions" class="action-buttons">
                                 <button @click="openUpdateModal(user.id)" class="btn-update">Edit</button>
                                 <button @click="deleteUserById(user.id)" class="btn-danger">Delete</button>
                             </td>
@@ -74,23 +71,27 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Firstname *</label>
-                            <input type="text" v-model="formData.firstname" placeholder="Enter first name" required />
-                        </div>
-                        <div class="form-group">
-                            <label>Lastname *</label>
-                            <input type="text" v-model="formData.lastname" placeholder="Enter last name" required />
+                            <input type="text" v-model="formData.name" placeholder="Enter name" required />
                         </div>
                         <div class="form-group">
                             <label>Email (optional)</label>
                             <input type="email" v-model="formData.email" placeholder="user@example.com" />
                         </div>
                         <div class="form-group">
-                            <label>Personal number</label>
-                            <input type="text" v-model="formData.personalNumber" placeholder="e.g., EMP-1234" />
-                        </div>
-                        <div class="form-group">
                             <label>Password</label>
                             <input type="password" v-model="formData.password" placeholder="********" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" v-model="formData.password_confirmation" placeholder="Confirm Password" />
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select type="role" v-model="formData.role">
+                                <option value="user" selected>User</option>
+                                <option value="staff">Staff</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -105,6 +106,9 @@
 
 <script>
 import Navbar from "./Navbar.vue";
+import api from "../../js/stores/users.js";
+import {useAuthStore} from "../../js/stores/auth.js";
+
 
 export default {
     name: "UserAdministration",
@@ -114,75 +118,51 @@ export default {
     data() {
         return {
             users: [],
-            nextId: 1,
             showModal: false,
             modalMode: "add", // 'add' or 'update'
             editingUserId: null,
             formData: {
-                firstname: "",
-                lastname: "",
+                name: "",
                 email: "",
-                personalNumber: "",
-                password: ""
+                password: "",
+                password_confirmation: "",
+                role: "user"
             }
         };
     },
     computed: {
+        isAdmin() {
+            const auth = useAuthStore()
+            return auth.user?.role === "admin"
+        },
+
+        currentUser() {
+            return useAuthStore().user;
+        },
+
         modalTitle() {
             return this.modalMode === "add" ? "Add new user" : "Update user";
         }
     },
     mounted() {
-        this.loadInitialData();
+        this.loadUsers();
     },
     methods: {
-        loadInitialData() {
-            const stored = localStorage.getItem("mono_users_v2");
-            if (stored) {
-                try {
-                    this.users = JSON.parse(stored);
-                    if (this.users.length) {
-                        this.nextId = Math.max(...this.users.map(u => u.id)) + 1;
-                    } else {
-                        this.nextId = 1;
-                    }
-                } catch (e) {
-                    console.warn(e);
-                }
+        async loadUsers() {
+            try {
+                const response = await api.get('/users')
+                this.users = response.data
+            } catch (error) {
+                console.error(error)
             }
-            // default demo users
-            if (this.users.length === 0) {
-                this.users = [
-                    {
-                        id: this.nextId++,
-                        firstname: "Elena",
-                        lastname: "Voss",
-                        email: "elena.voss@example.com",
-                        personalNumber: "P-1001",
-                        password: "demo123"
-                    },
-                    {
-                        id: this.nextId++,
-                        firstname: "Marcus",
-                        lastname: "Cole",
-                        email: "marcus.cole@example.com",
-                        personalNumber: "P-1002",
-                        password: "secure321"
-                    }
-                ];
-                this.saveToLocalStorage();
-            }
-        },
-        saveToLocalStorage() {
-            localStorage.setItem("mono_users_v2", JSON.stringify(this.users));
         },
         resetForm() {
             this.formData = {
-                firstname: "",
-                lastname: "",
+                name: "",
                 email: "",
-                personalNumber: "",
-                password: ""
+                password: "",
+                password_confirmation: "",
+                role: "user"
             };
         },
         openAddModal() {
@@ -197,11 +177,11 @@ export default {
             this.modalMode = "update";
             this.editingUserId = userId;
             this.formData = {
-                firstname: user.firstname,
-                lastname: user.lastname,
+                name: user.name,
                 email: user.email || "",
-                personalNumber: user.personalNumber || "",
-                password: ""
+                password: "",
+                password_confirmation: "",
+                role: user.role || "user"
             };
             this.showModal = true;
         },
@@ -209,50 +189,67 @@ export default {
             this.showModal = false;
             this.resetForm();
         },
-        handleModalSubmit() {
-            if (!this.formData.firstname || !this.formData.lastname) {
-                alert("Firstname and Lastname are required.");
+        async handleModalSubmit() {
+            if (!this.formData.name) {
+                alert("Name is required.");
                 return;
             }
 
-            if (this.modalMode === "add") {
-                const newUser = {
-                    id: this.nextId++,
-                    firstname: this.formData.firstname,
-                    lastname: this.formData.lastname,
-                    email: this.formData.email || null,
-                    personalNumber: this.formData.personalNumber || null,
-                    password: this.formData.password || "default-pass"
-                };
-                this.users.push(newUser);
-                this.saveToLocalStorage();
-                this.closeModal();
-            } else if (this.modalMode === "update" && this.editingUserId) {
-                const index = this.users.findIndex(u => u.id === this.editingUserId);
-                if (index !== -1) {
-                    const updatedPassword = this.formData.password !== "" ? this.formData.password : this.users[index].password;
-                    this.users[index] = {
-                        ...this.users[index],
-                        firstname: this.formData.firstname,
-                        lastname: this.formData.lastname,
-                        email: this.formData.email || null,
-                        personalNumber: this.formData.personalNumber || null,
-                        password: updatedPassword
+            try {
+                if (this.modalMode === "add") {
+                    const response = await api.post('/users', {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        password: this.formData.password,
+                        password_confirmation: this.formData.password_confirmation,
+                        role: this.formData.role
+                    });
+
+                    console.log("User created:", response.data);
+
+                } else if (this.modalMode === "update" && this.editingUserId) {
+                    const data = {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        role: this.formData.role
                     };
-                    this.saveToLocalStorage();
-                    this.closeModal();
+
+                    if (this.formData.password) {
+                        data.password = this.formData.password;
+                        data.password_confirmation = this.formData.password_confirmation;
+                    }
+
+                    const response = await api.put(`/users/${this.editingUserId}`, data);
+
+                    console.log("User updated:", response.data);
+
                 } else {
                     alert("User not found, please refresh.");
+                    return;
+                }
+
+                await this.loadUsers();
+                this.closeModal();
+
+            } catch (error) {
+                console.error("API Error:", error);
+
+                if (error.response) {
+                    console.error("Response data:", error.response.data);
+                    alert(error.response.data.message || "Something went wrong.");
+                } else {
+                    alert("Cannot connect to API.");
                 }
             }
         },
-        deleteUserById(id) {
-            const confirmDel = confirm("Delete user permanently? This action cannot be undone.");
-            if (!confirmDel) return;
-            this.users = this.users.filter(u => u.id !== id);
-            this.saveToLocalStorage();
+        async deleteUserById(id) {
+            if (!confirm('Delete user?')) return
+
+            await api.delete(`/users/${id}`)
+
+            await this.loadUsers()
         }
-    }
+    },
 };
 </script>
 

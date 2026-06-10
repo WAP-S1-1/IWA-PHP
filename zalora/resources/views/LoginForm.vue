@@ -51,7 +51,7 @@ async function handleLogin() {
 
 .wrapper {
     min-height: 100vh;
-    background-image: url("../../Images/calmbackground.png");
+    background-image: url("../Images/calmbackground.png");
 }
 
 #Form-div {
