@@ -13,7 +13,7 @@ class ZaloraController extends Controller
     {
         $validated = $request->validate([
             'datetime' => ['required', 'date'],
-            'interval' => ['required', 'in:hour,day,week'],
+            'interval' => ['required', 'in:hour,month'],
         ]);
 
         try {

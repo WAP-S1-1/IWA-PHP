@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 const weatherData = ref([]);
 
@@ -12,9 +13,12 @@ const countryMap = {
 
 onMounted(async () => {
     try {
-        const response = await fetch('message.txt'); //CHANGE THIS!!
-        const json = await response.json();
-        const actualData = Array.isArray(json) ? json : (json.data || []);
+        const { data: actualData } = await axios.get('/api/weather', {
+            params: {
+                interval: 'month',
+                datetime: new Date().toISOString()
+            }
+        });
 
         const processedData = actualData.map(item => {
             // 1. Determine Country and City
