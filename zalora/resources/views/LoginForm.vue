@@ -52,7 +52,7 @@ async function handleLogin() {
 .wrapper {
     width: 100%;
     min-height: 100vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("../../Images/calmbackground.png");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("../../public/calmbackground.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
