@@ -5,9 +5,9 @@
             <div id="left-side" class="desktop-only">
                 <h5>ACCOUNT INFO</h5>
                 <div class="side-stats">
+                    <p>name: {{ currentUser.name }}</p>
+                    <p>email: {{ currentUser.email }}</p>
                     <p>role: {{ currentUser.role }}</p>
-                    <p>access level: full</p>
-                    <p>user registry</p>
                 </div>
             </div>
 
