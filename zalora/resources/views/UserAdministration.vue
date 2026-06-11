@@ -14,7 +14,7 @@
             <div class="content-container">
 
                 <div class="welcome-message">
-                    <h1>Welkom {{currentUser.name}}</h1>
+                    <h1>Welcome {{currentUser.name}}</h1>
                 </div>
 
                 <div class="main-panel">
