@@ -5,6 +5,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import LoginForm from "../Components/LoginForm.vue"
 import Home from '../../views/Home.vue';
 import ShowMap from '../../views/ShowMap.vue';
+import ShowTemperature from "../../views/ShowTemperature.vue";
 
 const routes = [
     { path: '/login', component: LoginForm },
@@ -12,6 +13,7 @@ const routes = [
     { path: '/home', component: Home, meta: { requiresAuth: true }},
     { path: '/', redirect: '/home' },
     { path: '/map', component: ShowMap, meta: { requiresAuth: true } },
+    { path: '/temperature', component: ShowTemperature, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
