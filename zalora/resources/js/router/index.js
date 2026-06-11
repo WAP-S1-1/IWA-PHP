@@ -4,7 +4,7 @@ import DashboardView from "../../views/DashboardView.vue";
 import LoginForm from "../../views/LoginForm.vue";
 import HomeView from '../../views/HomeView.vue';
 import MapView from '../../views/MapView.vue';
-import UserAdministration from "../../views/components/UserAdministration.vue";
+import UserAdministration from "../../views/UserAdministration.vue";
 
 const routes = [
     { path: '/login', component: LoginForm },

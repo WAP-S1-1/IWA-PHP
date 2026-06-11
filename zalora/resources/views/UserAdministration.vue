@@ -5,22 +5,22 @@
             <div id="left-side" class="desktop-only">
                 <h5>ACCOUNT INFO</h5>
                 <div class="side-stats">
-                    <p>role: administrator</p>
+                    <p>role: {{ currentUser.role }}</p>
                     <p>access level: full</p>
-                    <p style="margin-top: 0.8rem;">user registry</p>
+                    <p>user registry</p>
                 </div>
             </div>
 
             <div class="content-container">
 
                 <div class="welcome-message">
-                    <h1>Welkom, {{name}}</h1>
+                    <h1>Welkom, {{currentUser.name}}</h1>
                 </div>
 
                 <div class="main-panel">
                     <div class="panel-header">
                         <h2>registered employees</h2>
-                        <button @click="openAddModal" class="btn-primary">+ Add user</button>
+                        <button v-if="isAdmin" @click="openAddModal" class="btn-primary">+ Add user</button>
                     </div>
 
                     <div class="total-users-card">
@@ -58,7 +58,6 @@
 
             </div>
         </div>
-        <footer>user management · black & white interface</footer>
 
         <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
             <div class="modal-container">
@@ -70,7 +69,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Full Name *</label>
-                            <input type="text" v-model="formData.name" placeholder="John Doe" required />
+                            <input type="text" v-model="formData.name" placeholder="First name and Last name" required />
                         </div>
                         <div class="form-group">
                             <label>Email *</label>
@@ -78,11 +77,19 @@
                         </div>
                         <div class="form-group">
                             <label>Role *</label>
-                            <input type="text" v-model="formData.role" placeholder="e.g., admin, user" required />
+                            <select type="role" v-model="formData.role" :disabled="isEditingSelf">
+                                <option value="user" selected>User</option>
+                                <option value="staff">Staff</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Password <span v-if="modalMode === 'update'">(leave blank to keep unchanged)</span>*</label>
                             <input type="password" v-model="formData.password" placeholder="********" :required="modalMode === 'add'" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password <span v-if="modalMode === 'update'">(leave blank to keep unchanged)</span>*</label>
+                            <input type="password" v-model="formData.password_confirmation" placeholder="********" :required="modalMode === 'add'" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -92,20 +99,23 @@
                 </form>
             </div>
         </div>
+        <Footer />
     </div>
 </template>
 
 <script>
-import Navbar from "./Navbar.vue";
-
+import Navbar from "./components/Navbar.vue";
+import Footer from "./components/Footer.vue";
+import api from "../js/stores/users.js";
+import {useAuthStore} from "../js/stores/auth.js";
 export default {
     name: "UserAdministration",
     components: {
+        Footer,
         Navbar
     },
     data() {
         return {
-            name: "Kees van de Spek",
             users: [],
             showModal: false,
             modalMode: "add",
@@ -114,31 +124,46 @@ export default {
                 name: "",
                 email: "",
                 password: "",
-                role: ""
+                password_confirmation: "",
+                role: "user"
             }
         };
     },
     computed: {
+        isAdmin() {
+            const auth = useAuthStore()
+            return auth.user?.role === "admin" || "staff"
+        },
+        currentUser() {
+            return useAuthStore().user;
+        },
+        isEditingSelf() {
+            return this.editingUserId === this.currentUser.id;
+        },
         modalTitle() {
             return this.modalMode === "add" ? "Add new user" : "Update user";
         }
     },
     mounted() {
-        this.fetchUsers();
+        this.loadUsers();
     },
     methods: {
-        async fetchUsers() {
+        async loadUsers() {
             try {
-                this.users = [
-                    { id: 1, name: "Elena Voss", email: "elena.voss@example.com", role: "administrator" },
-                    { id: 2, name: "Marcus Cole", email: "marcus.cole@example.com", role: "user" }
-                ];
+                const response = await api.get('/users')
+                this.users = response.data
             } catch (error) {
-                console.error("Error fetching users:", error);
+                console.error(error)
             }
         },
         resetForm() {
-            this.formData = { name: "", email: "", password: "", role: "" };
+            this.formData = {
+                name: "",
+                email: "",
+                password: "",
+                password_confirmation: "",
+                role: "user"
+            };
         },
         openAddModal() {
             this.modalMode = "add";
@@ -149,7 +174,13 @@ export default {
         openUpdateModal(user) {
             this.modalMode = "update";
             this.editingUserId = user.id;
-            this.formData = { name: user.name, email: user.email, role: user.role, password: "" };
+            this.formData = {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                password: "",
+                password_confirmation: ""
+            };
             this.showModal = true;
         },
         closeModal() {
@@ -157,36 +188,75 @@ export default {
             this.resetForm();
         },
         async handleModalSubmit() {
+            if (!this.formData.name) {
+                alert("Name is required.");
+                return;
+            }
             try {
                 if (this.modalMode === "add") {
-                    this.users.push({ id: Date.now(), ...this.formData });
+                    const response = await api.post('/users', {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        password: this.formData.password,
+                        password_confirmation: this.formData.password_confirmation,
+                        role: this.formData.role
+                    });
+
+                    console.log("User created:", response.data);
+
                 } else if (this.modalMode === "update" && this.editingUserId) {
-                    const index = this.users.findIndex(u => u.id === this.editingUserId);
-                    if (index !== -1) {
-                        this.users[index] = { ...this.users[index], ...this.formData };
+                    const data = {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        role: this.formData.role
+                    };
+                    if (this.formData.password) {
+                        data.password = this.formData.password;
+                        data.password_confirmation = this.formData.password_confirmation;
                     }
+
+                    const response = await api.put(`/users/${this.editingUserId}`, data);
+
+                    console.log("User updated:", response.data);
+
+                } else {
+                    alert("User not found, please refresh.");
+                    return;
                 }
+
+                await this.loadUsers();
                 this.closeModal();
+
             } catch (error) {
-                alert("Something went wrong saving the user.");
-                console.error(error);
+                console.error("API Error:", error);
+
+                if (error.response) {
+                    console.error("Response data:", error.response.data);
+                    alert(error.response.data.message || "Something went wrong.");
+                } else {
+                    alert("Cannot connect to API.");
+                }
             }
         },
         async deleteUserById(id) {
-            const confirmDel = confirm("Delete user permanently? This action cannot be undone.");
-            if (!confirmDel) return;
-            try {
-                this.users = this.users.filter(u => u.id !== id);
-            } catch (error) {
-                alert("Could not delete user.");
-                console.error(error);
+            const auth = useAuthStore();
+
+            if (auth.user.id === id) {
+                alert("You cannot delete your own account.");
+                return;
             }
+
+            if (!confirm('Delete user?')) return
+
+            await api.delete(`/users/${id}`)
+
+            await this.loadUsers()
         }
     }
 };
 </script>
 
-<style scoped>
+<style>
 * {
     margin: 0;
     padding: 0;
