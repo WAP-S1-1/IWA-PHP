@@ -14,12 +14,12 @@
             <div class="content-container">
 
                 <div class="welcome-message">
-                    <h1>Welkom, {{currentUser.name}}</h1>
+                    <h1>Welkom {{currentUser.name}}</h1>
                 </div>
 
                 <div class="main-panel">
                     <div class="panel-header">
-                        <h2>registered employees</h2>
+                        <h2>Registered Accounts</h2>
                         <button v-if="isAdmin" @click="openAddModal" class="btn-primary">+ Add user</button>
                     </div>
 
@@ -594,7 +594,7 @@ footer {
         background: #1a1a1a;
         width: 260px;
         min-height: 400px;
-        position: fixed;
+        position: absolute;
         left: 0;
         top: 88px;
         bottom: 2rem;
