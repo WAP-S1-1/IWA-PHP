@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { LMap, LTileLayer, LMarker, LPopup, LCircle } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LCircle, LCircleMarker } from "@vue-leaflet/vue-leaflet";
 import axios from "axios";
 
 import L from "leaflet";
@@ -19,6 +19,14 @@ const bounds = [
     [-15, 90], // southwest
     [25, 145]  // northeast
 ];
+
+const legendItems = [
+    { label: "Clear sky",      pct: "0–10%",    color: "rgba(255,255,255,0.05)" },
+    { label: "Few clouds",     pct: "10–30%",   color: "rgba(147,204,255,0.35)" },
+    { label: "Partly cloudy",  pct: "30–60%",   color: "rgb(113,190,255)" },
+    { label: "Mostly cloudy",  pct: "60–85%",   color: "rgb(40,126,197)" },
+    { label: "Overcast",       pct: "85–100%",  color: "rgb(10,92,168)" },
+]
 
 // Replace the fakeCloudData const with this:
 const loading = ref(false);
@@ -44,25 +52,30 @@ async function onMapReady() {
 
         L.heatLayer(heatData, {
             radius: 40,
-            blur: 30,
-            maxZoom: 4,
+            blur: 50,
+            maxZoom: 6,
+            minOpacity: 0.0,
             gradient: {
-                1.0: "#a0a0a0",
-                0.9: "#adadad",
-                0.8: "#b8b8b8",
-                0.7: "#c2c2c2",
-                0.6: "#cccccc",
-                0.5: "#d6d6d6",
-                0.4: "#dfdfdf",
-                0.3: "#e8e8e8",
-                0.2: "#f0f0f0",
-                0.1: "#f8f8f8",
-                0.0: "#ffffff",
+                1.0: "#ffffff",
+                0.5: "rgba(255,255,255,0.89)",
+                0.0: "rgba(255,255,255,0.73)",
             },
         }).addTo(map);
     } catch (err) {
         console.error("Failed to load weather data:", err);
     }
+}
+
+const userLocation = ref(null);
+
+function locateUser() {
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            userLocation.value = [pos.coords.latitude, pos.coords.longitude];
+            mapRef.value.leafletObject.setView(userLocation.value, 10);
+        },
+        (err) => console.error("Geolocation error:", err)
+    );
 }
 </script>
 
@@ -79,13 +92,22 @@ async function onMapReady() {
             @ready="onMapReady"
         >
             <!-- Base Map-->
-            <LTileLayer
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            />
-            <LTileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
 
+            <LTileLayer
+                url="https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"
+            />
+            <LTileLayer
+                url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}.png"
+                :opacity="0.8"
+            />
+            <LCircleMarker v-if="userLocation" :lat-lng="userLocation"
+                           :color="'black'"
+            :weight="1"
+            >
+                <LPopup>You are here</LPopup>
+            </LCircleMarker>
+
+        <button @click="locateUser" class="locate-btn"> My Location</button>
 
             <!-- Cloud HeatMap-->
 <!--            <LTileLayer-->
@@ -105,6 +127,18 @@ async function onMapReady() {
                 </LPopup>
             </LMarker>
         </LMap>
+        <div class="legend">
+            <p class="legend-title">Cloud coverage</p>
+            <div class="gradient-bar"></div>
+            <div class="gradient-labels">
+                <span>Clear</span><span>50%</span><span>Overcast</span>
+            </div>
+            <div v-for="item in legendItems" class="legend-row">
+                <div class="swatch" :style="{ background: item.color }"></div>
+                <span>{{ item.label }}</span>
+                <span class="pct">{{ item.pct }}</span>
+            </div>
+        </div>
     </div>
 </template>
 
