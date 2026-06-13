@@ -78,7 +78,7 @@ async function handleLogin() {
     error.value   = null
     try {
         await auth.login(form.value.email, form.value.password)
-        router.push('/dashboard')
+        router.push('/home')
     } catch (err) {
         error.value = err.response?.data?.message ?? 'Something went wrong.'
     } finally {

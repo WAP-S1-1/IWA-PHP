@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import App    from './App.vue'
-import router from './router'
-import { useAuthStore } from '@/stores/auth'
-import '../css/app.css'
+import {useAuthStore} from "./stores/auth.js";
+import router from "./router/index.js";
+import App from "./app.vue";
+ // import LoginForm from './Components/LoginForm.vue'
 
 const app = createApp(App)
 const pinia = createPinia()

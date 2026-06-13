@@ -12,6 +12,10 @@ async function handleLogout() {
     await auth.logout()
     router.push('/login')
 }
+
+function hasRole(...roles) {
+    return roles.includes(auth.user?.role)
+}
 </script>
 
 <template>
@@ -27,7 +31,8 @@ async function handleLogout() {
         :class="{ show: menuOpen}">
             <router-link to="/">Home</router-link>
             <router-link to="/map">Map</router-link>
-            <router-link to="/temperature">Temperature</router-link>
+            <router-link v-if="hasRole('admin', 'staff')" to="/temperature">Temperature</router-link>
+            <router-link v-if="hasRole('admin', 'staff')" to="/users">Users</router-link>
             <a href="#" @click.prevent="handleLogout">Logout</a>
 
         </nav>
