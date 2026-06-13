@@ -1,0 +1,83 @@
+.locate-btn {
+    position: absolute;
+    bottom: 30px;
+    right: 20px;
+    z-index: 1000;
+    padding: 8px 14px;
+    background: black;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.legend {
+    position: absolute;
+    bottom: 2%;
+    left: 1.5%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: clamp(6px, 1vw, 12px);
+    padding: clamp(8px, 1vw, 16px) clamp(10px, 1.2vw, 20px);
+    font-size: clamp(10px, 1vw, 14px);
+    min-width: clamp(140px, 15vw, 220px);
+    backdrop-filter: blur(4px);
+    border: 0.5px solid rgba(0,0,0,0.1);
+}
+
+.legend-title {
+    font-size: clamp(9px, 0.8vw, 12px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #666;
+    margin: 0 0 clamp(6px, 0.8vw, 12px);
+}
+
+.gradient-bar {
+    height: clamp(8px, 0.9vw, 14px);
+    border-radius: 4px;
+    background: linear-gradient(to right,
+    #ff0000,
+    #ff5a00,
+    #ffdd00,
+    rgb(63,255,0),
+    rgb(0,178,255)
+    );
+    border: 0.5px solid rgba(0,0,0,0.1);
+    margin-bottom: 4px;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(5px, 0.6vw, 10px);
+    margin-bottom: clamp(3px, 0.4vw, 6px);
+    font-size: clamp(10px, 0.9vw, 13px);
+    color: #333;
+}
+
+.swatch {
+    width: clamp(18px, 2vw, 28px);
+    height: clamp(10px, 1vw, 14px);
+    border-radius: 3px;
+    flex-shrink: 0;
+    border: 0.5px solid rgba(0,0,0,0.15);
+}
+
+.pct {
+    color: #888;
+    font-size: clamp(9px, 0.75vw, 12px);
+}
+.map-wrapper {
+    margin-top: 20px;
+    margin-left: 5vw;
+    margin-bottom: 20px;
+    height: 600px;
+    width: 90vw;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid black;
+    position: relative;
+    z-index: 1;
+}
