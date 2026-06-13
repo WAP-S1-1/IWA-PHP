@@ -1,4 +1,4 @@
 import { createApp} from 'vue'
-import Home from '../views/Home.vue'
+import HomeView from '../views/HomeView.vue'
 import 'bootstrap/dist/css/bootstrap.min.css';
-createApp(Home).mount('#app')
+createApp(HomeView).mount('#app')

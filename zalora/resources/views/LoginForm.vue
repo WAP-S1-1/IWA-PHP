@@ -38,7 +38,7 @@ async function handleLogin() {
     error.value   = null
     try {
         await auth.login(form.value.email, form.value.password)
-        router.push('/dashboard')
+        router.push('/home')
     } catch (err) {
         error.value = err.response?.data?.message ?? 'Something went wrong.'
     } finally {
@@ -50,8 +50,36 @@ async function handleLogin() {
 <style scoped>
 
 .wrapper {
+    width: 100%;
     min-height: 100vh;
-    background-image: url("../../Images/calmbackground.png");
+    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url("../../public/calmbackground.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#Form-outer-div {
+    background: linear-gradient(180deg, rgba(215, 215, 215, 0.9) 0%, rgba(195, 195, 195, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    width: 400px;
+    height: 400px;
+    position: relative;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.10);
+    z-index: 3;
+    opacity: 0.90;
+    display: flex;
+    justify-content: center;
+}
+#Form-outer-div:hover {
+    background: linear-gradient(180deg, rgba(180, 180, 180, 0.9) 0%, rgba(195, 195, 195, 0.95) 100%);
 }
 
 #Form-div {
@@ -64,27 +92,8 @@ async function handleLogin() {
     height: 320px;
     position: relative;
     bottom: -40px;
-    left: 60px;
     opacity: 1;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-}
-
-#Form-outer-div {
-    background: linear-gradient(180deg, rgba(245, 245, 245, 0.9) 0%, rgba(225, 225, 225, 0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 24px;
-    width: 400px;
-    height: 400px;
-    position: relative;
-    bottom: 40px;
-    top: 10vh;
-    left: 25vw;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.10);
-    z-index: 2;
-    opacity: 0.90;
-}
-#Form-outer-div:hover {
-    background: linear-gradient(180deg, rgba(200, 200, 200, 0.9) 0%, rgba(225, 225, 225, 0.95) 100%);
 }
 
 #submitform {
@@ -156,6 +165,9 @@ async function handleLogin() {
     padding: 20px;
     border-radius: 15px;
     backdrop-filter: blur(3px);
+    text-align: center;
+    margin-bottom: 10px;
+    z-index: 3;
 }
 
 #Zalora-titel2 {
@@ -171,15 +183,20 @@ async function handleLogin() {
 
 @media (min-width: 500px) {
     .wrapper {
-        min-height: 527px;
-        min-width: 1024px;
+        min-height: 100vh;
     }
 }
 
 @media (min-height: 450px) {
     .wrapper {
-        min-height: 527px;
-        min-width: 1024px;
+        min-height: 100vh;
+    }
+}
+
+@media (max-width: 410px) {
+    #Form-outer-div {
+        width: 100%;
+        max-width: 340px;
     }
 }
 
