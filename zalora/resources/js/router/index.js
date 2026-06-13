@@ -1,18 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import Home from '../../views/Home.vue';
-import ShowMap from '../../views/ShowMap.vue';
+import MapView from '../../views/MapView.vue';
 import ShowTemperature from "../../views/ShowTemperature.vue";
 import DashboardView from "../../views/DashboardView.vue";
 import LoginForm from "../../views/LoginForm.vue";
+import HomeView from "../../views/HomeView.vue";
+import UserAdministration from "../../views/UserAdministration.vue";
 
 const routes = [
     { path: '/login', component: LoginForm },
-    { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true } },
+    { path: '/dashboard', component: DashboardView, meta: { requiresAuth: true, roles: ['admin'] } },
     { path: '/home', component: HomeView, meta: { requiresAuth: true } },
     { path: '/', redirect: '/home' },
-    { path: '/map', component: ShowMap, meta: { requiresAuth: true } },
-    { path: '/temperature', component: ShowTemperature, meta: { requiresAuth: true } },
+    { path: '/map', component: MapView, meta: { requiresAuth: true } },
+    { path: '/temperature', component: ShowTemperature, meta: { requiresAuth: true, roles: ['admin', 'staff'] } },
     { path: '/users', component: UserAdministration, meta: { requiresAuth: true, roles: ['admin', 'staff'] } }
 ]
 

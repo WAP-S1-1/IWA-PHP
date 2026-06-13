@@ -20,7 +20,7 @@
                 <div class="main-panel">
                     <div class="panel-header">
                         <h2>Registered Accounts</h2>
-                        <button v-if="isAdmin" @click="openAddModal" class="btn-primary">+ Add user</button>
+                        <button @click="openAddModal" class="btn-primary">+ Add user</button>
                     </div>
 
                     <div class="total-users-card">
@@ -80,7 +80,7 @@
                             <select type="role" v-model="formData.role" :disabled="isEditingSelf">
                                 <option value="user" selected>User</option>
                                 <option value="staff">Staff</option>
-                                <option value="admin">Admin</option>
+                                <option v-if="currentUser.role === 'admin'" value="admin">Admin</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -132,7 +132,7 @@ export default {
     computed: {
         isAdmin() {
             const auth = useAuthStore()
-            return auth.user?.role === "admin" || "staff"
+            return auth.user?.role === "admin"
         },
         currentUser() {
             return useAuthStore().user;

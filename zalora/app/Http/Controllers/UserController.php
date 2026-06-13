@@ -29,6 +29,12 @@ class UserController extends Controller
             'role' => ['required', Rule::in(['user', 'staff', 'admin'])],
         ]);
 
+        if ($validated['role'] === 'admin' && auth()->user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Only administrators can create admin accounts.'
+            ], 403);
+        }
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -44,6 +50,12 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        if (auth()->user()->role !== 'admin' && $user->role === 'admin') {
+            return response()->json([
+                'message' => 'Only administrators can modify admin accounts.'
+            ], 403);
+        }
+
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email' . $user->id,
@@ -53,6 +65,12 @@ class UserController extends Controller
 
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
+        }
+
+        if (isset($validated['role']) && $validated['role'] === 'admin' && auth()->user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Only administrators can assign the admin role.'
+            ], 403);
         }
 
         $user->update($validated);
@@ -65,6 +83,12 @@ class UserController extends Controller
         if (Auth::id() === $user->id) {
             return response()->json([
                 'message' => 'You cannot delete your own account.'
+            ], 403);
+        }
+
+        if ($user->role === 'admin' && auth()->user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Only administrators can delete admin accounts.'
             ], 403);
         }
 

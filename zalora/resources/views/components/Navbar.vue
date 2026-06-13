@@ -31,7 +31,7 @@ function hasRole(...roles) {
         :class="{ show: menuOpen}">
             <router-link to="/">Home</router-link>
             <router-link to="/map">Map</router-link>
-            <router-link to="/temperature">Temperature</router-link>
+            <router-link v-if="hasRole('admin', 'staff')" to="/temperature">Temperature</router-link>
             <router-link v-if="hasRole('admin', 'staff')" to="/users">Users</router-link>
             <a href="#" @click.prevent="handleLogout">Logout</a>
 
