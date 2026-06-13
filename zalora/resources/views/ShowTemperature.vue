@@ -1,6 +1,6 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import Map from "./components/Map.vue";
+import Map from "./components/Temperature.vue";
 import Footer from "./components/Footer.vue";
 </script>
 
