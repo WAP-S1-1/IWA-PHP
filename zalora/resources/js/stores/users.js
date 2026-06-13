@@ -3,8 +3,8 @@ import { useAuthStore } from "./auth.js";
 import config from "bootstrap/js/src/util/config.js";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/api'
-})
+    baseURL: `${window.location.origin}/api`
+});
 
 api.interceptors.request.use((config) => {
     const auth = useAuthStore()
