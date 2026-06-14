@@ -54,7 +54,12 @@ onMounted(async () => {
         const startTime = endTime - 28 * 24 * 60 * 60 * 1000;
 
         const processedData = processWeatherData(rawWeatherData.value, startTime, endTime);
-        weatherData.value = processedData.sort((a, b) => b.highest - a.highest).slice(0, 10);
+        weatherData.value = processedData.filter(x => x.highest !== -999)
+            .sort((a, b) => {
+                if (b.highest !== a.highest) return b.highest - a.highest;
+                return b.lowest - a.lowest;
+            })
+            .slice(0, 10);
     } catch (error) {
         console.error("Failed to fetch Southeast Asia weather:", error);
     }
@@ -109,7 +114,7 @@ const downloadCSV = () => {
         </div>
         <div class="table-wrapper">
             <div v-if="weatherData.length === 0" class="loading-state">
-                Loading weather data...
+                <h1> Loading weather data... </h1>
             </div>
 
             <table v-else class="user-table">
