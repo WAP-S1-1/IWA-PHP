@@ -25,6 +25,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import logo from "../../public/zalora_logo_black.png";
 
 const router  = useRouter()
 const auth    = useAuthStore()
