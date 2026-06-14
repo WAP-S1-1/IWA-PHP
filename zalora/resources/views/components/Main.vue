@@ -27,13 +27,11 @@ const today = new Date().toLocaleDateString('en-US', {
 
     <div class="information-msg">
         <p>{{ today }}</p>
-        <p>Kuala Lumpur</p>
-        <p>31</p>
     </div>
 
     <div class="ad-container">
         <p>Buy your cooling garment here!</p>
-        <button class="secondary-btn">Shop</button>
+        <a href="https://www.zalora.com/" class="secondary-btn">Shop</a>
     </div>
         <div class="jacket-container">
             <img :src="jacket" alt="jacket">

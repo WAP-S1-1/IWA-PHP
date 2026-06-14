@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { LMap, LTileLayer, LMarker, LPopup, LCircle } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LCircle, LCircleMarker } from "@vue-leaflet/vue-leaflet";
 import axios from "axios";
 
 import L from "leaflet";
@@ -19,6 +19,14 @@ const bounds = [
     [-15, 90], // southwest
     [25, 145]  // northeast
 ];
+
+const legendItems = [
+    { label: "Overcast ",      pct: "100-80%",    color: "#ff0000" },
+    { label: "Mostly cloudy ",     pct: "80–60%",   color: "#ff5a00" },
+    { label: "Partly cloudy ",  pct: "60–40%",   color: "#ffdd00" },
+    { label: "Few clouds ",  pct: "40–20%",   color: "rgb(63,255,0)" },
+    { label: "Clear sky ",       pct: "20-0%",  color: "rgb(0,178,255)" },
+]
 
 // Replace the fakeCloudData const with this:
 const loading = ref(false);
@@ -43,30 +51,43 @@ async function onMapReady() {
         });
 
         L.heatLayer(heatData, {
-            radius: 40,
-            blur: 30,
-            maxZoom: 4,
+            radius: 30,
+            blur: 0,
+            maxZoom: 6,
+            minOpacity: 0.0,
             gradient: {
-                1.0: "#a0a0a0",
-                0.9: "#adadad",
-                0.8: "#b8b8b8",
-                0.7: "#c2c2c2",
-                0.6: "#cccccc",
-                0.5: "#d6d6d6",
-                0.4: "#dfdfdf",
-                0.3: "#e8e8e8",
-                0.2: "#f0f0f0",
-                0.1: "#f8f8f8",
-                0.0: "#ffffff",
+                1.0: "#ff0000",
+                0.75: "#ff5a00",
+                0.5: "#ffdd00",
+                0.25: "rgb(63,255,0)",
+                0.0: "rgb(0,178,255)",
             },
         }).addTo(map);
     } catch (err) {
         console.error("Failed to load weather data:", err);
     }
 }
+
+const userLocation = ref(null);
+
+function locateUser() {
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            userLocation.value = [pos.coords.latitude, pos.coords.longitude];
+            mapRef.value.leafletObject.setView(userLocation.value, 10);
+        },
+        (err) => console.error("Geolocation error:", err)
+    );
+}
+
+
 </script>
 
 <template>
+    <div class="panel-header">
+        <h1> Map </h1>
+    </div>
+
     <div class="map-wrapper">
         <LMap
             v-model:zoom="zoom"
@@ -79,13 +100,22 @@ async function onMapReady() {
             @ready="onMapReady"
         >
             <!-- Base Map-->
-            <LTileLayer
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            />
-            <LTileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
 
+            <LTileLayer
+                url="https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg"
+            />
+            <LTileLayer
+                url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}.png"
+                :opacity="0.8"
+            />
+            <LCircleMarker v-if="userLocation" :lat-lng="userLocation"
+                           :color="'black'"
+            :weight="1"
+            >
+                <LPopup>You are here</LPopup>
+            </LCircleMarker>
+
+        <button @click="locateUser" class="locate-btn"> My Location</button>
 
             <!-- Cloud HeatMap-->
 <!--            <LTileLayer-->
@@ -105,20 +135,25 @@ async function onMapReady() {
                 </LPopup>
             </LMarker>
         </LMap>
+
+
+        <div class="legend">
+            <p class="legend-title">Cloud coverage</p>
+            <div class="gradient-bar"></div>
+            <div class="gradient-labels">
+                <span>Overcast </span>
+                <span> 50% </span>
+                <span>Clear</span>
+            </div>
+            <div v-for="item in legendItems" :key="item.label" class="legend-row">
+                <div class="swatch" :style="{ background: item.color }"></div>
+                <span class="row-label">{{ item.label }}</span>
+                <span class="pct">{{ item.pct }}</span>
+            </div>
+        </div>
     </div>
 </template>
 
 <style scoped>
-.map-wrapper {
-    margin-top: 20px;
-    margin-left: 5vw;
-    margin-bottom: 20px;
-    height: 600px;
-    width: 90vw;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 2px solid black;
-    position: relative;
-    z-index: 1;
-}
+@import '../../css/map.css';
 </style>

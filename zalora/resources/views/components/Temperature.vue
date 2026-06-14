@@ -47,29 +47,24 @@ function processWeatherData(actualData, startTime, endTime) {
 onMounted(async () => {
     try {
         const { data: actualData } = await axios.get('/api/weather', {
-            params: {
-                interval: 'month',
-                datetime: new Date().toISOString()
-            }
+            params: { interval: 'month', datetime: new Date().toISOString() }
         });
         rawWeatherData.value = actualData;
         const endTime = Date.now();
         const startTime = endTime - 28 * 24 * 60 * 60 * 1000;
 
-        const processedData = processWeatherData(
-            rawWeatherData.value,
-            startTime,
-            endTime
-        );
-        weatherData.value = processedData
-            .sort((a,b) => b.highest-a.highest)
-            .slice(0,10);
-
-        console.log("Filtered Data:", weatherData.value);
+        const processedData = processWeatherData(rawWeatherData.value, startTime, endTime);
+        weatherData.value = processedData.filter(x => x.highest !== -999)
+            .sort((a, b) => {
+                if (b.highest !== a.highest) return b.highest - a.highest;
+                return b.lowest - a.lowest;
+            })
+            .slice(0, 10);
     } catch (error) {
         console.error("Failed to fetch Southeast Asia weather:", error);
     }
 });
+
 const downloadCSV = () => {
     const data = rawWeatherData.value;
     const results = [];
@@ -80,14 +75,9 @@ const downloadCSV = () => {
         end.setHours(0, 0, 0, 0);
 
         const start = new Date(end);
-        start.setDate(start.getDate() - 28); // instead of setMonth
+        start.setDate(start.getDate() - 28);
 
-        const processed = processWeatherData(
-            data,
-            start.getTime(),
-            end.getTime()
-        );
-
+        const processed = processWeatherData(data, start.getTime(), end.getTime());
         const top10 = processed
             .filter(x => x.highest !== -999)
             .sort((a, b) => b.highest - a.highest)
@@ -105,59 +95,83 @@ const downloadCSV = () => {
     }
 
     const headers = ['Date', 'Rank', 'Location', 'Highest Temperature', 'Lowest Temperature'];
-
-    const csvContent = [headers, ...results]
-        .map(r => r.join(","))
-        .join("\n");
-
+    const csvContent = [headers, ...results].map(r => r.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-
     const link = document.createElement('a');
     link.href = url;
     link.download = 'top10_per_day.csv';
     link.click();
-
     URL.revokeObjectURL(url);
 };
 </script>
 
-
 <template>
-    <div class="temperature-container">
-        <div v-if="weatherData.length === 0">
-            Loading weather data...
+    <div class="main-panel">
+        <div class="panel-header">
+            <h2>Top 10 Temperatures</h2>
+            <button @click="downloadCSV" class="btn-primary">↓ Download CSV</button>
         </div>
-
-        <div v-else class="temperature">
-            <div class="column">
-                <h1>Locations</h1>
-                <hr>
-                <ul>
-                    <li v-for="(item, index) in weatherData" :key="`loc-${item.location}`">{{ index + 1 }}. {{ item.location }}</li>
-                </ul>
+        <div class="table-wrapper">
+            <div v-if="weatherData.length === 0" class="loading-state">
+                <h1> Loading weather data... </h1>
             </div>
 
-            <div class="column">
-                <h1>Highest</h1>
-                <hr>
-                <ul>
-                    <li v-for="item in weatherData" :key="`high-${item.location}`">{{ item.highest }}</li>
-                </ul>
-            </div>
-
-            <div class="column">
-                <h1>Lowest</h1>
-                <hr>
-                <ul>
-                    <li v-for="item in weatherData" :key="`low-${item.location}`">{{ item.lowest }}</li>
-                </ul>
-            </div>
+            <table v-else class="user-table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Location</th>
+                    <th>Highest</th>
+                    <th>Lowest</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item, index) in weatherData" :key="item.location">
+                    <td data-label="#">
+                        <span class="role-badge">{{ index + 1 }}</span>
+                    </td>
+                    <td data-label="Location">{{ item.location }}</td>
+                    <td data-label="Highest">
+                        <span class="temp-high">{{ item.highest !== -999 ? item.highest.toFixed(1) + '°C' : '—' }}</span>
+                    </td>
+                    <td data-label="Lowest">
+                        <span class="temp-low">{{ item.lowest !== null ? item.lowest.toFixed(1) + '°C' : '—' }}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <button @click="downloadCSV">Download data</button>
 </template>
 
 <style scoped>
 @import '../../css/temperature.css';
+
+.table-wrapper{
+    margin-top: 20px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-radius: 16px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.temp-high {
+    background: #fff0f0;
+    color: #c0392b;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.temp-low {
+    background: #f0f6ff;
+    color: #2471a3;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
 </style>
