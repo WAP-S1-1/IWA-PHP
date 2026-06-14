@@ -11,7 +11,7 @@
                     <input v-model="form.email" id="email" type="text" placeholder="email" required><br>
                     <input v-model="form.password" id="password" type="password" placeholder="Password" required><br>
 
-                    <button id="submit" type="submit" :disabled="loading">
+                    <button id="submit" type="submit" :disabled="loading" style="font-size: small">
                         {{ loading ? 'Logging in…' : 'Login' }}
                     </button>
 
@@ -25,7 +25,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import logo from "../../public/zalora_logo_black.png";
 
 const router  = useRouter()
 const auth    = useAuthStore()
