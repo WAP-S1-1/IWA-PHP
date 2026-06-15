@@ -61,6 +61,11 @@
     margin-bottom: 4px;
 }
 
+.gradient-labels{
+    display:flex;
+    justify-content: space-between;
+}
+
 .legend-row {
     display: flex;
     align-items: center;

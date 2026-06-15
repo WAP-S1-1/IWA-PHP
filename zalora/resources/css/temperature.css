@@ -55,7 +55,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
     position: relative;
     gap: 0.75rem;
 }
@@ -441,15 +440,30 @@ footer {
 }
 
 @media (max-width: 480px) {
-    .panel-header {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
+
+    .user-table td:nth-child(2),
+    .user-table th:nth-child(2) {
+        max-width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .table-wrapper{
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .panel-header .btn-primary {
+        width: auto;
+        position: static;
+        right: 1rem;
     }
 
     .btn-primary {
         width: 100%;
     }
+
 
     .action-buttons {
         flex-direction: column;

@@ -150,11 +150,22 @@ const downloadCSV = () => {
 
 .table-wrapper{
     margin-top: 20px;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 0.1rem;
+    padding-right: 0.11rem;
     border-radius: 16px;
     overflow: hidden;
     z-index: 1;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .table-wrapper{
+        margin-top: 20px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        border-radius: 16px;
+        overflow: hidden;
+        z-index: 1;
+    }
 }
 
 .temp-high {
