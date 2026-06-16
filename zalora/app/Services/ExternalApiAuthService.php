@@ -34,7 +34,7 @@ class ExternalApiAuthService
      */
     public function login(): string
     {
-        error_log(config('services.external.base_url') . '/login');
+        // Log into API using ./env settings
         $response = Http::asForm()
             ->post(config('services.external.base_url') . '/login', [
                 'email' => config('services.external.email'),
@@ -42,6 +42,7 @@ class ExternalApiAuthService
             ])
             ->throw()
             ->json();
+
 
         return $this->storeTokenResponse($response);
     }
@@ -55,10 +56,6 @@ class ExternalApiAuthService
             'external.access_token',
             $response['token'],
         );
-
-        if (isset($response['refresh_token'])) {
-            Cache::put('external.refresh_token', $response['refresh_token']);
-        }
 
         return $response['token'];
     }

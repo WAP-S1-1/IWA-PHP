@@ -12,10 +12,17 @@
 }
 
 body {
-    font-family: "Lucida Console", monospace;
+    font-family: "Segoe UI", monospace;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
+}
+
+.panel-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f1f1f;
+    letter-spacing: -0.2px;
 }
 
 .welcome-msg {
@@ -24,12 +31,12 @@ body {
 }
 
 .welcome-msg p, .information-msg p, .ad-container p{
-    font-family: "Montserrat", "Lucida Console", monospace;
+    font-family: "Segoe UI", "Segoe UI", monospace;
     font-size: 15px;
 }
 
 a {
-    font-family: "Lucida Console", "Lucida Console", monospace;
+    font-family: "Segoe UI", "Segoe UI", monospace;
 }
 
 img {
@@ -107,9 +114,7 @@ img {
 
 .primary-btn,
 .secondary-btn {
-    height: 50px;
-    width: 80px;
-    padding: 1rem;
+    padding: 0.6rem 1.4rem;
     border-radius: 12px;
     font-size: 1rem;
     transition: 0.2s ease;
@@ -190,3 +195,5 @@ img {
         font-size: 0.75rem;
     }
 }
+
+
