@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ContractController;
 use App\Http\Controllers\Api\StationController;
+use App\Http\Controllers\Api\ZaloraController;
 use App\Http\Middleware\API\RequiresValidToken;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,4 @@ Route::middleware([RequiresValidToken::class])->group(function () {
     Route::get('/{identifier}/station/{name}', [StationController::class, 'handle']);
 });
 
+Route::get('/weather', [ZaloraController::class, 'handle']);
