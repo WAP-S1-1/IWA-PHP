@@ -25,6 +25,7 @@ class ExternalApiService
         $response = $this->send($method, $url, $data);
 
         if ($response->status() === 401) {
+            // Attempt to log in and try again
             $this->auth->login();
 
             $response = $this->send($method, $url, $data);
@@ -40,6 +41,7 @@ class ExternalApiService
         $body = $response->body();
         $json = json_decode($body, true);
 
+        // If body failed to parse to JSON
         $finalResponse = is_array($json) ? $json : [
             'raw' => $body
         ];
@@ -64,19 +66,16 @@ class ExternalApiService
             'get' => $request->get($url, $data),
 
             'delete' => $request->withBody(
-                json_encode($data),
-                'application/json'
-            )->delete($url),
+                    json_encode($data),
+                )->delete($url),
 
             'put' => $request->withBody(
-                json_encode($data),
-                'application/json'
-            )->put($url),
+                    json_encode($data),
+                )->put($url),
 
             'patch' => $request->withBody(
-                json_encode($data),
-                'application/json'
-            )->patch($url),
+                    json_encode($data),
+                )->patch($url),
 
             default => $request->asJson()->post($url, $data),
         };
