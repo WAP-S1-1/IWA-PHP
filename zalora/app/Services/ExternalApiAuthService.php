@@ -43,6 +43,7 @@ class ExternalApiAuthService
             ->throw()
             ->json();
 
+
         return $this->storeTokenResponse($response);
     }
 
